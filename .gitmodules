@@ -1,0 +1,6 @@
+[submodule "Carthage/Checkouts/yoga"]
+	path = Carthage/Checkouts/yoga
+	url = https://github.com/guidomb/yoga.git
+[submodule "Carthage/Checkouts/PortalView"]
+	path = Carthage/Checkouts/PortalView
+	url = https://github.com/guidomb/PortalView.git
