@@ -20,10 +20,13 @@ enum Message {
     case tick(Date)
     case ping(Date)
     case pong(String)
+    case stateLoaded(State?)
     
 }
 
 enum Command {
+    
+    case loadStoredState
     
 }
 
@@ -92,8 +95,21 @@ final class ExampleSubscriptionManager: PortalApplication.SubscriptionManager {
 
 final class ExampleCommandExecutor: PortalApplication.CommandExecutor {
     
+    let loadState: () -> State?
+    
+    init(loadState: @escaping () -> State?) {
+        self.loadState = loadState
+    }
+    
     func execute(command: Command, dispatch: @escaping (ExampleApplication.Action) -> Void) {
-        
+        switch command {
+            
+        case .loadStoredState:
+            if let state = loadState() {
+                dispatch(.sendMessage(.stateLoaded(state)))
+            }
+            
+        }
     }
     
 }
@@ -117,7 +133,13 @@ final class ExampleApplication: PortalApplication.Application {
         switch (state, message) {
             
         case (.uninitialized, .applicationStarted):
+            return (.uninitialized, .loadStoredState)
+            
+        case (.uninitialized, .stateLoaded(.none)):
             return (.started(date: .none, showAlert: false), .none)
+            
+        case (.uninitialized, .stateLoaded(.some(let loadedState))):
+            return (loadedState, .none)
             
         case (.started, .replaceContent):
             return (.replacedContent, .none)
@@ -411,5 +433,167 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
 
 func myCustomComponent(layout: Layout) -> Component<ExampleApplication.Action> {
     return .custom(componentIdentifier: "MyCustomComponent", layout: layout)
+}
+
+
+
+
+
+final class ExampleSerializer: StatePersistorSerializer {
+
+    func serialize(state: State) -> Data {
+        let name: String
+        let properties: [String : Any?]?
+        
+        switch state {
+        case .uninitialized:
+            name = "uninitialized"
+            properties = .none
+            
+        case .started(let date, let showAlert):
+            name = "started"
+            properties = [
+                "date": date,
+                "showAlert": showAlert
+            ]
+            
+        case .replacedContent:
+            name = "replacedContent"
+            properties = .none
+            
+        case .detailedScreen(let counter):
+            name = "detailedScreen"
+            properties = ["counter" : counter]
+        
+        case .modalScreen:
+            name = "modalScreen"
+            properties = .none
+        }
+        
+        let json: [String: Any?] = ["name": name, "properties": properties]
+        return (try? JSONSerialization.data(withJSONObject: json, options: [])) ?? Data()
+    }
+    
+    func serialize(message: Message) -> Data {
+        let json: [String : Any?]
+        switch message {
+        case .applicationStarted:
+            json = ["applicationStarted": ""]
+        case .replaceContent:
+            json = ["replaceContent": ""]
+        case .goToRoot:
+            json = ["goToRoot": ""]
+        case .routeChanged(let route):
+            let value: Int
+            switch route {
+            case .root: value = 0
+            case .modal: value = 1
+            case .detail: value = 2
+            }
+            json = ["routeChanged": value]
+        case .increment:
+            json = ["increment": ""]
+        case .tick(let date):
+            json = ["tick": date.timeIntervalSinceReferenceDate]
+        case .ping(let date):
+            json = ["ping": date.timeIntervalSinceReferenceDate]
+        case .pong(let string):
+            json = ["pong": string]
+        case .stateLoaded(_):
+            json = ["unsupported" : .none]
+        }
+        return (try? JSONSerialization.data(withJSONObject: json, options: [])) ?? Data()
+    }
+    
+    func deserializeState(from data: Data) -> State? {
+        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any?] else {
+            return .none
+        }
+        
+        switch (json?["name"] as? String) {
+            
+        case .some("uninitialized"):
+            return .uninitialized
+            
+        case .some("started"):
+            let properties = json?["properties"] as? [String : Any?]
+            if let date = properties?["date"] as? Date, let showAlert = properties?["showAlert"] as? Bool {
+                return .started(date: date, showAlert: showAlert)
+            } else {
+                return .none
+            }
+            
+        case .some("replacedContent"):
+            return .replacedContent
+            
+        case .some("detailedScreen"):
+            let properties = json?["properties"] as? [String : Any?]
+            if let counter = properties?["counter"] as? UInt {
+                return .detailedScreen(counter: counter)
+            } else {
+                return .none
+            }
+            
+        case .some("modalScreen"):
+            return .modalScreen
+            
+        default:
+            return .none
+        }
+    }
+    
+    func deserializeMessage(from data: Data) -> Message? {
+        guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String : Any?] else {
+            return .none
+        }
+        
+        switch json?.keys.first {
+        
+        case .some("applicationStarted"):
+            return .applicationStarted
+            
+        case .some("replaceContent"):
+            return .replaceContent
+            
+        case .some("goToRoot"):
+            return .goToRoot
+            
+        case .some("routeChanged"):
+            switch json?.values.first as? Int {
+            case .some(0): return .routeChanged(to: .root)
+            case .some(1): return .routeChanged(to: .modal)
+            case .some(2): return .routeChanged(to: .detail)
+            default: return .none
+            }
+            
+        case .some("increment"):
+            return .increment
+            
+        case .some("tick"):
+            if let date = json?.values.first as? TimeInterval {
+                return .tick(Date(timeIntervalSinceReferenceDate: date))
+            } else {
+                return .none
+            }
+            
+        case .some("ping"):
+            if let date = json?.values.first as? TimeInterval {
+                return .ping(Date(timeIntervalSinceReferenceDate: date))
+            } else {
+                return .none
+            }
+            
+        case .some("pong"):
+            if let string = json?.values.first as? String {
+                return .pong(string)
+            } else {
+                return .none
+            }
+        
+        default:
+            return .none
+        }
+    }
+    
 }
 

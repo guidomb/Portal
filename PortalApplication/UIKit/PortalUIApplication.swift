@@ -20,6 +20,95 @@ public enum UIApplicationMessage {
     
 }
 
+public class UIKitApplicationContext<
+    StateType,
+    MessageType,
+    CommandType,
+    CustomSubscriptionType,
+    RouteType: Route,
+    NavigatorType: Navigator,
+    ApplicationType: Application,
+    CommandExecutorType: CommandExecutor,
+    CustomSubscriptionManager: SubscriptionManager,
+    CustomComponentRendererType: UIKitCustomComponentRenderer>
+    
+    where
+    
+    ApplicationType.StateType                   == StateType,
+    ApplicationType.MessageType                 == MessageType,
+    ApplicationType.CommandType                 == CommandType,
+    ApplicationType.RouteType                   == RouteType,
+    ApplicationType.NavigatorType               == NavigatorType,
+    ApplicationType.SubscriptionType            == CustomSubscriptionType,
+    NavigatorType.RouteType                     == RouteType,
+    CommandExecutorType.MessageType             == Action<RouteType, MessageType>,
+    CommandExecutorType.CommandType             == CommandType,
+    CustomSubscriptionManager.SubscriptionType  == CustomSubscriptionType,
+    CustomSubscriptionManager.RouteType         == RouteType,
+    CustomSubscriptionManager.MessageType       == MessageType,
+    CustomComponentRendererType.MessageType     == Action<RouteType, MessageType>  {
+
+    public typealias Runner = ApplicationRunner<
+        StateType,
+        MessageType,
+        CommandType,
+        CustomSubscriptionType,
+        RouteType,
+        NavigatorType,
+        ApplicationType,
+        UIKitApplicationRenderer<MessageType, RouteType, CustomComponentRendererType>,
+        CommandExecutorType,
+        CustomSubscriptionManager>
+    
+    
+    fileprivate let application: ApplicationType
+    fileprivate let commandExecutor: CommandExecutorType
+    fileprivate let subscriptionManager: CustomSubscriptionManager
+    fileprivate let customComponentRenderer: CustomComponentRendererType
+    fileprivate var middlewares: [Runner.Middleware] = []
+    
+    public init(
+        application: ApplicationType,
+        commandExecutor: CommandExecutorType,
+        subscriptionManager: CustomSubscriptionManager,
+        customComponentRenderer: CustomComponentRendererType) {
+        self.application = application
+        self.commandExecutor = commandExecutor
+        self.subscriptionManager = subscriptionManager
+        self.customComponentRenderer = customComponentRenderer
+    }
+    
+    public func runner(for window: UIWindow) -> (@escaping (UIApplicationMessage) -> MessageType?) -> (UIApplicationMessage) -> Void {
+        let runner = self.createApplicationRunner(window: window)
+        middlewares.forEach(runner.registerMiddleware)
+        return { messageMapper in
+            return { applicationMessage in
+                guard let message = messageMapper(applicationMessage) else { return }
+                runner.dispatch(action: .sendMessage(message))
+            }
+        }
+    }
+    
+    public func registerMiddleware<MiddlewareType: MiddlewareProtocol>(_ middleware: MiddlewareType)
+        where
+        MiddlewareType.MessageType == MessageType,
+        MiddlewareType.StateType == StateType,
+        MiddlewareType.CommandType == CommandType {
+            
+        middlewares.append(middleware.call)
+    }
+}
+
+extension UIKitApplicationContext {
+    
+    fileprivate func createApplicationRunner(window: UIWindow) -> Runner {
+        return Runner(application: application, commandExecutor: commandExecutor, subscriptionManager: subscriptionManager) { dispatch in
+            UIKitApplicationRenderer(window: window, customComponentRenderer: customComponentRenderer, dispatch: dispatch)
+        }
+    }
+    
+}
+
 public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
 
     public static func start<
@@ -31,56 +120,21 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
         NavigatorType: Navigator,
         ApplicationType: Application,
         CommandExecutorType: CommandExecutor,
-        CustomSubscriptionManager: SubscriptionManager> (
-            application: ApplicationType,
-            commandExecutor: CommandExecutorType,
-            subscriptionManager: CustomSubscriptionManager,
-            messageMapper: @escaping (UIApplicationMessage) -> MessageType?)
-        
-        where
-        
-        ApplicationType.StateType                   == StateType,
-        ApplicationType.MessageType                 == MessageType,
-        ApplicationType.CommandType                 == CommandType,
-        ApplicationType.RouteType                   == RouteType,
-        ApplicationType.NavigatorType               == NavigatorType,
-        ApplicationType.SubscriptionType            == CustomSubscriptionType,
-        NavigatorType.RouteType                     == RouteType,
-        CommandExecutorType.MessageType             == Action<RouteType, MessageType>,
-        CommandExecutorType.CommandType             == CommandType,
-        CustomSubscriptionManager.SubscriptionType  == CustomSubscriptionType,
-        CustomSubscriptionManager.RouteType         == RouteType,
-        CustomSubscriptionManager.MessageType       == MessageType {
-            
-        start(
-            application: application,
-            commandExecutor: commandExecutor,
-            subscriptionManager: subscriptionManager,
-            customComponentRenderer: VoidCustomComponentRenderer(),
-            messageMapper: messageMapper
-        )
-    }
-    
-    
-    
-    
-    public static func start<
-        StateType,
-        MessageType,
-        CommandType,
-        CustomSubscriptionType,
-        RouteType: Route,
-        NavigatorType: Navigator,
-        ApplicationType: Application,
-        CommandExecutorType: CommandExecutor,
         CustomSubscriptionManager: SubscriptionManager,
         CustomComponentRendererType: UIKitCustomComponentRenderer> (
-            application: ApplicationType,
-            commandExecutor: CommandExecutorType,
-            subscriptionManager: CustomSubscriptionManager,
-            customComponentRenderer: CustomComponentRendererType,
+            applicationContext: UIKitApplicationContext<
+                StateType,
+                MessageType,
+                CommandType,
+                CustomSubscriptionType,
+                RouteType,
+                NavigatorType,
+                ApplicationType,
+                CommandExecutorType,
+                CustomSubscriptionManager,
+                CustomComponentRendererType>,
             messageMapper: @escaping (UIApplicationMessage) -> MessageType?)
-        
+    
         where
         
         ApplicationType.StateType                   == StateType,
@@ -98,29 +152,7 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
         CustomComponentRendererType.MessageType     == Action<RouteType, MessageType> {
             
             PortalUIApplication.binder = { window in
-                let runner = ApplicationRunner<
-                    StateType,
-                    MessageType,
-                    CommandType,
-                    CustomSubscriptionType,
-                    RouteType,
-                    NavigatorType,
-                    ApplicationType,
-                    UIKitApplicationRenderer<MessageType, RouteType, CustomComponentRendererType>,
-                    CommandExecutorType,
-                    CustomSubscriptionManager>(
-                        application: application,
-                        commandExecutor: commandExecutor,
-                        subscriptionManager: subscriptionManager) { dispatch in
-                        UIKitApplicationRenderer(window: window, customComponentRenderer: customComponentRenderer, dispatch: dispatch)
-                }
-                
-                runner.registerMiddleware(TimeLogger { print("M - Logger: \($0)") })
-                
-                return { applicationMessage in
-                    guard let message = messageMapper(applicationMessage) else { return }
-                    runner.dispatch(action: .sendMessage(message))
-                }
+                applicationContext.runner(for: window)(messageMapper)
             }
             
             let unsafeArgv = UnsafeMutableRawPointer(CommandLine.unsafeArgv).bindMemory(

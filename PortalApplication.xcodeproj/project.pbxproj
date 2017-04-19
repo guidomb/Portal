@@ -24,6 +24,8 @@
 		9D78241B1E92BA01004455B1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78241A1E92BA01004455B1 /* main.swift */; };
 		9D78241D1E92BA47004455B1 /* Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78241C1E92BA47004455B1 /* Example.swift */; };
 		9D93F2231E9D6EFB00B36914 /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D93F2211E9D67E700B36914 /* CustomView.xib */; };
+		9DBA4A061EA81CBE000DE6B7 /* StatePersistor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBA4A041EA81CBE000DE6B7 /* StatePersistor.swift */; };
+		9DBA4A071EA81CBE000DE6B7 /* TimeLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBA4A051EA81CBE000DE6B7 /* TimeLogger.swift */; };
 		9DBE01D61E80EB4F005FF907 /* Middleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBE01D51E80EB4F005FF907 /* Middleware.swift */; };
 		9DDF07921E94296500ABEB33 /* ApplicationRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDF07911E94296500ABEB33 /* ApplicationRunner.swift */; };
 		9DDF07951E94377700ABEB33 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDF07941E94377700ABEB33 /* Subscription.swift */; };
@@ -82,6 +84,8 @@
 		9D78241A1E92BA01004455B1 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9D78241C1E92BA47004455B1 /* Example.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Example.swift; sourceTree = "<group>"; };
 		9D93F2211E9D67E700B36914 /* CustomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomView.xib; sourceTree = "<group>"; };
+		9DBA4A041EA81CBE000DE6B7 /* StatePersistor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatePersistor.swift; sourceTree = "<group>"; };
+		9DBA4A051EA81CBE000DE6B7 /* TimeLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeLogger.swift; sourceTree = "<group>"; };
 		9DBE01D51E80EB4F005FF907 /* Middleware.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Middleware.swift; sourceTree = "<group>"; };
 		9DDF07911E94296500ABEB33 /* ApplicationRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationRunner.swift; sourceTree = "<group>"; };
 		9DDF07941E94377700ABEB33 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
@@ -120,7 +124,6 @@
 		9D0F33331E78F81800C65BED = {
 			isa = PBXGroup;
 			children = (
-				9D3AB7361EA5AD760038988D /* PortalView.framework */,
 				9D0F333F1E78F81800C65BED /* PortalApplication */,
 				9D0F334A1E78F81800C65BED /* PortalApplicationTests */,
 				9D7824091E92B9C8004455B1 /* Example */,
@@ -142,6 +145,7 @@
 		9D0F333F1E78F81800C65BED /* PortalApplication */ = {
 			isa = PBXGroup;
 			children = (
+				9DBA4A031EA81CBE000DE6B7 /* Middlewares */,
 				9DDF07971E952DF000ABEB33 /* Subscriptions */,
 				9D0F33601E78F96000C65BED /* UIKit */,
 				9D0F33401E78F81800C65BED /* PortalApplication.h */,
@@ -175,6 +179,7 @@
 		9D0F33671E79073600C65BED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9D3AB7361EA5AD760038988D /* PortalView.framework */,
 				9D3AB73A1EA5AD950038988D /* YogaKit.framework */,
 			);
 			name = Frameworks;
@@ -192,6 +197,15 @@
 				9D93F2211E9D67E700B36914 /* CustomView.xib */,
 			);
 			path = Example;
+			sourceTree = "<group>";
+		};
+		9DBA4A031EA81CBE000DE6B7 /* Middlewares */ = {
+			isa = PBXGroup;
+			children = (
+				9DBA4A041EA81CBE000DE6B7 /* StatePersistor.swift */,
+				9DBA4A051EA81CBE000DE6B7 /* TimeLogger.swift */,
+			);
+			path = Middlewares;
 			sourceTree = "<group>";
 		};
 		9DDF07971E952DF000ABEB33 /* Subscriptions */ = {
@@ -375,7 +389,9 @@
 				9DDF07951E94377700ABEB33 /* Subscription.swift in Sources */,
 				9DDF07921E94296500ABEB33 /* ApplicationRunner.swift in Sources */,
 				9DDF07991E952E0100ABEB33 /* Timer.swift in Sources */,
+				9DBA4A061EA81CBE000DE6B7 /* StatePersistor.swift in Sources */,
 				9D0F33661E79071100C65BED /* UIKitApplicationRenderer.swift in Sources */,
+				9DBA4A071EA81CBE000DE6B7 /* TimeLogger.swift in Sources */,
 				9DBE01D61E80EB4F005FF907 /* Middleware.swift in Sources */,
 				9D0F33641E78F9BB00C65BED /* Application.swift in Sources */,
 				9D0F33621E78F97800C65BED /* PortalUIApplication.swift in Sources */,
