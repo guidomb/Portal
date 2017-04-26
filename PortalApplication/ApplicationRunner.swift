@@ -91,7 +91,7 @@ internal extension ApplicationRunner {
     internal final func serialDispatch(action: ActionType) {
         switch (action, navigationState) {
             
-        case (.dismissNavigator(.none), .some(let navigationState)):
+        case (.dismissNavigator(let thenSend), .some(let navigationState)):
             if let nextNavigationState = navigationState.dismissCurrentNavigator() {
                 renderer?.dismissCurrentNavigator {
                     self.dispatchQueue.sync {
@@ -100,25 +100,19 @@ internal extension ApplicationRunner {
                             self.navigationState = nextNavigationState
                             
                             self.render(view: view)
+                            
+                            switch (thenSend) {
+                            case .some(let action) :
+                                self.dispatch(action: action)
+                            case .none:
+                                break;
+                            }
                         }
                     }
                 }
             } else {
                 log("Cannot dismiss root navigator")
             }
-            
-        case (.dismissNavigator(.some(let action)), .some(let navigationState)):
-            if let nextNavigationState = navigationState.dismissCurrentNavigator() {
-                renderer?.dismissCurrentNavigator {
-                    self.dispatchQueue.sync {
-                        self.navigationState = nextNavigationState
-                        self.dispatch(action: action)
-                    }
-                }
-            } else {
-                log("Cannot dismiss root navigator")
-            }
-            
             
         case (.navigateToPreviousRoute(let performTransition), .some(let navigationState)):
             if let previousRoute = navigationState.currentRoute.previous {
