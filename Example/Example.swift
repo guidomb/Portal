@@ -51,6 +51,7 @@ enum Route: PortalApplication.Route {
     case root
     case modal
     case detail
+    case landscape
     
     var previous: Route? {
         switch self {
@@ -59,6 +60,8 @@ enum Route: PortalApplication.Route {
         case .detail:
             return .root
         case .modal:
+            return .root
+        case .landscape:
             return .root
         }
     }
@@ -72,6 +75,7 @@ enum State {
     case replacedContent
     case detailedScreen(counter: UInt)
     case modalScreen(counter: UInt)
+    case landscapeScreen
     
 }
 
@@ -148,6 +152,9 @@ final class ExampleApplication: PortalApplication.Application {
         case (.started, .routeChanged(.detail)):
             return (.detailedScreen(counter: 0), .none)
             
+        case (.started, .routeChanged(.landscape)):
+            return (.landscapeScreen, .none)
+            
         case (.started, .tick(let date)):
             return (.started(date: date, showAlert: false), .none)
             
@@ -168,6 +175,9 @@ final class ExampleApplication: PortalApplication.Application {
             
         case (.modalScreen(let count), .increment):
             return (.modalScreen(counter: count + 1), .none)
+            
+        case (.landscapeScreen, .routeChanged(.root)):
+            return (.started(date: .none, showAlert: false), .none)
         
         case (.started(let date, _), .pong(let text)):
             print("PONG -> \(text)")
@@ -230,6 +240,14 @@ final class ExampleApplication: PortalApplication.Application {
                             onTap: .navigate(to: .detail),
                             style: buttonStyleSheet { base, button in
                                 base.backgroundColor = .blue
+                                button.textColor = .white
+                            }
+                        ),
+                        button(
+                            text: "Present modal landscape",
+                            onTap: .navigate(to: .landscape),
+                            style: buttonStyleSheet { base, button in
+                                base.backgroundColor = .green
                                 button.textColor = .white
                             }
                         ),
@@ -360,6 +378,34 @@ final class ExampleApplication: PortalApplication.Application {
                 )
             )
             
+        case .landscapeScreen:
+            let modalButtonStyleSheet = buttonStyleSheet { base, button in
+                base.backgroundColor = .green
+                button.textColor = .white
+            }
+            return View(
+                navigator: .modal,
+                root: .stack(exampleNavigationBar(title: "Landscape")),
+                orientation: .landscape,
+                component: container(
+                    children: [
+                        button(
+                            text: "Close",
+                            onTap: .dismissNavigator(thenSend: .none),
+                            style: modalButtonStyleSheet
+                        )
+                    ],
+                    style: styleSheet() {
+                        $0.backgroundColor = .red
+                    },
+                    layout: layout() {
+                        $0.flex = flex() {
+                            $0.grow = .one
+                        }
+                    }
+                )
+            )
+            
         default:
             return View(
                 navigator: .main,
@@ -473,6 +519,11 @@ final class ExampleSerializer: StatePersistorSerializer {
         case .modalScreen:
             name = "modalScreen"
             properties = .none
+        
+        case .landscapeScreen:
+            name = "landscapeScreen"
+            properties = .none
+            
         }
         
         let json: [String: Any?] = ["name": name, "properties": properties]
@@ -494,6 +545,7 @@ final class ExampleSerializer: StatePersistorSerializer {
             case .root: value = 0
             case .modal: value = 1
             case .detail: value = 2
+            case .landscape: value = 3
             }
             json = ["routeChanged": value]
         case .increment:
@@ -541,6 +593,9 @@ final class ExampleSerializer: StatePersistorSerializer {
             
         case .some("modalScreen"):
             return .modalScreen(counter: 0)
+            
+        case .some("landscapeScreen"):
+            return .landscapeScreen
             
         default:
             return .none
