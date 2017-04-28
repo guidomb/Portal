@@ -83,19 +83,21 @@ public struct View<RouteType: Route, MessageType, NavigatorType: Navigator> {
     public let navigator: NavigatorType
     public let root: RootComponent<ActionType>
     public let content: Content
-
-    public init(navigator: NavigatorType, root: RootComponent<ActionType>, component: Component<ActionType>) {
-        self.init(navigator: navigator, root: root, content: .component(component))
+    public var orientation: SupportedOrientations = .all
+    
+    public init(navigator: NavigatorType, root: RootComponent<ActionType>, orientation: SupportedOrientations = .portrait, component: Component<ActionType>) {
+        self.init(navigator: navigator, root: root, orientation: orientation, content: .component(component))
     }
     
-    public init(navigator: NavigatorType, root: RootComponent<ActionType>, alert properties: AlertProperties<ActionType>) {
-        self.init(navigator: navigator, root: root, content: .alert(properties: properties))
+    public init(navigator: NavigatorType, root: RootComponent<ActionType>,  orientation: SupportedOrientations = .portrait, alert properties: AlertProperties<ActionType>) {
+        self.init(navigator: navigator, root: root, orientation: orientation, content: .alert(properties: properties))
     }
     
-    internal init(navigator: NavigatorType, root: RootComponent<ActionType>, content: Content) {
+    internal init(navigator: NavigatorType, root: RootComponent<ActionType>, orientation: SupportedOrientations = .portrait, content: Content) {
         self.navigator = navigator
         self.root = root
         self.content = content
+        self.orientation = orientation
     }
     
 }
@@ -149,9 +151,9 @@ public protocol ApplicationRenderer {
     associatedtype MessageType
     associatedtype RouteType: Route
         
-    func render(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>)
+    func render(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, orientation: SupportedOrientations)
     
-    func present(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, modally: Bool)
+    func present(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, modally: Bool, orientation: SupportedOrientations)
     
     func present(alert: AlertProperties<Action<RouteType, MessageType>>)
     

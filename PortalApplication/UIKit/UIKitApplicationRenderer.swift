@@ -38,13 +38,13 @@ public final class UIKitApplicationRenderer<
         componentManager.mailbox.subscribe(subscriber: dispatch)
     }
     
-    public func render(component: Component<ActionType>, with root: RootComponent<ActionType>) {
-        executeInMainThread { _ = self.componentManager.render(component: component, with: root) }
+    public func render(component: Component<ActionType>, with root: RootComponent<ActionType>, orientation: SupportedOrientations) {
+        executeInMainThread { _ = self.componentManager.render(component: component, with: root, orientation: orientation) }
     }
     
-    public func present(component: Component<ActionType>, with root: RootComponent<ActionType>, modally: Bool) {
+    public func present(component: Component<ActionType>, with root: RootComponent<ActionType>, modally: Bool, orientation: SupportedOrientations) {
         executeInMainThread {
-            self.componentManager.present(component: component, with: root, modally: modally)
+            self.componentManager.present(component: component, with: root, modally: modally, orientation: orientation)
         }
     }
     
@@ -58,6 +58,7 @@ public final class UIKitApplicationRenderer<
                 })
             }
             self.visibleRenderableController?.present(alert, animated: true, completion: nil)
+
         }
     }
     

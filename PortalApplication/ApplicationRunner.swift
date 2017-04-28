@@ -176,7 +176,7 @@ fileprivate extension ApplicationRunner {
             self.renderer?.present(alert: properties)
             
         case .component(let component):
-            self.renderer?.render(component: component, with: view.root)
+            self.renderer?.render(component: component, with: view.root, orientation: view.orientation)
             
         }
     }
@@ -188,7 +188,7 @@ fileprivate extension ApplicationRunner {
             self.renderer?.present(alert: properties)
             
         case .component(let component):
-            self.renderer?.present(component: component, with: view.root, modally: modally)
+            self.renderer?.present(component: component, with: view.root, modally: modally, orientation: view.orientation)
             
         }
     }
