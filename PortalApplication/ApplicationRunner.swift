@@ -91,7 +91,7 @@ internal extension ApplicationRunner {
     internal final func serialDispatch(action: ActionType) {
         switch (action, navigationState) {
             
-        case (.dismissNavigator(let thenSend), .some(let navigationState)):
+        case (.dismissNavigator(let maybeAction), .some(let navigationState)):
             if let nextNavigationState = navigationState.dismissCurrentNavigator() {
                 renderer?.dismissCurrentNavigator {
                     self.dispatchQueue.sync {
@@ -101,11 +101,8 @@ internal extension ApplicationRunner {
                             
                             self.render(view: view)
                             
-                            switch (thenSend) {
-                            case .some(let action) :
+                            if let action = maybeAction {
                                 self.dispatch(action: action)
-                            case .none:
-                                break;
                             }
                         }
                     }
