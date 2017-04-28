@@ -71,7 +71,7 @@ enum State {
     case started(date: Date?, showAlert: Bool)
     case replacedContent
     case detailedScreen(counter: UInt)
-    case modalScreen
+    case modalScreen(counter: UInt)
     
 }
 
@@ -105,9 +105,7 @@ final class ExampleCommandExecutor: PortalApplication.CommandExecutor {
         switch command {
             
         case .loadStoredState:
-            if let state = loadState() {
-                dispatch(.sendMessage(.stateLoaded(state)))
-            }
+            dispatch(.sendMessage(.stateLoaded(loadState())))
             
         }
     }
@@ -145,7 +143,7 @@ final class ExampleApplication: PortalApplication.Application {
             return (.replacedContent, .none)
             
         case (.started, .routeChanged(.modal)):
-            return (.modalScreen, .none)
+            return (.modalScreen(counter: 0), .none)
             
         case (.started, .routeChanged(.detail)):
             return (.detailedScreen(counter: 0), .none)
@@ -165,8 +163,11 @@ final class ExampleApplication: PortalApplication.Application {
         case (.modalScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
             
-        case (.modalScreen, .routeChanged(.detail)):
-            return (.detailedScreen(counter: 10), .none)
+        case (.modalScreen(let counter), .routeChanged(.detail)):
+            return (.detailedScreen(counter: counter + 5), .none)
+            
+        case (.modalScreen(let count), .increment):
+            return (.modalScreen(counter: count + 1), .none)
         
         case (.started(let date, _), .pong(let text)):
             print("PONG -> \(text)")
@@ -320,29 +321,33 @@ final class ExampleApplication: PortalApplication.Application {
                 )
             )
             
-        case .modalScreen:
+        case .modalScreen(let counter):
+            let modalButtonStyleSheet = buttonStyleSheet { base, button in
+                base.backgroundColor = .green
+                button.textColor = .white
+            }
             return View(
                 navigator: .modal,
-                root: .simple,
+                root: .stack(exampleNavigationBar(title: "Modal")),
                 component: container(
                     children: [
                         label(text: "Modal screen"),
                         button(
                             text: "Close and present detail",
                             onTap: .dismissNavigator(thenSend: .navigate(to: .detail)),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .green
-                                button.textColor = .white
-                            }
+                            style: modalButtonStyleSheet
                         ),
                         button(
                             text: "Close",
                             onTap: .dismissNavigator(thenSend: .none),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .green
-                                button.textColor = .white
-                            }
-                        )
+                            style: modalButtonStyleSheet
+                        ),
+                        label(text: "Counter \(counter)"),
+                        button(
+                            text: "Increment!",
+                            onTap: .sendMessage(.increment),
+                            style: modalButtonStyleSheet
+                        ),
                     ],
                     style: styleSheet() {
                         $0.backgroundColor = .red
@@ -535,7 +540,7 @@ final class ExampleSerializer: StatePersistorSerializer {
             }
             
         case .some("modalScreen"):
-            return .modalScreen
+            return .modalScreen(counter: 0)
             
         default:
             return .none

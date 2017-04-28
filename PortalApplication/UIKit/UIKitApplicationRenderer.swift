@@ -29,7 +29,6 @@ public final class UIKitApplicationRenderer<
         }
     }
     
-    fileprivate var currentModal: UIViewController? = .none
     fileprivate var componentManager: UIKitComponentManager<ActionType, CustomComponentRendererType>
     fileprivate let dispatch: Dispatcher
 
@@ -45,15 +44,7 @@ public final class UIKitApplicationRenderer<
     
     public func present(component: Component<ActionType>, with root: RootComponent<ActionType>, modally: Bool) {
         executeInMainThread {
-            if modally {
-                self.currentModal?.dismiss(animated: false, completion: nil)
-            }
-            
-            let presented = self.componentManager.present(component: component, with: root, modally: modally)
-            
-            if modally {
-                self.currentModal = presented
-            }
+            self.componentManager.present(component: component, with: root, modally: modally)
         }
     }
     
@@ -66,18 +57,13 @@ public final class UIKitApplicationRenderer<
                     self?.dispatch(action)
                 })
             }
-            self.visibleController?.present(alert, animated: true, completion: nil)
+            self.visibleRenderableController?.present(alert, animated: true, completion: nil)
         }
     }
     
     public func dismissCurrentNavigator(completion: @escaping () -> Void) {
-        guard let currentModal = self.currentModal else { return }
-        
         executeInMainThread {
-            currentModal.dismiss(animated: true) {
-                self.currentModal = .none
-                completion()
-            }
+            self.componentManager.dismissCurrentModal(completion: completion)
         }
     }
     
@@ -93,12 +79,8 @@ public final class UIKitApplicationRenderer<
 
 fileprivate extension UIKitApplicationRenderer {
     
-    fileprivate var visibleController: UIViewController? {
-        if let modal = self.currentModal {
-            return modal
-        } else {
-            return componentManager.rootController?.renderableController
-        }
+    fileprivate var visibleRenderableController: UIViewController? {
+        return componentManager.visibleController?.renderableController
     }
     
     fileprivate func executeInMainThread(code: @escaping () -> Void) {
@@ -110,19 +92,11 @@ fileprivate extension UIKitApplicationRenderer {
     }
     
     fileprivate func currentNavigationController() -> PortalNavigationController<ActionType, CustomComponentRendererType>? {
-        if let currentModal = self.currentModal as? PortalNavigationController<ActionType, CustomComponentRendererType> {
-            return currentModal
-        } else if let rootController = componentManager.rootController {
-            switch rootController {
-                
-            case .navigationController(let navigationController):
-                return navigationController
-                
-            default:
-                return .none
-            }
+        if case .some(.navigationController(let navigationController)) = componentManager.visibleController {
+            return navigationController
+        } else {
+            return .none
         }
-        return .none
     }
     
 }

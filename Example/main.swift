@@ -22,11 +22,11 @@ let context = UIKitApplicationContext(
 )
 
 
-context.registerMiddleware(statePersistor)
+//context.registerMiddleware(statePersistor)
 context.registerMiddleware(TimeLogger { print("M - Logger: \($0)") })
 
 // Uncomment this line to clear all persisted state
-//statePersistor.clear()
+statePersistor.clear()
 
 PortalUIApplication.start(applicationContext: context) { message in
     switch message {
