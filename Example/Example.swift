@@ -34,6 +34,7 @@ enum Navigator: PortalApplication.Navigator {
     
     case main
     case modal
+    case other
     
     var baseRoute: Route {
         switch self {
@@ -41,6 +42,8 @@ enum Navigator: PortalApplication.Navigator {
             return .root
         case .modal:
             return .modal
+        case .other:
+            return .root
         }
     }
     
@@ -175,6 +178,9 @@ final class ExampleApplication: PortalApplication.Application {
             
         case (.modalScreen(let count), .increment):
             return (.modalScreen(counter: count + 1), .none)
+            
+        case (.modalScreen, .routeChanged(.landscape)):
+            return (.landscapeScreen, .none)
             
         case (.landscapeScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
@@ -366,6 +372,14 @@ final class ExampleApplication: PortalApplication.Application {
                             onTap: .sendMessage(.increment),
                             style: modalButtonStyleSheet
                         ),
+                        button(
+                            text: "Present modal landscape",
+                            onTap: .navigate(to: .landscape),
+                            style: buttonStyleSheet { base, button in
+                                base.backgroundColor = .green
+                                button.textColor = .white
+                            }
+                        ),
                     ],
                     style: styleSheet() {
                         $0.backgroundColor = .red
@@ -384,7 +398,7 @@ final class ExampleApplication: PortalApplication.Application {
                 button.textColor = .white
             }
             return View(
-                navigator: .modal,
+                navigator: .other,
                 root: .stack(exampleNavigationBar(title: "Landscape")),
                 orientation: .landscape,
                 component: container(
