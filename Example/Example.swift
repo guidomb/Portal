@@ -399,7 +399,7 @@ final class ExampleApplication: PortalApplication.Application {
             }
             return View(
                 navigator: .other,
-                root: .stack(exampleNavigationBar(title: "Landscape")),
+                root: .simple,
                 orientation: .landscape,
                 component: container(
                     children: [
