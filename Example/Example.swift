@@ -170,6 +170,9 @@ final class ExampleApplication: PortalApplication.Application {
         case (.detailedScreen(let counter), .increment):
             return (.detailedScreen(counter: counter + 1), .none)
             
+        case (.detailedScreen(let counter), .ping(_)):
+            return (.detailedScreen(counter: counter + 1), .none)
+            
         case (.modalScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
             

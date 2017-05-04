@@ -95,16 +95,7 @@ internal extension ApplicationRunner {
             if let nextNavigationState = navigationState.dismissCurrentNavigator() {
                 renderer?.dismissCurrentNavigator {
                     self.dispatchQueue.sync {
-                        self.handleRouteChange(from: navigationState.currentRoute, to: nextNavigationState.currentRoute) { view, nextState in
-                            self.currentState = nextState
-                            self.navigationState = nextNavigationState
-                            
-                            self.render(view: view)
-                            
-                            if let action = maybeAction {
-                                self.dispatch(action: action)
-                            }
-                        }
+                        self.handleNavigatorDismissal(from: navigationState, to: nextNavigationState, action: maybeAction)
                     }
                 }
             } else {
@@ -232,6 +223,29 @@ fileprivate extension ApplicationRunner {
         }
         
         return recusivelyApply(currentState, message, .none, middlewares.reversed())
+    }
+    
+    fileprivate func handleNavigatorDismissal(from currentNavigationState: NavigationStateType, to nextNavigationState: NavigationStateType, action: ActionType?) {
+        // If the action that needs to be dispatched after the
+        // navigator dismissal is a route change request, then we
+        // don't make the application's update handle the intermidate
+        // transition between the final route and the next navigation
+        // state's route.
+        if case .some(.navigate(let nextRoute)) = action {
+            self.navigationState = nextNavigationState
+            self.dispatch(action: .navigate(to: nextRoute))
+        } else {
+            self.handleRouteChange(from: currentNavigationState.currentRoute, to: nextNavigationState.currentRoute) { view, nextState in
+                self.currentState = nextState
+                self.navigationState = nextNavigationState
+                
+                self.render(view: view)
+                
+                if let action = action {
+                    self.dispatch(action: action)
+                }
+            }
+        }
     }
     
 }
