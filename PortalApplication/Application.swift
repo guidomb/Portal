@@ -153,9 +153,9 @@ public protocol ApplicationRenderer {
         
     func render(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, orientation: SupportedOrientations)
     
-    func present(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, modally: Bool, orientation: SupportedOrientations)
+    func present(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, modally: Bool, orientation: SupportedOrientations, completion: @escaping () -> Void)
     
-    func present(alert: AlertProperties<Action<RouteType, MessageType>>)
+    func present(alert: AlertProperties<Action<RouteType, MessageType>>, completion: @escaping () -> Void)
     
     func dismissCurrentNavigator(completion: @escaping () -> Void)
     

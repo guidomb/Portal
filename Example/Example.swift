@@ -78,7 +78,7 @@ enum State {
     case replacedContent
     case detailedScreen(counter: UInt)
     case modalScreen(counter: UInt)
-    case landscapeScreen
+    case landscapeScreen(text: String)
     
 }
 
@@ -156,7 +156,7 @@ final class ExampleApplication: PortalApplication.Application {
             return (.detailedScreen(counter: 0), .none)
             
         case (.started, .routeChanged(.landscape)):
-            return (.landscapeScreen, .none)
+            return (.landscapeScreen(text: "Hello!"), .none)
             
         case (.started, .tick(let date)):
             return (.started(date: date, showAlert: false), .none)
@@ -183,10 +183,13 @@ final class ExampleApplication: PortalApplication.Application {
             return (.modalScreen(counter: count + 1), .none)
             
         case (.modalScreen, .routeChanged(.landscape)):
-            return (.landscapeScreen, .none)
+            return (.landscapeScreen(text: "Modal after modal!"), .none)
             
         case (.landscapeScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
+            
+        case (.landscapeScreen, .tick(_)):
+            return (.landscapeScreen(text: "Tick tock!"), .none)
         
         case (.started(let date, _), .pong(let text)):
             print("PONG -> \(text)")
@@ -395,7 +398,7 @@ final class ExampleApplication: PortalApplication.Application {
                 )
             )
             
-        case .landscapeScreen:
+        case .landscapeScreen(let text):
             let modalButtonStyleSheet = buttonStyleSheet { base, button in
                 base.backgroundColor = .green
                 button.textColor = .white
@@ -410,7 +413,8 @@ final class ExampleApplication: PortalApplication.Application {
                             text: "Close",
                             onTap: .dismissNavigator(thenSend: .none),
                             style: modalButtonStyleSheet
-                        )
+                        ),
+                        label(text: text)
                     ],
                     style: styleSheet() {
                         $0.backgroundColor = .red
@@ -453,6 +457,14 @@ final class ExampleApplication: PortalApplication.Application {
             return [
                 .timer(.only(fire: 3, every: 1, unit: .second, tag: "Main") { .sendMessage(.tick($0)) }),
                 .timer(.only(fire: 10, every: 1, unit: .second, tag: "Detail") { .sendMessage(.ping($0)) })
+            ]
+        case .landscapeScreen:
+            return [
+                .timer(.only(fire: 1, every: 1, unit: .millisecond, tag: "BUG!") { .sendMessage(.tick($0)) })
+            ]
+        case .modalScreen:
+            return [
+                .timer(.only(fire: 10, every: 1, unit: .second, tag: "BUG2!") { _ in .sendMessage(.increment) })
             ]
         default:
             return []
@@ -612,7 +624,7 @@ final class ExampleSerializer: StatePersistorSerializer {
             return .modalScreen(counter: 0)
             
         case .some("landscapeScreen"):
-            return .landscapeScreen
+            return .landscapeScreen(text: "Came from the other side!")
             
         default:
             return .none

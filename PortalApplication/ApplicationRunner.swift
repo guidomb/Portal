@@ -46,6 +46,7 @@ public class ApplicationRunner<
     public typealias DispatcherFactory = (@escaping (ActionType) -> Void) -> ApplicationRendererType
 
     fileprivate typealias NavigationStateType = NavigationState<RouteType, NavigatorType>
+    fileprivate typealias Operation = () -> Void
     
     public var log: (String) -> Void = { print($0) }
     
@@ -56,7 +57,7 @@ public class ApplicationRunner<
     fileprivate var navigationState: NavigationStateType?
     fileprivate var middlewares: [Middleware]
     fileprivate var subscriptionsManager: SubscriptionsManager<RouteType, MessageType, CustomSubscriptionManager>?
-    fileprivate let dispatchQueue = DispatchQueue(label: "com.syrmo.Portal.ApplicationQueue")
+    fileprivate let dispatchQueue = ExecutionQueue()
     
     public init(
         application: ApplicationType,
@@ -73,7 +74,7 @@ public class ApplicationRunner<
     }
     
     public final func dispatch(action: ActionType) {
-        dispatchQueue.async { self.serialDispatch(action: action) }
+        dispatchQueue.enqueue { self.serialDispatch(action: action) }
     }
     
     public final func execute(command: CommandType) {
@@ -93,10 +94,22 @@ internal extension ApplicationRunner {
             
         case (.dismissNavigator(let maybeAction), .some(let navigationState)):
             if let nextNavigationState = navigationState.dismissCurrentNavigator() {
-                renderer?.dismissCurrentNavigator {
-                    self.dispatchQueue.sync {
-                        self.handleNavigatorDismissal(from: navigationState, to: nextNavigationState, action: maybeAction)
-                    }
+                // When dismissing a navigator we need to stop
+                // processing messages until the view transition
+                // has been executed to avoid modifying the view
+                // in the middle of an animation / transition.
+                //
+                // By using the `performTransition` method
+                // we are wrapping the method that performs the
+                // view transition inside a scope that suspend / resumes
+                // operations enqueued in the dispatch queue.
+                //
+                // In this case we need to make sure that `handleNavigatorDismissal`
+                // is executed before any other operation that could be waiting for
+                // execution inside the dispatch queue.
+                let dismissCurrentNavigator = performTransition(renderer?.dismissCurrentNavigator)
+                dismissCurrentNavigator {
+                    self.handleNavigatorDismissal(from: navigationState, to: nextNavigationState, action: maybeAction)
                 }
             } else {
                 log("Cannot dismiss root navigator")
@@ -114,8 +127,31 @@ internal extension ApplicationRunner {
                 }
                 
                 if performTransition {
-                    renderer?.rewindCurrentNavigator { self.dispatchQueue.sync(execute: handleChangeToPreviousRoute) }
+                    // When rewinding a navigator we need to stop
+                    // processing messages until the view transition
+                    // has been executed to avoid modifying the view
+                    // in the middle of an animation / transition.
+                    //
+                    // By using the `performTransition` method
+                    // we are wrapping the method that performs the
+                    // view transition inside a scope that suspend / resumes
+                    // operations enqueued in the dispatch queue.
+                    //
+                    // In this case we need to make sure that `rewindCurrentNavigator`
+                    // is executed before any other operation that could be waiting for
+                    // execution inside the dispatch queue.
+                    let rewindCurrentNavigator = self.performTransition(renderer?.rewindCurrentNavigator)
+                    rewindCurrentNavigator(handleChangeToPreviousRoute)
                 } else {
+                    // If we are not perfoming the transition we can assume that `navigateToPreviousRoute`
+                    // was dispatched by PortalNavigationController when the back button was pressed while
+                    // the pop transition is being executed.
+                    //
+                    // Because there is no way to know in advance that a controller will be poped (by the time
+                    // UIKit notifies that a controller will be presented the animation is already in progress) we 
+                    // cannot avoid handling messages that may want to update a view that is being poped. But it is
+                    // not a big issue because by the time this message is handled the transtion was executed and
+                    // view update executed during the transition are ignored by the renderer.
                     handleChangeToPreviousRoute()
                 }
             } else {
@@ -164,7 +200,18 @@ fileprivate extension ApplicationRunner {
         switch view.content {
             
         case .alert(let properties):
-            self.renderer?.present(alert: properties)
+            // When presenting an alert we need to stop
+            // processing messages until the view transition
+            // has been executed to avoid modifying the view
+            // in the middle of an animation / transition.
+            //
+            // By using the `executeRendererTransition` method
+            // we are wrapping the method that performs the
+            // view transition inside a scope that suspend / resumes
+            // operations enqueued in the dispatch queue.
+            executeRendererTransition { renderer, completion in
+                renderer.present(alert: properties, completion: completion)
+            }
             
         case .component(let component):
             self.renderer?.render(component: component, with: view.root, orientation: view.orientation)
@@ -173,13 +220,32 @@ fileprivate extension ApplicationRunner {
     }
     
     fileprivate func present(view: ViewType, modally: Bool) {
+        // When presenting a new view we need to stop
+        // processing messages until the view transition
+        // has been executed to avoid modifying the view
+        // in the middle of an animation / transition.
+        //
+        // By using the `executeRendererTransition` method
+        // we are wrapping the method that performs the
+        // view transition inside a scope that suspend / resumes
+        // operations enqueued in the dispatch queue.
         switch view.content {
             
         case .alert(let properties):
-            self.renderer?.present(alert: properties)
+            executeRendererTransition { renderer, completion in
+                renderer.present(alert: properties, completion: completion)
+            }
             
         case .component(let component):
-            self.renderer?.present(component: component, with: view.root, modally: modally, orientation: view.orientation)
+            executeRendererTransition { renderer, completion in
+                renderer.present(
+                    component: component,
+                    with: view.root,
+                    modally: modally,
+                    orientation: view.orientation,
+                    completion: completion
+                )
+            }
             
         }
     }
@@ -248,6 +314,26 @@ fileprivate extension ApplicationRunner {
         }
     }
     
+    fileprivate func executeRendererTransition(_ transition: (ApplicationRendererType, @escaping Operation) -> Void) {
+        guard let renderer = self.renderer else { return }
+        
+        dispatchQueue.suspend()
+        transition(renderer, {
+            self.dispatchQueue.resume()
+        })
+    }
+    
+    fileprivate func performTransition(_ maybeTransition: ((@escaping Operation) -> Void)?) -> (@escaping Operation) -> Void {
+        guard let transition = maybeTransition else { return { _ in } }
+        
+        return { operation in
+            self.dispatchQueue.suspend()
+            transition({
+                self.dispatchQueue.resume(with: operation)
+            })
+        }
+    }
+    
 }
 
 fileprivate struct NavigationState<RouteType: Route, NavigatorType: Navigator> {
@@ -299,3 +385,30 @@ fileprivate struct NavigationState<RouteType: Route, NavigatorType: Navigator> {
         return nextState
     }
 }
+
+fileprivate final class ExecutionQueue {
+    
+    private let queue = DispatchQueue(label: "me.guidomb.Portal.ApplicationQueue")
+    private var outOfBandOperation: (() -> Void)? = .none
+    
+    func suspend() {
+        queue.suspend()
+    }
+    
+    func resume(with outOfBandOperation: (() -> Void)? = .none) {
+        self.outOfBandOperation = outOfBandOperation
+        queue.resume()
+    }
+    
+    func enqueue(operation: @escaping () -> Void) {
+        queue.async {
+            if let oobo = self.outOfBandOperation {
+                oobo()
+                self.outOfBandOperation = .none
+            }
+            operation()
+        }
+    }
+    
+}
+

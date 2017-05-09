@@ -42,13 +42,13 @@ public final class UIKitApplicationRenderer<
         executeInMainThread { _ = self.componentManager.render(component: component, with: root, orientation: orientation) }
     }
     
-    public func present(component: Component<ActionType>, with root: RootComponent<ActionType>, modally: Bool, orientation: SupportedOrientations) {
+    public func present(component: Component<ActionType>, with root: RootComponent<ActionType>, modally: Bool, orientation: SupportedOrientations, completion: @escaping () -> Void) {
         executeInMainThread {
-            self.componentManager.present(component: component, with: root, modally: modally, orientation: orientation)
+            self.componentManager.present(component: component, with: root, modally: modally, orientation: orientation, completion: completion)
         }
     }
     
-    public func present(alert properties: AlertProperties<ActionType>) {
+    public func present(alert properties: AlertProperties<ActionType>, completion: @escaping () -> Void) {
         executeInMainThread {
             let alert = UIAlertController(title: properties.title, message: properties.text, preferredStyle: .alert)
             for button in properties.buttons {
@@ -57,7 +57,7 @@ public final class UIKitApplicationRenderer<
                     self?.dispatch(action)
                 })
             }
-            self.visibleRenderableController?.present(alert, animated: true, completion: nil)
+            self.visibleRenderableController?.present(alert, animated: true, completion: completion)
 
         }
     }
