@@ -503,8 +503,8 @@ final class ExampleApplication: PortalApplication.Application {
 
 final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     
-    func handleInitialization(of parentController: UIViewController, forComponent componentIdentifier: String) {
-        print("Handle initialization of parent controller for component '\(componentIdentifier)'")
+    init(container: UIViewController) {
+        print("Creating custom renderer")
     }
     
     func renderComponent(withIdentifier identifier: String, inside view: UIView, dispatcher: (ExampleApplication.Action) -> Void) {

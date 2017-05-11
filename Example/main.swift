@@ -18,7 +18,7 @@ let context = UIKitApplicationContext(
     application: application,
     commandExecutor: commandExecutor,
     subscriptionManager: ExampleSubscriptionManager(),
-    customComponentRenderer: CustomComponentRenderer()
+    rendererFactory: CustomComponentRenderer.init
 )
 
 

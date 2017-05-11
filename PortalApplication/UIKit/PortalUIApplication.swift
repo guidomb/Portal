@@ -48,6 +48,8 @@ public class UIKitApplicationContext<
     CustomSubscriptionManager.MessageType       == MessageType,
     CustomComponentRendererType.MessageType     == Action<RouteType, MessageType>  {
 
+    public typealias CustomComponentRendererFactory = (UIViewController) -> CustomComponentRendererType
+    
     public typealias Runner = ApplicationRunner<
         StateType,
         MessageType,
@@ -64,18 +66,18 @@ public class UIKitApplicationContext<
     fileprivate let application: ApplicationType
     fileprivate let commandExecutor: CommandExecutorType
     fileprivate let subscriptionManager: CustomSubscriptionManager
-    fileprivate let customComponentRenderer: CustomComponentRendererType
+    fileprivate let rendererFactory: CustomComponentRendererFactory
     fileprivate var middlewares: [Runner.Middleware] = []
     
     public init(
         application: ApplicationType,
         commandExecutor: CommandExecutorType,
         subscriptionManager: CustomSubscriptionManager,
-        customComponentRenderer: CustomComponentRendererType) {
+        rendererFactory: @escaping CustomComponentRendererFactory) {
         self.application = application
         self.commandExecutor = commandExecutor
         self.subscriptionManager = subscriptionManager
-        self.customComponentRenderer = customComponentRenderer
+        self.rendererFactory = rendererFactory
     }
     
     public func runner(for window: UIWindow) -> (@escaping (UIApplicationMessage) -> MessageType?) -> (UIApplicationMessage) -> Void {
@@ -103,7 +105,7 @@ extension UIKitApplicationContext {
     
     fileprivate func createApplicationRunner(window: UIWindow) -> Runner {
         return Runner(application: application, commandExecutor: commandExecutor, subscriptionManager: subscriptionManager) { dispatch in
-            UIKitApplicationRenderer(window: window, customComponentRenderer: customComponentRenderer, dispatch: dispatch)
+            UIKitApplicationRenderer(window: window, rendererFactory: self.rendererFactory, dispatch: dispatch)
         }
     }
     

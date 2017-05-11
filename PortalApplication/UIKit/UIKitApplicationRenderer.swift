@@ -19,6 +19,7 @@ public final class UIKitApplicationRenderer<
     
     public typealias ActionType = Action<RouteType, MessageType>
     public typealias Dispatcher = (Action<RouteType, MessageType>) -> Void
+    public typealias CustomComponentRendererFactory = (UIViewController) -> CustomComponentRendererType
     
     public var isDebugModeEnabled: Bool {
         set {
@@ -32,9 +33,9 @@ public final class UIKitApplicationRenderer<
     fileprivate var componentManager: UIKitComponentManager<ActionType, CustomComponentRendererType>
     fileprivate let dispatch: Dispatcher
 
-    public init(window: UIWindow, customComponentRenderer: CustomComponentRendererType, dispatch: @escaping Dispatcher) {
+    public init(window: UIWindow, rendererFactory: @escaping CustomComponentRendererFactory, dispatch: @escaping Dispatcher) {
         self.dispatch = dispatch
-        componentManager = UIKitComponentManager(window: window, customComponentRenderer: customComponentRenderer)
+        componentManager = UIKitComponentManager(window: window, rendererFactory: rendererFactory)
         componentManager.mailbox.subscribe(subscriber: dispatch)
     }
     
