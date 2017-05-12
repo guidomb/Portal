@@ -19,7 +19,7 @@ public final class UIKitApplicationRenderer<
     
     public typealias ActionType = Action<RouteType, MessageType>
     public typealias Dispatcher = (Action<RouteType, MessageType>) -> Void
-    public typealias CustomComponentRendererFactory = (UIViewController) -> CustomComponentRendererType
+    public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     
     public var isDebugModeEnabled: Bool {
         set {

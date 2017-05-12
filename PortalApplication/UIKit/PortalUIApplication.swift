@@ -48,7 +48,7 @@ public class UIKitApplicationContext<
     CustomSubscriptionManager.MessageType       == MessageType,
     CustomComponentRendererType.MessageType     == Action<RouteType, MessageType>  {
 
-    public typealias CustomComponentRendererFactory = (UIViewController) -> CustomComponentRendererType
+    public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     
     public typealias Runner = ApplicationRunner<
         StateType,

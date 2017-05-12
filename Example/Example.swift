@@ -340,7 +340,11 @@ final class ExampleApplication: PortalApplication.Application {
                         button(text: "Go back!", onTap: .navigateToPreviousRoute(preformTransition: true)),
                         label(text: "Count \(counter)"),
                         button(text: "Increment!", onTap: .sendMessage(.increment)),
-                        label(text: "Detail screen!")
+                        label(text: "Detail screen!"),
+                        myCustomComponent(layout: layout() {
+                            $0.width = Dimension(value: 100)
+                            $0.height = Dimension(value: 100)
+                        })
                     ],
                     style: styleSheet() {
                         $0.backgroundColor = .green
@@ -467,10 +471,10 @@ final class ExampleApplication: PortalApplication.Application {
                 .timer(.only(fire: 3, every: 1, unit: .second, tag: "Main") { .sendMessage(.tick($0)) }),
                 .timer(.only(fire: 10, every: 1, unit: .second, tag: "Detail") { .sendMessage(.ping($0)) })
             ]
-//        case .landscapeScreen:
-//            return [
-//                .timer(.only(fire: 1, every: 1, unit: .millisecond, tag: "BUG!") { .sendMessage(.tick($0)) })
-//            ]
+        case .landscapeScreen:
+            return [
+                .timer(.only(fire: 1, every: 1, unit: .millisecond, tag: "BUG!") { .sendMessage(.tick($0)) })
+            ]
         case .modalScreen:
             return [
                 .timer(.only(fire: 10, every: 1, unit: .second, tag: "BUG2!") { _ in .sendMessage(.increment) })
@@ -503,8 +507,11 @@ final class ExampleApplication: PortalApplication.Application {
 
 final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     
-    init(container: UIViewController) {
+    private let container: ContainerController
+    
+    init(container: ContainerController) {
         print("Creating custom renderer")
+        self.container = container
     }
     
     func renderComponent(withIdentifier identifier: String, inside view: UIView, dispatcher: @escaping (ExampleApplication.Action) -> Void) {
@@ -515,6 +522,10 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
             view.addSubview(customView)
             customView.frame.origin = .zero
             customView.frame.size = view.frame.size
+        }
+        
+        container.registerDisposer(for: "MyCustomComponent") {
+            print("Disposing custom renderer container controller")
         }
     }
     
