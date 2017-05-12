@@ -507,7 +507,7 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
         print("Creating custom renderer")
     }
     
-    func renderComponent(withIdentifier identifier: String, inside view: UIView, dispatcher: (ExampleApplication.Action) -> Void) {
+    func renderComponent(withIdentifier identifier: String, inside view: UIView, dispatcher: @escaping (ExampleApplication.Action) -> Void) {
         guard identifier == "MyCustomComponent" else { return }
         
         let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
