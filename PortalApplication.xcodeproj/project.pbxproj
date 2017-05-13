@@ -23,6 +23,7 @@
 		9D7824151E92B9C8004455B1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D7824131E92B9C8004455B1 /* LaunchScreen.storyboard */; };
 		9D78241B1E92BA01004455B1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78241A1E92BA01004455B1 /* main.swift */; };
 		9D78241D1E92BA47004455B1 /* Example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D78241C1E92BA47004455B1 /* Example.swift */; };
+		9D8C844E1EC655600034C6BC /* CustomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C844D1EC655600034C6BC /* CustomView.swift */; };
 		9D93F2231E9D6EFB00B36914 /* CustomView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9D93F2211E9D67E700B36914 /* CustomView.xib */; };
 		9DBA4A061EA81CBE000DE6B7 /* StatePersistor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBA4A041EA81CBE000DE6B7 /* StatePersistor.swift */; };
 		9DBA4A071EA81CBE000DE6B7 /* TimeLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBA4A051EA81CBE000DE6B7 /* TimeLogger.swift */; };
@@ -83,6 +84,7 @@
 		9D7824161E92B9C8004455B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9D78241A1E92BA01004455B1 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		9D78241C1E92BA47004455B1 /* Example.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Example.swift; sourceTree = "<group>"; };
+		9D8C844D1EC655600034C6BC /* CustomView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomView.swift; sourceTree = "<group>"; };
 		9D93F2211E9D67E700B36914 /* CustomView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomView.xib; sourceTree = "<group>"; };
 		9DBA4A041EA81CBE000DE6B7 /* StatePersistor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatePersistor.swift; sourceTree = "<group>"; };
 		9DBA4A051EA81CBE000DE6B7 /* TimeLogger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeLogger.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				9D7824161E92B9C8004455B1 /* Info.plist */,
 				9D78241A1E92BA01004455B1 /* main.swift */,
 				9D78241C1E92BA47004455B1 /* Example.swift */,
+				9D8C844D1EC655600034C6BC /* CustomView.swift */,
 				9D93F2211E9D67E700B36914 /* CustomView.xib */,
 			);
 			path = Example;
@@ -410,6 +413,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D8C844E1EC655600034C6BC /* CustomView.swift in Sources */,
 				9D78241D1E92BA47004455B1 /* Example.swift in Sources */,
 				9D78241B1E92BA01004455B1 /* main.swift in Sources */,
 			);

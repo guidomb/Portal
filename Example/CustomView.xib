@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12118"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12120"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB">
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="CustomView" customModule="PortalApplicationExample" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -44,6 +44,11 @@
                 <constraint firstItem="zXs-E1-CUN" firstAttribute="top" secondItem="uEw-YW-0bv" secondAttribute="bottom" id="tGz-TI-nDy"/>
                 <constraint firstAttribute="trailing" secondItem="uEw-YW-0bv" secondAttribute="trailing" id="tJJ-L7-9Z5"/>
             </constraints>
+            <connections>
+                <outlet property="blueView" destination="uEw-YW-0bv" id="9jQ-0Y-vBZ"/>
+                <outlet property="greenView" destination="zXs-E1-CUN" id="cWE-Sc-7zb"/>
+                <outlet property="redView" destination="qJr-Aa-5Mq" id="uIO-TB-dvb"/>
+            </connections>
             <point key="canvasLocation" x="-11.5" y="-2.5"/>
         </view>
     </objects>

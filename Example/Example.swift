@@ -518,7 +518,8 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
         guard identifier == "MyCustomComponent" else { return }
         
         let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
-        if let customView = bundle?.last as? UIView {
+        if let customView = bundle?.last as? CustomView {
+            customView.onTap = { dispatcher(.sendMessage(.increment)) }
             view.addSubview(customView)
             customView.frame.origin = .zero
             customView.frame.size = view.frame.size
