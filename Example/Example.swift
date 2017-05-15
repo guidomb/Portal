@@ -8,7 +8,6 @@
 
 import UIKit
 import PortalApplication
-import PortalView
 
 enum Message {
     

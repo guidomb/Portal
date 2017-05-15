@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import PortalView
 
 public class ApplicationRunner<
     StateType,

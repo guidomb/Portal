@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import PortalView
 
 public final class UIKitApplicationRenderer<
     MessageType,
