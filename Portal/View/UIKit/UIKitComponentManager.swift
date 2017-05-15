@@ -53,6 +53,7 @@ public final class UIKitComponentManager<MessageType, CustomComponentRendererTyp
             let rootController = controller(for: component, root: root, orientation: orientation)
             window.rootController = rootController
             rootController.mailbox.forward(to: mailbox)
+            completion()
         }
     }
     
