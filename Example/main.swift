@@ -1,5 +1,5 @@
 import UIKit
-import PortalApplication
+import Portal
 
 let application = ExampleApplication()
 let statePersistor = StatePersistor<Command, ExampleSerializer>(serializer: ExampleSerializer()) { state, message, transition in

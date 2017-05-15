@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0830"
+   LastUpgradeVersion = "0820"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9D7824071E92B9C7004455B1"
-               BuildableName = "PortalApplicationExample.app"
-               BlueprintName = "PortalApplicationExample"
-               ReferencedContainer = "container:PortalApplication.xcodeproj">
+               BlueprintIdentifier = "9D0F333C1E78F81800C65BED"
+               BuildableName = "Portal.framework"
+               BlueprintName = "Portal"
+               ReferencedContainer = "container:Portal.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -28,14 +28,24 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "9D0F33451E78F81800C65BED"
+               BuildableName = "PortalTests.xctest"
+               BlueprintName = "PortalTests"
+               ReferencedContainer = "container:Portal.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9D7824071E92B9C7004455B1"
-            BuildableName = "PortalApplicationExample.app"
-            BlueprintName = "PortalApplicationExample"
-            ReferencedContainer = "container:PortalApplication.xcodeproj">
+            BlueprintIdentifier = "9D0F333C1E78F81800C65BED"
+            BuildableName = "Portal.framework"
+            BlueprintName = "Portal"
+            ReferencedContainer = "container:Portal.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -51,16 +61,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9D7824071E92B9C7004455B1"
-            BuildableName = "PortalApplicationExample.app"
-            BlueprintName = "PortalApplicationExample"
-            ReferencedContainer = "container:PortalApplication.xcodeproj">
+            BlueprintIdentifier = "9D0F333C1E78F81800C65BED"
+            BuildableName = "Portal.framework"
+            BlueprintName = "Portal"
+            ReferencedContainer = "container:Portal.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +79,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9D7824071E92B9C7004455B1"
-            BuildableName = "PortalApplicationExample.app"
-            BlueprintName = "PortalApplicationExample"
-            ReferencedContainer = "container:PortalApplication.xcodeproj">
+            BlueprintIdentifier = "9D0F333C1E78F81800C65BED"
+            BuildableName = "Portal.framework"
+            BlueprintName = "Portal"
+            ReferencedContainer = "container:Portal.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

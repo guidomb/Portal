@@ -1,6 +1,6 @@
 //
 //  Timer.swift
-//  PortalApplication
+//  Portal
 //
 //  Created by Guido Marucci Blas on 4/5/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
@@ -92,10 +92,10 @@ public final class TimerSubscriptionManager<MessageType, RouteType: Route>: Subs
     private struct ActiveTimer {
         
         let platformTimer: Foundation.Timer
-        let timer: PortalApplication.Timer<MessageType, RouteType>
+        let timer: Portal.Timer<MessageType, RouteType>
         var counter: UInt = 0
         
-        init(platformTimer: Foundation.Timer, timer: PortalApplication.Timer<MessageType, RouteType>) {
+        init(platformTimer: Foundation.Timer, timer: Portal.Timer<MessageType, RouteType>) {
             self.platformTimer = platformTimer
             self.timer = timer
         }

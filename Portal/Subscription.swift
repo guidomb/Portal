@@ -1,6 +1,6 @@
 //
 //  Subscription.swift
-//  PortalApplication
+//  Portal
 //
 //  Created by Guido Marucci Blas on 4/4/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.

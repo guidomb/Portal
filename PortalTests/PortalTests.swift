@@ -1,15 +1,15 @@
 //
-//  PortalApplicationTests.swift
-//  PortalApplicationTests
+//  PortalTests.swift
+//  PortalTests
 //
 //  Created by Guido Marucci Blas on 3/14/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
 import XCTest
-@testable import PortalApplication
+@testable import Portal
 
-class PortalApplicationTests: XCTestCase {
+class PortalTests: XCTestCase {
     
     override func setUp() {
         super.setUp()

@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9D0F33471E78F81800C65BED /* PortalApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* PortalApplication.framework */; };
-		9D0F334C1E78F81800C65BED /* PortalApplicationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F334B1E78F81800C65BED /* PortalApplicationTests.swift */; };
-		9D0F334E1E78F81800C65BED /* PortalApplication.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0F33401E78F81800C65BED /* PortalApplication.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
+		9D0F334C1E78F81800C65BED /* PortalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F334B1E78F81800C65BED /* PortalTests.swift */; };
+		9D0F334E1E78F81800C65BED /* Portal.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0F33401E78F81800C65BED /* Portal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D0F33621E78F97800C65BED /* PortalUIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33611E78F97800C65BED /* PortalUIApplication.swift */; };
 		9D0F33641E78F9BB00C65BED /* Application.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33631E78F9BB00C65BED /* Application.swift */; };
 		9D0F33661E79071100C65BED /* UIKitApplicationRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33651E79071100C65BED /* UIKitApplicationRenderer.swift */; };
-		9D3AB7321EA5AD760038988D /* PortalApplication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* PortalApplication.framework */; };
-		9D3AB7331EA5AD760038988D /* PortalApplication.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* PortalApplication.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9D3AB7321EA5AD760038988D /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
+		9D3AB7331EA5AD760038988D /* Portal.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D7824101E92B9C8004455B1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D78240E1E92B9C8004455B1 /* Main.storyboard */; };
 		9D7824121E92B9C8004455B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D7824111E92B9C8004455B1 /* Assets.xcassets */; };
 		9D7824151E92B9C8004455B1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9D7824131E92B9C8004455B1 /* LaunchScreen.storyboard */; };
@@ -96,14 +96,14 @@
 			containerPortal = 9D0F33341E78F81800C65BED /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9D0F333C1E78F81800C65BED;
-			remoteInfo = PortalApplication;
+			remoteInfo = Portal;
 		};
 		9D3AB7341EA5AD760038988D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9D0F33341E78F81800C65BED /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9D0F333C1E78F81800C65BED;
-			remoteInfo = PortalApplication;
+			remoteInfo = Portal;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -114,7 +114,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				9D3AB7331EA5AD760038988D /* PortalApplication.framework in Embed Frameworks */,
+				9D3AB7331EA5AD760038988D /* Portal.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -122,18 +122,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9D0F333D1E78F81800C65BED /* PortalApplication.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PortalApplication.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D0F33401E78F81800C65BED /* PortalApplication.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PortalApplication.h; sourceTree = "<group>"; };
+		9D0F333D1E78F81800C65BED /* Portal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Portal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D0F33401E78F81800C65BED /* Portal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portal.h; sourceTree = "<group>"; };
 		9D0F33411E78F81800C65BED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9D0F33461E78F81800C65BED /* PortalApplicationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PortalApplicationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		9D0F334B1E78F81800C65BED /* PortalApplicationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortalApplicationTests.swift; sourceTree = "<group>"; };
+		9D0F33461E78F81800C65BED /* PortalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PortalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D0F334B1E78F81800C65BED /* PortalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortalTests.swift; sourceTree = "<group>"; };
 		9D0F334D1E78F81800C65BED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9D0F33611E78F97800C65BED /* PortalUIApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PortalUIApplication.swift; path = UIKit/PortalUIApplication.swift; sourceTree = "<group>"; };
 		9D0F33631E78F9BB00C65BED /* Application.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Application.swift; sourceTree = "<group>"; };
 		9D0F33651E79071100C65BED /* UIKitApplicationRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UIKitApplicationRenderer.swift; path = UIKit/UIKitApplicationRenderer.swift; sourceTree = "<group>"; };
 		9D3AB7361EA5AD760038988D /* PortalView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PortalView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D3AB73A1EA5AD950038988D /* YogaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YogaKit.framework; path = Carthage/Build/iOS/YogaKit.framework; sourceTree = "<group>"; };
-		9D7824081E92B9C7004455B1 /* PortalApplicationExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PortalApplicationExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D7824081E92B9C7004455B1 /* PortalExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PortalExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D78240F1E92B9C8004455B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9D7824111E92B9C8004455B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9D7824141E92B9C8004455B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -222,7 +222,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D0F33471E78F81800C65BED /* PortalApplication.framework in Frameworks */,
+				9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,7 +230,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D3AB7321EA5AD760038988D /* PortalApplication.framework in Frameworks */,
+				9D3AB7321EA5AD760038988D /* Portal.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -241,8 +241,8 @@
 			isa = PBXGroup;
 			children = (
 				9D8C84B91ECA3C4D0034C6BC /* Libraries */,
-				9D0F333F1E78F81800C65BED /* PortalApplication */,
-				9D0F334A1E78F81800C65BED /* PortalApplicationTests */,
+				9D0F333F1E78F81800C65BED /* Portal */,
+				9D0F334A1E78F81800C65BED /* PortalTests */,
 				9D7824091E92B9C8004455B1 /* Example */,
 				9D0F333E1E78F81800C65BED /* Products */,
 				9D0F33671E79073600C65BED /* Frameworks */,
@@ -252,21 +252,21 @@
 		9D0F333E1E78F81800C65BED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9D0F333D1E78F81800C65BED /* PortalApplication.framework */,
-				9D0F33461E78F81800C65BED /* PortalApplicationTests.xctest */,
-				9D7824081E92B9C7004455B1 /* PortalApplicationExample.app */,
+				9D0F333D1E78F81800C65BED /* Portal.framework */,
+				9D0F33461E78F81800C65BED /* PortalTests.xctest */,
+				9D7824081E92B9C7004455B1 /* PortalExample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9D0F333F1E78F81800C65BED /* PortalApplication */ = {
+		9D0F333F1E78F81800C65BED /* Portal */ = {
 			isa = PBXGroup;
 			children = (
 				9D8C844F1ECA3B750034C6BC /* View */,
 				9DBA4A031EA81CBE000DE6B7 /* Middlewares */,
 				9DDF07971E952DF000ABEB33 /* Subscriptions */,
 				9D0F33601E78F96000C65BED /* UIKit */,
-				9D0F33401E78F81800C65BED /* PortalApplication.h */,
+				9D0F33401E78F81800C65BED /* Portal.h */,
 				9D0F33411E78F81800C65BED /* Info.plist */,
 				9D0F33631E78F9BB00C65BED /* Application.swift */,
 				9DBE01D51E80EB4F005FF907 /* Middleware.swift */,
@@ -274,16 +274,16 @@
 				9DDF07911E94296500ABEB33 /* ApplicationRunner.swift */,
 				9DDF07941E94377700ABEB33 /* Subscription.swift */,
 			);
-			path = PortalApplication;
+			path = Portal;
 			sourceTree = "<group>";
 		};
-		9D0F334A1E78F81800C65BED /* PortalApplicationTests */ = {
+		9D0F334A1E78F81800C65BED /* PortalTests */ = {
 			isa = PBXGroup;
 			children = (
-				9D0F334B1E78F81800C65BED /* PortalApplicationTests.swift */,
+				9D0F334B1E78F81800C65BED /* PortalTests.swift */,
 				9D0F334D1E78F81800C65BED /* Info.plist */,
 			);
-			path = PortalApplicationTests;
+			path = PortalTests;
 			sourceTree = "<group>";
 		};
 		9D0F33601E78F96000C65BED /* UIKit */ = {
@@ -458,7 +458,7 @@
 			files = (
 				9D8C84ED1ECA3C4D0034C6BC /* Yoga.h in Headers */,
 				9D8C84EB1ECA3C4D0034C6BC /* YGNodeList.h in Headers */,
-				9D0F334E1E78F81800C65BED /* PortalApplication.h in Headers */,
+				9D0F334E1E78F81800C65BED /* Portal.h in Headers */,
 				9D8C85181ECA3C990034C6BC /* UIView+Yoga.h in Headers */,
 				9D8C84E81ECA3C4D0034C6BC /* YGEnums.h in Headers */,
 				9D8C851A1ECA3C990034C6BC /* YGLayout.h in Headers */,
@@ -470,9 +470,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		9D0F333C1E78F81800C65BED /* PortalApplication */ = {
+		9D0F333C1E78F81800C65BED /* Portal */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9D0F33511E78F81800C65BED /* Build configuration list for PBXNativeTarget "PortalApplication" */;
+			buildConfigurationList = 9D0F33511E78F81800C65BED /* Build configuration list for PBXNativeTarget "Portal" */;
 			buildPhases = (
 				9D0F33381E78F81800C65BED /* Sources */,
 				9D0F33391E78F81800C65BED /* Frameworks */,
@@ -483,14 +483,14 @@
 			);
 			dependencies = (
 			);
-			name = PortalApplication;
-			productName = PortalApplication;
-			productReference = 9D0F333D1E78F81800C65BED /* PortalApplication.framework */;
+			name = Portal;
+			productName = Portal;
+			productReference = 9D0F333D1E78F81800C65BED /* Portal.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		9D0F33451E78F81800C65BED /* PortalApplicationTests */ = {
+		9D0F33451E78F81800C65BED /* PortalTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9D0F33541E78F81800C65BED /* Build configuration list for PBXNativeTarget "PortalApplicationTests" */;
+			buildConfigurationList = 9D0F33541E78F81800C65BED /* Build configuration list for PBXNativeTarget "PortalTests" */;
 			buildPhases = (
 				9D0F33421E78F81800C65BED /* Sources */,
 				9D0F33431E78F81800C65BED /* Frameworks */,
@@ -501,14 +501,14 @@
 			dependencies = (
 				9D0F33491E78F81800C65BED /* PBXTargetDependency */,
 			);
-			name = PortalApplicationTests;
-			productName = PortalApplicationTests;
-			productReference = 9D0F33461E78F81800C65BED /* PortalApplicationTests.xctest */;
+			name = PortalTests;
+			productName = PortalTests;
+			productReference = 9D0F33461E78F81800C65BED /* PortalTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		9D7824071E92B9C7004455B1 /* PortalApplicationExample */ = {
+		9D7824071E92B9C7004455B1 /* PortalExample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9D7824191E92B9C8004455B1 /* Build configuration list for PBXNativeTarget "PortalApplicationExample" */;
+			buildConfigurationList = 9D7824191E92B9C8004455B1 /* Build configuration list for PBXNativeTarget "PortalExample" */;
 			buildPhases = (
 				9D7824041E92B9C7004455B1 /* Sources */,
 				9D7824051E92B9C7004455B1 /* Frameworks */,
@@ -520,9 +520,9 @@
 			dependencies = (
 				9D3AB7351EA5AD760038988D /* PBXTargetDependency */,
 			);
-			name = PortalApplicationExample;
+			name = PortalExample;
 			productName = Example;
-			productReference = 9D7824081E92B9C7004455B1 /* PortalApplicationExample.app */;
+			productReference = 9D7824081E92B9C7004455B1 /* PortalExample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -554,7 +554,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9D0F33371E78F81800C65BED /* Build configuration list for PBXProject "PortalApplication" */;
+			buildConfigurationList = 9D0F33371E78F81800C65BED /* Build configuration list for PBXProject "Portal" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -567,9 +567,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9D0F333C1E78F81800C65BED /* PortalApplication */,
-				9D0F33451E78F81800C65BED /* PortalApplicationTests */,
-				9D7824071E92B9C7004455B1 /* PortalApplicationExample */,
+				9D0F333C1E78F81800C65BED /* Portal */,
+				9D0F33451E78F81800C65BED /* PortalTests */,
+				9D7824071E92B9C7004455B1 /* PortalExample */,
 			);
 		};
 /* End PBXProject section */
@@ -676,7 +676,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9D0F334C1E78F81800C65BED /* PortalApplicationTests.swift in Sources */,
+				9D0F334C1E78F81800C65BED /* PortalTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -695,12 +695,12 @@
 /* Begin PBXTargetDependency section */
 		9D0F33491E78F81800C65BED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9D0F333C1E78F81800C65BED /* PortalApplication */;
+			target = 9D0F333C1E78F81800C65BED /* Portal */;
 			targetProxy = 9D0F33481E78F81800C65BED /* PBXContainerItemProxy */;
 		};
 		9D3AB7351EA5AD760038988D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9D0F333C1E78F81800C65BED /* PortalApplication */;
+			target = 9D0F333C1E78F81800C65BED /* Portal */;
 			targetProxy = 9D3AB7341EA5AD760038988D /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -839,10 +839,10 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Libraries/**";
-				INFOPLIST_FILE = PortalApplication/Info.plist;
+				INFOPLIST_FILE = Portal/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.PortalApplication;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.Portal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -865,10 +865,10 @@
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/Libraries/**";
-				INFOPLIST_FILE = PortalApplication/Info.plist;
+				INFOPLIST_FILE = Portal/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.PortalApplication;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.Portal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -880,9 +880,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = 7SMPV9L38V;
-				INFOPLIST_FILE = PortalApplicationTests/Info.plist;
+				INFOPLIST_FILE = PortalTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.PortalApplicationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.PortalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -893,9 +893,9 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				DEVELOPMENT_TEAM = 7SMPV9L38V;
-				INFOPLIST_FILE = PortalApplicationTests/Info.plist;
+				INFOPLIST_FILE = PortalTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.PortalApplicationTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.syrmo.PortalTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -917,7 +917,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = me.guidomb.PortalApplication.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = me.guidomb.Portal.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -940,7 +940,7 @@
 				INFOPLIST_FILE = Example/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = me.guidomb.PortalApplication.Example;
+				PRODUCT_BUNDLE_IDENTIFIER = me.guidomb.Portal.Example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -949,7 +949,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9D0F33371E78F81800C65BED /* Build configuration list for PBXProject "PortalApplication" */ = {
+		9D0F33371E78F81800C65BED /* Build configuration list for PBXProject "Portal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9D0F334F1E78F81800C65BED /* Debug */,
@@ -958,7 +958,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9D0F33511E78F81800C65BED /* Build configuration list for PBXNativeTarget "PortalApplication" */ = {
+		9D0F33511E78F81800C65BED /* Build configuration list for PBXNativeTarget "Portal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9D0F33521E78F81800C65BED /* Debug */,
@@ -967,7 +967,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9D0F33541E78F81800C65BED /* Build configuration list for PBXNativeTarget "PortalApplicationTests" */ = {
+		9D0F33541E78F81800C65BED /* Build configuration list for PBXNativeTarget "PortalTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9D0F33551E78F81800C65BED /* Debug */,
@@ -976,7 +976,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9D7824191E92B9C8004455B1 /* Build configuration list for PBXNativeTarget "PortalApplicationExample" */ = {
+		9D7824191E92B9C8004455B1 /* Build configuration list for PBXNativeTarget "PortalExample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9D7824171E92B9C8004455B1 /* Debug */,

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import PortalApplication
+import Portal
 
 enum Message {
     
@@ -29,7 +29,7 @@ enum Command {
     
 }
 
-enum Navigator: PortalApplication.Navigator {
+enum Navigator: Portal.Navigator {
     
     case main
     case modal
@@ -48,7 +48,7 @@ enum Navigator: PortalApplication.Navigator {
     
 }
 
-enum Route: PortalApplication.Route {
+enum Route: Portal.Route {
     
     case root
     case modal
@@ -87,7 +87,7 @@ enum IgniteSubscription: Equatable {
     
 }
 
-final class ExampleSubscriptionManager: PortalApplication.SubscriptionManager {
+final class ExampleSubscriptionManager: Portal.SubscriptionManager {
     
     func add(subscription: IgniteSubscription, dispatch: @escaping (ExampleApplication.Action) -> Void) {
         
@@ -99,7 +99,7 @@ final class ExampleSubscriptionManager: PortalApplication.SubscriptionManager {
     
 }
 
-final class ExampleCommandExecutor: PortalApplication.CommandExecutor {
+final class ExampleCommandExecutor: Portal.CommandExecutor {
     
     let loadState: () -> State?
     
@@ -118,11 +118,11 @@ final class ExampleCommandExecutor: PortalApplication.CommandExecutor {
     
 }
 
-final class ExampleApplication: PortalApplication.Application {
+final class ExampleApplication: Portal.Application {
     
-    typealias Action = PortalApplication.Action<Route, Message>
-    typealias View = PortalApplication.View<Route, Message, Navigator>
-    typealias Subscription = PortalApplication.Subscription<Message, Route, IgniteSubscription>
+    typealias Action = Portal.Action<Route, Message>
+    typealias View = Portal.View<Route, Message, Navigator>
+    typealias Subscription = Portal.Subscription<Message, Route, IgniteSubscription>
     
     var initialState: State { return .uninitialized }
     

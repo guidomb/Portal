@@ -1,6 +1,6 @@
 //
 //  StatePersistor.swift
-//  PortalApplication
+//  Portal
 //
 //  Created by Guido Marucci Blas on 4/12/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
@@ -37,7 +37,7 @@ public final class StatePersistor<CommandType, StatePersistorSerializerType: Sta
     fileprivate let stateFileName = "state.bin"
     fileprivate let shouldPersist: TransitionFilter
     
-    private let dispatchQueue = DispatchQueue(label: "com.PortalApplication.StatePersistor")
+    private let dispatchQueue = DispatchQueue(label: "com.Portal.StatePersistor")
     
     public init(serializer: StatePersistorSerializerType, shouldPersist: @escaping TransitionFilter = { _ in true }) {
         self.serializer = serializer
