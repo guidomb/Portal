@@ -120,7 +120,7 @@ public enum TextAligment {
 
 public struct EmptyStyleSheet {
     
-    static let `default` = StyleSheet<EmptyStyleSheet>(component: EmptyStyleSheet())
+    static public let `default` = StyleSheet<EmptyStyleSheet>(component: EmptyStyleSheet())
     
 }
 

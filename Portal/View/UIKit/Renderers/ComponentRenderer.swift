@@ -83,16 +83,19 @@ internal struct ComponentRenderer<MessageType, CustomComponentRendererType: UIKi
             return ProgressRenderer(progress: progress, style: style, layout: layout)
                 .render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
-        case .custom(let componentIdentifier, let layout):
+        case .custom(let customComponent, let style, let layout):
             let customComponentContainerView = UIView()
             layoutEngine.apply(layout: layout, to: customComponentContainerView)
             let mailbox = Mailbox<MessageType>()
             return Render(view: customComponentContainerView, mailbox: mailbox) {
-                self.rendererFactory().renderComponent(
-                    withIdentifier: componentIdentifier,
-                    inside: customComponentContainerView,
-                    dispatcher: mailbox.dispatch
+                let component = CustomComponentDescription(
+                    identifier: customComponent.identifier,
+                    information: customComponent.information,
+                    style: style,
+                    layout: layout
                 )
+                let renderer = self.rendererFactory()
+                renderer.renderComponent(component, inside: customComponentContainerView, dispatcher: mailbox.dispatch)
             }
             
         case .spinner(let isActive, let style, let layout):

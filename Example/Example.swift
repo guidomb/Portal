@@ -506,6 +506,8 @@ final class ExampleApplication: Portal.Application {
 
 final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     
+    typealias Action = Portal.Action<Route, Message>
+    
     static private var cachedController: CustomController?
     
     private let container: ContainerController
@@ -515,10 +517,10 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
         self.container = container
     }
     
-    func renderComponent(withIdentifier identifier: String, inside view: UIView, dispatcher: @escaping (ExampleApplication.Action) -> Void) {
-        guard identifier == "MyCustomComponent" || identifier == "MyCustomComponent2" else { return }
+    public func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
+        guard componentDescription.identifier == "MyCustomComponent" || componentDescription.identifier == "MyCustomComponent2" else { return }
         
-        if identifier == "MyCustomComponent" {
+        if componentDescription.identifier == "MyCustomComponent" {
             print("Rendering MyCustomComponent")
             let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
             if let customView = bundle?.last as? CustomView {
@@ -551,11 +553,11 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
 }
 
 func myCustomComponent(layout: Layout) -> Component<ExampleApplication.Action> {
-    return .custom(componentIdentifier: "MyCustomComponent", layout: layout)
+    return .custom(CustomComponent(identifier: "MyCustomComponent"), EmptyStyleSheet.default, layout)
 }
 
 func myCustomComponent2(layout: Layout) -> Component<ExampleApplication.Action> {
-    return .custom(componentIdentifier: "MyCustomComponent2", layout: layout)
+    return .custom(CustomComponent(identifier: "MyCustomComponent"),  EmptyStyleSheet.default, layout)
 }
 
 final class CustomController: UIViewController {

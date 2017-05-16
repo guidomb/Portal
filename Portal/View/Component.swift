@@ -43,6 +43,18 @@ public extension Gesture {
 
 }
 
+public struct CustomComponent {
+    
+    public let identifier: String
+    public let information: [String : Any]
+    
+    public init(identifier: String, information: [String : Any] = [:]) {
+        self.identifier = identifier
+        self.information = information
+    }
+    
+}
+
 public indirect enum Component<MessageType> {
 
     case button(ButtonProperties<MessageType>, StyleSheet<ButtonStyleSheet>, Layout)
@@ -57,7 +69,7 @@ public indirect enum Component<MessageType> {
     case segmented(ZipList<SegmentProperties<MessageType>>, StyleSheet<SegmentedStyleSheet>, Layout)
     case progress(ProgressCounter, StyleSheet<ProgressStyleSheet>, Layout)
     case textField(TextFieldProperties<MessageType>, StyleSheet<TextFieldStyleSheet>, Layout)
-    case custom(componentIdentifier: String, layout: Layout)
+    case custom(CustomComponent, StyleSheet<EmptyStyleSheet>, Layout)
     case spinner(Bool, StyleSheet<SpinnerStyleSheet>, Layout)
 
     public var layout: Layout {
@@ -99,7 +111,7 @@ public indirect enum Component<MessageType> {
         case .carousel(_, _, let layout):
             return layout
 
-        case .custom(_, let layout):
+        case .custom(_, _, let layout):
             return layout
 
         case .spinner(_, _, let layout):
@@ -151,8 +163,8 @@ extension Component {
         case .carousel(let properties, let style, let layout):
             return .carousel(properties.map(transform), style, layout)
 
-        case .custom(let componentIdentifier, let layout):
-            return .custom(componentIdentifier: componentIdentifier, layout: layout)
+        case .custom(let customComponent, let style, let layout):
+            return .custom(customComponent, style, layout)
             
         case .spinner(let isActive, let style, let layout):
             return .spinner(isActive, style, layout)
@@ -166,8 +178,8 @@ extension Component {
         case .container(let children, _, _):
             return children.flatMap { $0.customComponentIdentifiers }
 
-        case .custom(let componentIdentifier, _):
-            return [componentIdentifier]
+        case .custom(let customComponent, _, _):
+            return [customComponent.identifier]
 
         default:
             return []

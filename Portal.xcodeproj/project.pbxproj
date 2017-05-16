@@ -322,8 +322,8 @@
 		9D8C844F1ECA3B750034C6BC /* View */ = {
 			isa = PBXGroup;
 			children = (
-				9D8C84501ECA3B750034C6BC /* Component.swift */,
 				9D8C84511ECA3B750034C6BC /* Components */,
+				9D8C84501ECA3B750034C6BC /* Component.swift */,
 				9D8C84601ECA3B750034C6BC /* Layout.swift */,
 				9D8C84611ECA3B750034C6BC /* LayoutEngine.swift */,
 				9D8C84621ECA3B750034C6BC /* Mailbox.swift */,
@@ -357,6 +357,7 @@
 		9D8C84661ECA3B750034C6BC /* UIKit */ = {
 			isa = PBXGroup;
 			children = (
+				9D8C84701ECA3B750034C6BC /* Renderers */,
 				9D8C84671ECA3B750034C6BC /* MessageDispatcher.swift */,
 				9D8C84681ECA3B750034C6BC /* PortalCarouselView.swift */,
 				9D8C84691ECA3B750034C6BC /* PortalCollectionView.swift */,
@@ -366,7 +367,6 @@
 				9D8C846D1ECA3B750034C6BC /* PortalTableView.swift */,
 				9D8C846E1ECA3B750034C6BC /* PortalTableViewCell.swift */,
 				9D8C846F1ECA3B750034C6BC /* PortalViewController.swift */,
-				9D8C84701ECA3B750034C6BC /* Renderers */,
 				9D8C84811ECA3B750034C6BC /* UIKitComponentManager.swift */,
 				9D8C84821ECA3B750034C6BC /* UIKitRenderable.swift */,
 				9D8C84831ECA3B750034C6BC /* UIKitRenderer.swift */,
