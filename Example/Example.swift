@@ -340,7 +340,7 @@ final class ExampleApplication: Portal.Application {
                         label(text: "Count \(counter)"),
                         button(text: "Increment!", onTap: .sendMessage(.increment)),
                         label(text: "Detail screen!"),
-                        myCustomComponent(layout: layout() {
+                        myCustomComponent2(layout: layout() {
                             $0.width = Dimension(value: 100)
                             $0.height = Dimension(value: 100)
                         })
@@ -506,6 +506,8 @@ final class ExampleApplication: Portal.Application {
 
 final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     
+    static private var cachedController: CustomController?
+    
     private let container: ContainerController
     
     init(container: ContainerController) {
@@ -514,18 +516,35 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     }
     
     func renderComponent(withIdentifier identifier: String, inside view: UIView, dispatcher: @escaping (ExampleApplication.Action) -> Void) {
-        guard identifier == "MyCustomComponent" else { return }
+        guard identifier == "MyCustomComponent" || identifier == "MyCustomComponent2" else { return }
         
-        let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
-        if let customView = bundle?.last as? CustomView {
-            customView.onTap = { dispatcher(.sendMessage(.increment)) }
-            view.addSubview(customView)
-            customView.frame.origin = .zero
-            customView.frame.size = view.frame.size
-        }
-        
-        container.registerDisposer(for: "MyCustomComponent") {
-            print("Disposing custom renderer container controller")
+        if identifier == "MyCustomComponent" {
+            print("Rendering MyCustomComponent")
+            let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
+            if let customView = bundle?.last as? CustomView {
+                customView.onTap = { dispatcher(.sendMessage(.increment)) }
+                customView.frame = CGRect(origin: .zero, size: view.frame.size)
+                view.addSubview(customView)
+            }
+        } else {
+            print("Rendering MyCustomComponent2")
+            if let cachedController = CustomComponentRenderer.cachedController {
+                print("Using cached version of the custom controller")
+                cachedController.onTap = { dispatcher(.sendMessage(.increment)) }
+                view.addSubview(cachedController.view)
+            } else {
+                print("Creating new instance of custom controller")
+                let frame = CGRect(origin: .zero, size: view.frame.size)
+                let controller = CustomController(frame: frame, onTap: { dispatcher(.sendMessage(.increment)) })
+                container.attachChildController(controller)
+                view.addSubview(controller.view)
+                
+                container.registerDisposer(for: "MyCustomComponent2") {
+                    print("Removing custom controller cache")
+                    CustomComponentRenderer.cachedController = .none
+                }
+                CustomComponentRenderer.cachedController = controller
+            }
         }
     }
     
@@ -535,7 +554,57 @@ func myCustomComponent(layout: Layout) -> Component<ExampleApplication.Action> {
     return .custom(componentIdentifier: "MyCustomComponent", layout: layout)
 }
 
+func myCustomComponent2(layout: Layout) -> Component<ExampleApplication.Action> {
+    return .custom(componentIdentifier: "MyCustomComponent2", layout: layout)
+}
 
+final class CustomController: UIViewController {
+
+    private let frame: CGRect
+    private var _onTap: () -> Void
+    
+    var onTap: () -> Void {
+        set {
+            self._onTap = newValue
+            (self.view as? CustomView)?.onTap = newValue
+        }
+        get {
+            return _onTap
+        }
+    }
+    
+    init(frame: CGRect, onTap: @escaping () -> Void) {
+        self.frame = frame
+        self._onTap = onTap
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
+        if let customView = bundle?.last as? CustomView {
+            customView.onTap = self.onTap
+            customView.frame = self.frame
+            self.view = customView
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        print("Custom controller will appear")
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("Custom controller did appear")
+    }
+    
+    deinit {
+        print("Killing custom controller")
+    }
+    
+}
 
 
 
