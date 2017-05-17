@@ -8,7 +8,7 @@
 
 import UIKit
 
-public protocol ContainerController {
+public protocol ContainerController: class {
     
     var containerView: UIView { get }
     

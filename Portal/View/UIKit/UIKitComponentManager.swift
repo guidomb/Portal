@@ -165,7 +165,7 @@ fileprivate extension UIKitComponentManager {
             var renderer = ComponentRenderer(
                 containerView: container.containerView,
                 layoutEngine: self.layoutEngine,
-                rendererFactory: { self.rendererFactory(container) }
+                rendererFactory: { [unowned container] in self.rendererFactory(container) }
             )
             renderer.isDebugModeEnabled = self.isDebugModeEnabled
             return renderer
