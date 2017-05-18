@@ -291,45 +291,64 @@ fileprivate extension ApplicationRunner {
         return recusivelyApply(currentState, message, .none, middlewares.reversed())
     }
     
-    fileprivate func handleNavigatorDismissal(from currentNavigationState: NavigationStateType, to nextNavigationState: NavigationStateType, action: ActionType?) {
+    fileprivate func handleNavigatorDismissal(from currentNavigationState: NavigationStateType, to intermdiateNavigationState: NavigationStateType, action: ActionType?) {
         // If the action that needs to be dispatched after the
         // navigator dismissal is a route change request, then we
         // don't make the application's update handle the intermidate
         // transition between the final route and the next navigation
         // state's route.
         if case .some(.navigate(let nextRoute)) = action {
-            // We need to update the application runner's navigation state
-            // to the intermidiate navigation state in order to handle navigator
-            // changes acoordindly. For example, this means that if the initial
-            // navigation state was the main navigator, then the user presented
-            // a modal screen by changing the navigator. When the user sends an
-            // action to dismiss the current navigator and then navigate to a route
-            // that has an associated view that will result in pushing a view into the main 
-            // navigator which happens to have a stack root component, then we need to make
-            // sure that the current navigator reflects the 'back' transition in order for the internal
-            // presentation mechanisim to work properly. 
+            // We use the final route, `nextRoute`, to get the final state and view
+            // but we use the intermeidate navigation state to decide if the final
+            // view needs to be presented modally or not.
             //
-            // Otherwise, if we don't update the internal navigation state, the application 
-            // runner would think that we are still in a navigation state that is showing a modal and 
-            // when the application's view function returns a view that was intended to be pushed to 
-            // the navigation stack, because navigators won't match, the view will be presented 
-            // as a modal instead of being pushed to the navigation stack associated with the maim navigator.
+            // Take the following example:
             //
-            // Because `handleNavigatorDismissal` needs to be executed as an 
-            // out of band operation in the dispatch queue we can `serialDispatch`
-            // directly without having to enqueue any work.
-            navigationState = nextNavigationState
-            self.serialDispatch(action: .navigate(to: nextRoute))
-        } else {
-            handleRouteChange(from: currentNavigationState.currentRoute, to: nextNavigationState.currentRoute) { view, nextState in
+            //  Route .A has view with navigator X and root component .stack
+            //  Route .B has view with navigator Y and root component .simple
+            //  Route .C has view with navigator X and root component .stack
+            //
+            //  1. Application is in route A.
+            //  2. User performs interaction that results in route changing to B.
+            //  3. Because the view associated with route B has a different navigator than the view associated with
+            //  route A, B's view is presented modally.
+            //  4. User peforms interaction that sends action `dismissCurrentNavigator(andThen: .navigate(to: .C))`
+            //  5. Modal is dismissed and the intermediate navigation state points to .A
+            //  6. Because the intermidiate navigation state's navigator is equal to the navigator associated 
+            //  with C's view and both A and C view have a .stack root component, C's view is pushed into the
+            //  navigation stack.
+            //  
+            //  In this example the application's update function only needs to handle the following state and
+            //  route transition:
+            //
+            //  A -> B
+            //  B -> C
+            //
+            //  The intermediate transition A -> C does not need to be handled by the application's update
+            //  function that the intermeidate navigation state is used here to decided how the final view (in
+            //  this case C) is presented by comparing the intermediate navigation state's navigator with the
+            //  final view's navigator (in this case A's navigator compared against C's navigator).
+            //
+            handleRouteChange(from: currentNavigationState.currentRoute, to: nextRoute) { view, nextState in
+                let nextNavigationState = intermdiateNavigationState.navigate(to: nextRoute, using: view.navigator)
                 self.currentState = nextState
                 self.navigationState = nextNavigationState
                 
+                let modally = intermdiateNavigationState.currentNavigator != nextNavigationState.currentNavigator
+                self.present(view: view, modally: modally)
+            }
+        } else {
+            handleRouteChange(from: currentNavigationState.currentRoute, to: intermdiateNavigationState.currentRoute) { view, nextState in
+                self.currentState = nextState
+                self.navigationState = intermdiateNavigationState
+                
                 self.render(view: view)
                 
-                if let action = action {
-                    self.dispatch(action: action)
-                }
+                // We dispatch the actio in-place without going through the
+                // dispatch queue to make sure that this action in handled during
+                // this update cycle without processing any other messages that
+                // could have arrived during the transition.
+                action |> serialDispatch
             }
         }
     }
