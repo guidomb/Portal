@@ -45,7 +45,8 @@ public class ApplicationRunner<
     public typealias DispatcherFactory = (@escaping (ActionType) -> Void) -> ApplicationRendererType
 
     fileprivate typealias NavigationStateType = NavigationState<RouteType, NavigatorType>
-    fileprivate typealias Operation = () -> Void
+    fileprivate typealias ScreenTransition = (@escaping ScreenTransitionCompletion) -> Void
+    fileprivate typealias ScreenTransitionCompletion = () -> Void
     
     public var log: (String) -> Void = { print($0) }
     
@@ -297,10 +298,30 @@ fileprivate extension ApplicationRunner {
         // transition between the final route and the next navigation
         // state's route.
         if case .some(.navigate(let nextRoute)) = action {
-            self.navigationState = nextNavigationState
-            self.dispatch(action: .navigate(to: nextRoute))
+            // We need to update the application runner's navigation state
+            // to the intermidiate navigation state in order to handle navigator
+            // changes acoordindly. For example, this means that if the initial
+            // navigation state was the main navigator, then the user presented
+            // a modal screen by changing the navigator. When the user sends an
+            // action to dismiss the current navigator and then navigate to a route
+            // that has an associated view that will result in pushing a view into the main 
+            // navigator which happens to have a stack root component, then we need to make
+            // sure that the current navigator reflects the 'back' transition in order for the internal
+            // presentation mechanisim to work properly. 
+            //
+            // Otherwise, if we don't update the internal navigation state, the application 
+            // runner would think that we are still in a navigation state that is showing a modal and 
+            // when the application's view function returns a view that was intended to be pushed to 
+            // the navigation stack, because navigators won't match, the view will be presented 
+            // as a modal instead of being pushed to the navigation stack associated with the maim navigator.
+            //
+            // Because `handleNavigatorDismissal` needs to be executed as an 
+            // out of band operation in the dispatch queue we can `serialDispatch`
+            // directly without having to enqueue any work.
+            navigationState = nextNavigationState
+            self.serialDispatch(action: .navigate(to: nextRoute))
         } else {
-            self.handleRouteChange(from: currentNavigationState.currentRoute, to: nextNavigationState.currentRoute) { view, nextState in
+            handleRouteChange(from: currentNavigationState.currentRoute, to: nextNavigationState.currentRoute) { view, nextState in
                 self.currentState = nextState
                 self.navigationState = nextNavigationState
                 
@@ -313,7 +334,7 @@ fileprivate extension ApplicationRunner {
         }
     }
     
-    fileprivate func executeRendererTransition(_ transition: (ApplicationRendererType, @escaping Operation) -> Void) {
+    fileprivate func executeRendererTransition(_ transition: (ApplicationRendererType, @escaping ScreenTransitionCompletion) -> Void) {
         guard let renderer = self.renderer else { return }
         
         dispatchQueue.suspend()
@@ -322,13 +343,13 @@ fileprivate extension ApplicationRunner {
         })
     }
     
-    fileprivate func performTransition(_ maybeTransition: ((@escaping Operation) -> Void)?) -> (@escaping Operation) -> Void {
+    fileprivate func performTransition(_ maybeTransition: ScreenTransition?) -> (@escaping ScreenTransitionCompletion) -> Void {
         guard let transition = maybeTransition else { return { _ in } }
         
-        return { operation in
+        return { completion in
             self.dispatchQueue.suspend()
             transition({
-                self.dispatchQueue.resume(with: operation)
+                self.dispatchQueue.resume(with: completion)
             })
         }
     }
