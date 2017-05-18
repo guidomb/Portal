@@ -410,18 +410,37 @@ fileprivate final class ExecutionQueue {
     
     private let queue = DispatchQueue(label: "me.guidomb.Portal.ApplicationQueue")
     private var outOfBandOperation: (() -> Void)? = .none
+    private var operationsCount: UInt = 0
     
     func suspend() {
         queue.suspend()
     }
     
     func resume(with outOfBandOperation: (() -> Void)? = .none) {
-        self.outOfBandOperation = outOfBandOperation
+        
+        switch (self.outOfBandOperation, outOfBandOperation) {
+        case (.some(let previousOutOfBandOperation), .some(let currentOutOfBandOperation)):
+            self.outOfBandOperation = {
+                currentOutOfBandOperation()
+                previousOutOfBandOperation()
+            }
+        case (.none, .some(let currentOutOfBandOperation)):
+            self.outOfBandOperation = currentOutOfBandOperation
+        default:
+            break
+        }
+        
+        if operationsCount == 0 && self.outOfBandOperation != nil {
+            enqueue(operation: {})
+        }
+        
         queue.resume()
     }
     
     func enqueue(operation: @escaping () -> Void) {
+        operationsCount += 1
         queue.async {
+            self.operationsCount -= 1
             if let oobo = self.outOfBandOperation {
                 oobo()
                 self.outOfBandOperation = .none
