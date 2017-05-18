@@ -16,6 +16,7 @@ FOUNDATION_EXPORT const unsigned char PortalVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <Portal/PublicHeader.h>
 
-
+#import <Portal/Yoga.h>
+#import <Portal/YGNodeList.h>
 #import <Portal/YGLayout.h>
 #import <Portal/UIView+Yoga.h>
