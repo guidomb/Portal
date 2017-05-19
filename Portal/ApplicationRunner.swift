@@ -14,7 +14,7 @@ public class ApplicationRunner<
     CommandType,
     CustomSubscriptionType: Equatable,
     RouteType: Route,
-    NavigatorType: Navigator,
+    NavigatorType: Equatable,
     ApplicationType: Application,
     ApplicationRendererType: ApplicationRenderer,
     CommandExecutorType: CommandExecutor,
@@ -28,7 +28,6 @@ public class ApplicationRunner<
     ApplicationType.RouteType                   == RouteType,
     ApplicationType.NavigatorType               == NavigatorType,
     ApplicationType.SubscriptionType            == CustomSubscriptionType,
-    NavigatorType.RouteType                     == RouteType,
     ApplicationRendererType.MessageType         == MessageType,
     ApplicationRendererType.RouteType           == RouteType,
     CommandExecutorType.MessageType             == Action<RouteType, MessageType>,
@@ -375,10 +374,7 @@ fileprivate extension ApplicationRunner {
     
 }
 
-fileprivate struct NavigationState<RouteType: Route, NavigatorType: Navigator> {
-    // TODO declare Navigator constrain when proposal 142 gets implemented
-    // https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md
-    // where NavigatorType.RouteType == RouteType {
+fileprivate struct NavigationState<RouteType: Route, NavigatorType: Equatable> {
     
     private var rootNavigator: NavigatorType
     private var rootRoute: RouteType

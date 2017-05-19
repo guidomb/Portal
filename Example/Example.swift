@@ -29,22 +29,11 @@ enum Command {
     
 }
 
-enum Navigator: Portal.Navigator {
+enum Navigator: Equatable {
     
     case main
     case modal
     case other
-    
-    var baseRoute: Route {
-        switch self {
-        case .main:
-            return .root
-        case .modal:
-            return .modal
-        case .other:
-            return .root
-        }
-    }
     
 }
 

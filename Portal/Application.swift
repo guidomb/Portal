@@ -14,14 +14,6 @@ public protocol Route: Equatable {
     
 }
 
-public protocol Navigator: Equatable {
-    
-    associatedtype RouteType: Route
-    
-    var baseRoute: RouteType { get }
-    
-}
-
 public indirect enum Action<RouteType: Route, MessageType> {
 
     case dismissNavigator(thenSend: Action<RouteType, MessageType>?)
@@ -65,10 +57,7 @@ public struct AlertProperties<MessageType> {
     
 }
 
-public struct View<RouteType: Route, MessageType, NavigatorType: Navigator> {
-    // TODO declare Navigator constrain when proposal 142 gets implemented
-    // https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md
-    // where NavigatorType.RouteType == RouteType {
+public struct View<RouteType: Route, MessageType, NavigatorType: Equatable> {
     
     public typealias ActionType = Action<RouteType, MessageType>
     
@@ -108,11 +97,7 @@ public protocol Application {
     associatedtype CommandType
     associatedtype RouteType: Route
     associatedtype SubscriptionType: Equatable
-    
-    // TODO declare Navigator constrain when proposal 142 gets implemented
-    // https://github.com/apple/swift-evolution/blob/master/proposals/0142-associated-types-constraints.md
-    // associatedtype NavigatorType: Navigator where NavigatorType.RouteType == RouteType
-    associatedtype NavigatorType: Navigator
+    associatedtype NavigatorType: Equatable
     
     var initialState: StateType { get }
     
