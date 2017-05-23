@@ -8,7 +8,7 @@
 
 import UIKit
 
-public final class UIKitComponentManager<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: Renderer
+public final class UIKitComponentManager<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: Renderer
     where CustomComponentRendererType.MessageType == MessageType {
     
     public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, CustomComponentRendererType>
@@ -18,13 +18,13 @@ public final class UIKitComponentManager<MessageType, CustomComponentRendererTyp
     
     public let mailbox = Mailbox<MessageType>()
     
-    public var visibleController: ComponentController<MessageType, CustomComponentRendererType>? {
+    public var visibleController: ComponentController<MessageType, RouteType, CustomComponentRendererType>? {
         return window.visibleController
     }
     
     fileprivate let layoutEngine: LayoutEngine
     fileprivate let rendererFactory: CustomComponentRendererFactory
-    fileprivate var window: WindowManager<MessageType, CustomComponentRendererType>
+    fileprivate var window: WindowManager<MessageType, RouteType, CustomComponentRendererType>
     
     public init(window: UIWindow, layoutEngine: LayoutEngine = YogaLayoutEngine(), rendererFactory: @escaping CustomComponentRendererFactory) {
         self.window = WindowManager(window: window)
@@ -136,14 +136,14 @@ fileprivate extension UIKitComponentManager {
     }
     
     fileprivate func controller(for component: Component<MessageType>, root: RootComponent<MessageType>, orientation: SupportedOrientations)
-        -> ComponentController<MessageType, CustomComponentRendererType> {
+        -> ComponentController<MessageType, RouteType, CustomComponentRendererType> {
         switch root {
         
         case .simple:
             return .single(controller(for: component, orientation: orientation))
             
         case .stack(let navigationBar):
-            let navigationController = PortalNavigationController<MessageType, CustomComponentRendererType>(
+            let navigationController = PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>(
                 layoutEngine: layoutEngine,
                 statusBarStyle: navigationBar.style.component.statusBarStyle.asUIStatusBarStyle,
                 rendererFactory: rendererFactory
@@ -159,9 +159,9 @@ fileprivate extension UIKitComponentManager {
         }
     }
     
-    fileprivate func controller(for component: Component<MessageType>, orientation: SupportedOrientations) -> PortalViewController<MessageType, CustomComponentRendererType> {
+    fileprivate func controller(for component: Component<MessageType>, orientation: SupportedOrientations) -> PortalViewController<MessageType, RouteType, CustomComponentRendererType> {
         
-        let controller: PortalViewController<MessageType, CustomComponentRendererType> =  PortalViewController(component: component) { container in
+        let controller: PortalViewController<MessageType, RouteType, CustomComponentRendererType> =  PortalViewController(component: component) { container in
             var renderer = ComponentRenderer(
                 containerView: container.containerView,
                 layoutEngine: self.layoutEngine,
@@ -177,11 +177,11 @@ fileprivate extension UIKitComponentManager {
     
 }
 
-public enum ComponentController<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>
+public enum ComponentController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
     where CustomComponentRendererType.MessageType == MessageType {
     
-    case navigationController(PortalNavigationController<MessageType, CustomComponentRendererType>)
-    case single(PortalViewController<MessageType, CustomComponentRendererType>)
+    case navigationController(PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>)
+    case single(PortalViewController<MessageType, RouteType, CustomComponentRendererType>)
     
     public var renderableController: UIViewController {
         switch self {
@@ -203,10 +203,12 @@ public enum ComponentController<MessageType, CustomComponentRendererType: UIKitC
     
 }
 
-fileprivate struct WindowManager<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>
+fileprivate struct WindowManager<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
     where CustomComponentRendererType.MessageType == MessageType {
     
-    fileprivate var rootController: ComponentController<MessageType, CustomComponentRendererType>? {
+    typealias ComponentControllerType = ComponentController<MessageType, RouteType, CustomComponentRendererType>
+    
+    fileprivate var rootController: ComponentControllerType? {
         set {
             window.rootViewController = newValue?.renderableController
             _rootController = newValue
@@ -216,14 +218,14 @@ fileprivate struct WindowManager<MessageType, CustomComponentRendererType: UIKit
         }
     }
     
-    fileprivate var visibleController: ComponentController<MessageType, CustomComponentRendererType>? {
+    fileprivate var visibleController: ComponentControllerType? {
         return currentModal ?? rootController
     }
     
-    fileprivate var currentModal: ComponentController<MessageType, CustomComponentRendererType>?
+    fileprivate var currentModal: ComponentControllerType?
     
     private let window: UIWindow
-    private var _rootController: ComponentController<MessageType, CustomComponentRendererType>?
+    private var _rootController: ComponentControllerType?
     
     init(window: UIWindow) {
         self.window = window

@@ -8,7 +8,7 @@
 
 import UIKit
 
-public final class PortalViewController<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIViewController
+public final class PortalViewController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIViewController
     where CustomComponentRendererType.MessageType == MessageType {
     
     public typealias RendererFactory = (ContainerController) -> UIKitComponentRenderer<MessageType, CustomComponentRendererType>

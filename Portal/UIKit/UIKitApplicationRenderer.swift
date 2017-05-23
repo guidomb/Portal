@@ -29,7 +29,7 @@ public final class UIKitApplicationRenderer<
         }
     }
     
-    fileprivate var componentManager: UIKitComponentManager<ActionType, CustomComponentRendererType>
+    fileprivate var componentManager: UIKitComponentManager<ActionType, RouteType, CustomComponentRendererType>
     fileprivate let dispatch: Dispatcher
 
     public init(window: UIWindow, rendererFactory: @escaping CustomComponentRendererFactory, dispatch: @escaping Dispatcher) {
@@ -92,7 +92,7 @@ fileprivate extension UIKitApplicationRenderer {
         }
     }
     
-    fileprivate func currentNavigationController() -> PortalNavigationController<ActionType, CustomComponentRendererType>? {
+    fileprivate func currentNavigationController() -> PortalNavigationController<ActionType, RouteType, CustomComponentRendererType>? {
         if case .some(.navigationController(let navigationController)) = componentManager.visibleController {
             return navigationController
         } else {

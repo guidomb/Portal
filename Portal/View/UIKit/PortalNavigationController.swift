@@ -8,17 +8,18 @@
 
 import UIKit
 
-public final class PortalNavigationController<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UINavigationController, UINavigationControllerDelegate
+public final class PortalNavigationController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UINavigationController, UINavigationControllerDelegate
     where CustomComponentRendererType.MessageType == MessageType {
     
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
+    public typealias ContentControllerType = PortalViewController<MessageType, RouteType, CustomComponentRendererType>
     
     public let mailbox = Mailbox<MessageType>()
     public var isDebugModeEnabled: Bool = false
     public var orientation: SupportedOrientations = .all
     
-    public var topController: PortalViewController<MessageType, CustomComponentRendererType>? {
-        return self.topViewController as? PortalViewController<MessageType, CustomComponentRendererType>
+    public var topController: ContentControllerType? {
+        return self.topViewController as? ContentControllerType
     }
     
     public private(set) var isPopingTopController = false
@@ -64,8 +65,8 @@ public final class PortalNavigationController<MessageType, CustomComponentRender
         disposers.values.forEach { $0() }
     }
     
-    public func push(controller: PortalViewController<MessageType, CustomComponentRendererType>,
-              with navigationBar: NavigationBar<MessageType>, animated: Bool, completion: @escaping () -> Void) {
+    public func push(controller: ContentControllerType, with navigationBar: NavigationBar<MessageType>, animated: Bool,
+                     completion: @escaping () -> Void) {
         pushingViewController = true
         onControllerDidShow = completion
         pushViewController(controller, animated: animated)
