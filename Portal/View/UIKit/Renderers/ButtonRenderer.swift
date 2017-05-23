@@ -10,13 +10,15 @@ import UIKit
 
 public let defaultButtonFontSize = UInt(UIFont.buttonFontSize)
 
-internal struct ButtonRenderer<MessageType>: UIKitRenderer {
+internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
-    let properties: ButtonProperties<MessageType>
+    typealias ActionType = Action<RouteType, MessageType>
+    
+    let properties: ButtonProperties<ActionType>
     let style: StyleSheet<ButtonStyleSheet>
     let layout: Layout
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let button = UIButton()
         
         properties.text |> { button.setTitle($0, for: .normal) }

@@ -8,13 +8,15 @@
 
 import UIKit
 
-internal struct LabelRenderer<MessageType>: UIKitRenderer {
+internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
+    
+    typealias ActionType = Action<RouteType, MessageType>
     
     let properties: LabelProperties
     let style: StyleSheet<LabelStyleSheet>
     let layout: Layout
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let label = UILabel()
         label.text = properties.text
         

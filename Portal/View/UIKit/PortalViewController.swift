@@ -9,12 +9,13 @@
 import UIKit
 
 public final class PortalViewController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIViewController
-    where CustomComponentRendererType.MessageType == MessageType {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
-    public typealias RendererFactory = (ContainerController) -> UIKitComponentRenderer<MessageType, CustomComponentRendererType>
+    public typealias RendererFactory = (ContainerController) -> UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
+    public typealias ActionType = Action<RouteType, MessageType>
     
-    public var component: Component<MessageType>
-    public let mailbox = Mailbox<MessageType>()
+    public var component: Component<ActionType>
+    public let mailbox = Mailbox<ActionType>()
     public var orientation: SupportedOrientations = .all
     
     fileprivate var disposers: [String : () -> Void] = [:]
@@ -25,7 +26,7 @@ public final class PortalViewController<MessageType, RouteType: Route, CustomCom
         return orientation.uiInterfaceOrientation
     }
     
-    public init(component: Component<MessageType>, factory createRenderer: @escaping RendererFactory) {
+    public init(component: Component<ActionType>, factory createRenderer: @escaping RendererFactory) {
         self.component = component
         self.createRenderer = createRenderer
         super.init(nibName: nil, bundle: nil)

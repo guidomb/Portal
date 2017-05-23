@@ -44,7 +44,8 @@ public class UIKitApplicationContext<
     CustomSubscriptionManager.SubscriptionType  == CustomSubscriptionType,
     CustomSubscriptionManager.RouteType         == RouteType,
     CustomSubscriptionManager.MessageType       == MessageType,
-    CustomComponentRendererType.MessageType     == Action<RouteType, MessageType>  {
+    CustomComponentRendererType.MessageType     == MessageType,
+    CustomComponentRendererType.RouteType       == RouteType {
 
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     
@@ -148,7 +149,8 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
         CustomSubscriptionManager.SubscriptionType  == CustomSubscriptionType,
         CustomSubscriptionManager.RouteType         == RouteType,
         CustomSubscriptionManager.MessageType       == MessageType,
-        CustomComponentRendererType.MessageType     == Action<RouteType, MessageType> {
+        CustomComponentRendererType.MessageType     == MessageType,
+        CustomComponentRendererType.RouteType       == RouteType  {
             
             PortalUIApplication.binder = { window in
                 applicationContext.runner(for: window)(messageMapper)

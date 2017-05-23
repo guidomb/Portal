@@ -8,18 +8,19 @@
 
 import UIKit
 
-internal struct TableRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct TableRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
 
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    typealias ActionType = Action<RouteType, MessageType>
     
-    let properties: TableProperties<MessageType>
+    let properties: TableProperties<ActionType>
     let style: StyleSheet<TableStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
-        let table = PortalTableView(
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
+        let table = PortalTableView<MessageType, RouteType, CustomComponentRendererType>(
             items: properties.items,
             layoutEngine: layoutEngine,
             rendererFactory: rendererFactory

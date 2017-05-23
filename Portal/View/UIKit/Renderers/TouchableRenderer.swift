@@ -8,16 +8,17 @@
 
 import UIKit
 
-internal struct TouchableRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct TouchableRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    typealias ActionType = Action<RouteType, MessageType>
     
-    let child: Component<MessageType>
-    let gesture: Gesture<MessageType>
+    let child: Component<ActionType>
+    let gesture: Gesture<ActionType>
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let renderer = ComponentRenderer(component: child, rendererFactory: rendererFactory)
         var result = renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
         
@@ -26,7 +27,7 @@ internal struct TouchableRenderer<MessageType, CustomComponentRendererType: UIKi
         switch gesture {
             
         case .tap(let message):
-            let dispatcher: MessageDispatcher<MessageType>
+            let dispatcher: MessageDispatcher<ActionType>
             if let mailbox = result.mailbox {
               dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
             } else {

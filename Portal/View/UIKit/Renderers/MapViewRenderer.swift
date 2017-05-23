@@ -9,13 +9,15 @@
 import UIKit
 import MapKit
 
-internal struct MapViewRenderer<MessageType>: UIKitRenderer {
+internal struct MapViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
+    
+    typealias ActionType = Action<RouteType, MessageType>
     
     let properties: MapProperties
     let style: StyleSheet<EmptyStyleSheet>
     let layout: Layout
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let mapView = PortalMapView(placemarks: properties.placemarks)
         
         mapView.isZoomEnabled = properties.isZoomEnabled

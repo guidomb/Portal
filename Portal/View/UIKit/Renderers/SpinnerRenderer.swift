@@ -8,13 +8,15 @@
 
 import UIKit
 
-internal struct SpinnerRenderer<MessageType>: UIKitRenderer {
+internal struct SpinnerRenderer<MessageType, RouteType: Route>: UIKitRenderer {
+    
+    typealias ActionType = Action<RouteType, MessageType>
     
     let isActive: Bool
     let style: StyleSheet<SpinnerStyleSheet>
     let layout: Layout
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
         
         spinner.hidesWhenStopped = false

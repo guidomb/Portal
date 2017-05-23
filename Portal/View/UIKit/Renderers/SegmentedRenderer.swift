@@ -8,13 +8,15 @@
 
 import UIKit
 
-internal struct SegmentedRenderer<MessageType>: UIKitRenderer {
+internal struct SegmentedRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
-    let segments: ZipList<SegmentProperties<MessageType>>
+    typealias ActionType = Action<RouteType, MessageType>
+    
+    let segments: ZipList<SegmentProperties<ActionType>>
     let style: StyleSheet<SegmentedStyleSheet>
     let layout: Layout
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let segmentedControl = UISegmentedControl(items: [])
         
         for (index, segment) in segments.enumerated() {

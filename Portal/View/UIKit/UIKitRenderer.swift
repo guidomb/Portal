@@ -46,28 +46,30 @@ public struct CustomComponentDescription {
 public protocol UIKitCustomComponentRenderer {
     
     associatedtype MessageType
+    associatedtype RouteType: Route
     
     init(container: ContainerController)
     
-    func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (MessageType) -> Void)
+    func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action<RouteType, MessageType>) -> Void)
     
 }
 
-public struct VoidCustomComponentRenderer<MessageType>: UIKitCustomComponentRenderer {
+public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitCustomComponentRenderer {
     
     public init(container: ContainerController) {
         
     }
         
-    public func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (MessageType) -> Void) {
+    public func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action<RouteType, MessageType>) -> Void) {
     
     }
 }
 
-public struct UIKitComponentRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: Renderer
-    where CustomComponentRendererType.MessageType == MessageType {
+public struct UIKitComponentRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: Renderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    public typealias ActionType = Action<RouteType, MessageType>
     
     public var isDebugModeEnabled: Bool = false
     
@@ -85,7 +87,7 @@ public struct UIKitComponentRenderer<MessageType, CustomComponentRendererType: U
         self.layoutEngine = layoutEngine
     }
     
-    public func render(component: Component<MessageType>) -> Mailbox<MessageType> {
+    public func render(component: Component<ActionType>) -> Mailbox<ActionType> {
         containerView.subviews.forEach { $0.removeFromSuperview() }
         let renderer = ComponentRenderer(component: component, rendererFactory: rendererFactory)
         let renderResult = renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
@@ -97,7 +99,7 @@ public struct UIKitComponentRenderer<MessageType, CustomComponentRendererType: U
             renderResult.view.safeTraverse { $0.addDebugFrame() }
         }
         
-        return renderResult.mailbox ?? Mailbox<MessageType>()
+        return renderResult.mailbox ?? Mailbox<ActionType>()
     }
     
 }
@@ -121,8 +123,9 @@ internal struct Render<MessageType> {
 internal protocol UIKitRenderer {
     
     associatedtype MessageType
+    associatedtype RouteType: Route
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType>
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<Action<RouteType, MessageType>>
     
 }
 

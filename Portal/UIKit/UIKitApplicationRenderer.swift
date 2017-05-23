@@ -14,10 +14,10 @@ public final class UIKitApplicationRenderer<
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: ApplicationRenderer
 
-    where CustomComponentRendererType.MessageType == Action<RouteType, MessageType>  {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
     
     public typealias ActionType = Action<RouteType, MessageType>
-    public typealias Dispatcher = (Action<RouteType, MessageType>) -> Void
+    public typealias Dispatcher = (ActionType) -> Void
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     
     public var isDebugModeEnabled: Bool {
@@ -29,7 +29,7 @@ public final class UIKitApplicationRenderer<
         }
     }
     
-    fileprivate var componentManager: UIKitComponentManager<ActionType, RouteType, CustomComponentRendererType>
+    fileprivate var componentManager: UIKitComponentManager<MessageType, RouteType, CustomComponentRendererType>
     fileprivate let dispatch: Dispatcher
 
     public init(window: UIWindow, rendererFactory: @escaping CustomComponentRendererFactory, dispatch: @escaping Dispatcher) {
@@ -92,7 +92,7 @@ fileprivate extension UIKitApplicationRenderer {
         }
     }
     
-    fileprivate func currentNavigationController() -> PortalNavigationController<ActionType, RouteType, CustomComponentRendererType>? {
+    fileprivate func currentNavigationController() -> PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>? {
         if case .some(.navigationController(let navigationController)) = componentManager.visibleController {
             return navigationController
         } else {

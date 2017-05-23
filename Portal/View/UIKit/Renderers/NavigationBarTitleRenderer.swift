@@ -8,17 +8,18 @@
 
 import UIKit
 
-internal struct NavigationBarTitleRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct NavigationBarTitleRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    typealias ActionType = Action<RouteType, MessageType>
     
-    let navigationBarTitle: NavigationBarTitle<MessageType>
+    let navigationBarTitle: NavigationBarTitle<ActionType>
     let navigationItem: UINavigationItem
     let navigationBarSize: CGSize
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Mailbox<MessageType>? {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Mailbox<ActionType>? {
         switch navigationBarTitle {
             
         case .text(let title):
@@ -32,7 +33,7 @@ internal struct NavigationBarTitleRenderer<MessageType, CustomComponentRendererT
         case .component(let titleComponent):
             let titleView = UIView(frame: CGRect(origin: .zero, size: navigationBarSize))
             navigationItem.titleView = titleView
-            var renderer = UIKitComponentRenderer<MessageType, CustomComponentRendererType>(
+            var renderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>(
                 containerView: titleView,
                 layoutEngine: layoutEngine,
                 rendererFactory: rendererFactory

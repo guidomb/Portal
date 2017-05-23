@@ -8,24 +8,25 @@
 
 import UIKit
 
-public final class PortalTableView<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableView, UITableViewDataSource, UITableViewDelegate
-    where CustomComponentRendererType.MessageType == MessageType {
+public final class PortalTableView<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableView, UITableViewDataSource, UITableViewDelegate
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    public typealias ActionType = Action<RouteType, MessageType>
     
-    public let mailbox = Mailbox<MessageType>()
+    public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
     
     fileprivate let rendererFactory: CustomComponentRendererFactory
     fileprivate let layoutEngine: LayoutEngine
-    fileprivate let items: [TableItemProperties<MessageType>]
+    fileprivate let items: [TableItemProperties<ActionType>]
     
     // Used to cache cell actual height after rendering table
     // item component. Caching cell height is usefull when
     // cells have dynamic height.
     fileprivate var cellHeights: [CGFloat?]
     
-    public init(items: [TableItemProperties<MessageType>], layoutEngine: LayoutEngine, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public init(items: [TableItemProperties<ActionType>], layoutEngine: LayoutEngine, rendererFactory: @escaping CustomComponentRendererFactory) {
         self.rendererFactory = rendererFactory
         self.items = items
         self.layoutEngine = layoutEngine
@@ -96,11 +97,11 @@ public final class PortalTableView<MessageType, CustomComponentRendererType: UIK
 
 fileprivate extension PortalTableView {
     
-    fileprivate func dequeueReusableCell(with identifier: String) -> PortalTableViewCell<MessageType, CustomComponentRendererType> {
-        if let cell = dequeueReusableCell(withIdentifier: identifier) as? PortalTableViewCell<MessageType, CustomComponentRendererType> {
+    fileprivate func dequeueReusableCell(with identifier: String) -> PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType> {
+        if let cell = dequeueReusableCell(withIdentifier: identifier) as? PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType> {
             return cell
         } else {
-            let cell = PortalTableViewCell<MessageType, CustomComponentRendererType>(
+            let cell = PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType>(
                 reuseIdentifier: identifier,
                 layoutEngine: layoutEngine,
                 rendererFactory: rendererFactory
@@ -110,7 +111,7 @@ fileprivate extension PortalTableView {
         }
     }
     
-    fileprivate func itemRender(at indexPath: IndexPath) -> TableItemRender<MessageType> {
+    fileprivate func itemRender(at indexPath: IndexPath) -> TableItemRender<ActionType> {
         // TODO cache the result of calling renderer. Once the diff algorithm is implemented find a way to only
         // replace items that have changed.
         // IGListKit uses some library or algorithm to diff array. Maybe that can be used to make the array diff

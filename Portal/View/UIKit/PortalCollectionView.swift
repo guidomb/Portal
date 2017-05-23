@@ -8,19 +8,21 @@
 
 import UIKit
 
-public class PortalCollectionView<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
-    where CustomComponentRendererType.MessageType == MessageType {
+public class PortalCollectionView<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    public typealias ActionType = Action<RouteType, MessageType>
+    public typealias CellType = PortalCollectionViewCell<MessageType, RouteType, CustomComponentRendererType>
     
-    public let mailbox = Mailbox<MessageType>()
+    public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
     
     let layoutEngine: LayoutEngine
-    let items: [CollectionItemProperties<MessageType>]
+    let items: [CollectionItemProperties<ActionType>]
     let rendererFactory: CustomComponentRendererFactory
     
-    public init(items: [CollectionItemProperties<MessageType>], layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public init(items: [CollectionItemProperties<ActionType>], layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory) {
         self.items = items
         self.layoutEngine = layoutEngine
         self.rendererFactory = rendererFactory
@@ -30,7 +32,7 @@ public class PortalCollectionView<MessageType, CustomComponentRendererType: UIKi
         self.delegate = self
         
         let identifiers = Set(items.map { $0.identifier })
-        identifiers.forEach { register(PortalCollectionViewCell<MessageType, CustomComponentRendererType>.self, forCellWithReuseIdentifier: $0) }
+        identifiers.forEach { register(CellType.self, forCellWithReuseIdentifier: $0) }
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -66,8 +68,8 @@ public class PortalCollectionView<MessageType, CustomComponentRendererType: UIKi
 
 fileprivate extension PortalCollectionView {
 
-    fileprivate func dequeueReusableCell(with identifier: String, for indexPath: IndexPath) -> PortalCollectionViewCell<MessageType, CustomComponentRendererType>? {
-        if let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? PortalCollectionViewCell<MessageType, CustomComponentRendererType> {
+    fileprivate func dequeueReusableCell(with identifier: String, for indexPath: IndexPath) -> CellType? {
+        if let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? CellType {
             cell.forward(to: mailbox)
             return cell
         } else {
@@ -75,7 +77,7 @@ fileprivate extension PortalCollectionView {
         }
     }
     
-    fileprivate func itemRender(at indexPath: IndexPath) -> Component<MessageType> {
+    fileprivate func itemRender(at indexPath: IndexPath) -> Component<ActionType> {
         // TODO cache the result of calling renderer. Once the diff algorithm is implemented find a way to only
         // replace items that have changed.
         // IGListKit uses some library or algorithm to diff array. Maybe that can be used to make the array diff

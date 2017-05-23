@@ -8,17 +8,18 @@
 
 import UIKit
 
-internal struct CarouselRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct CarouselRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    typealias ActionType = Action<RouteType, MessageType>
     
-    let properties: CarouselProperties<MessageType>
+    let properties: CarouselProperties<ActionType>
     let style: StyleSheet<EmptyStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let carouselView = PortalCarouselView(
             items: properties.items,
             layoutEngine: layoutEngine,

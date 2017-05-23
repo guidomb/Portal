@@ -7,16 +7,18 @@
 //
 import UIKit
 
-public final class PortalCarouselView<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: PortalCollectionView<MessageType, CustomComponentRendererType>
-    where CustomComponentRendererType.MessageType == MessageType {
+public final class PortalCarouselView<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: PortalCollectionView<MessageType, RouteType, CustomComponentRendererType>
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
+    
+    public typealias ActionType = Action<RouteType, MessageType>
     
     public var isSnapToCellEnabled: Bool = false
     
-    fileprivate let onSelectionChange: (ZipListShiftOperation) -> MessageType?
+    fileprivate let onSelectionChange: (ZipListShiftOperation) -> ActionType?
     fileprivate var lastOffset: CGFloat = 0
     fileprivate var selectedIndex: Int = 0
     
-    public override init(items: [CollectionItemProperties<MessageType>], layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public override init(items: [CollectionItemProperties<ActionType>], layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory) {
         onSelectionChange = { _ in .none }
         super.init(
             items: items,
@@ -26,9 +28,9 @@ public final class PortalCarouselView<MessageType, CustomComponentRendererType: 
         )
     }
     
-    public init(items: ZipList<CarouselItemProperties<MessageType>>?, layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory, onSelectionChange: @escaping (ZipListShiftOperation) -> MessageType?) {
+    public init(items: ZipList<CarouselItemProperties<ActionType>>?, layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory, onSelectionChange: @escaping (ZipListShiftOperation) -> ActionType?) {
         if let items = items {
-            let transform = { (item: CarouselItemProperties) -> CollectionItemProperties<MessageType> in
+            let transform = { (item: CarouselItemProperties) -> CollectionItemProperties<ActionType> in
                 return collectionItem(
                     onTap: item.onTap,
                     identifier: item.identifier,

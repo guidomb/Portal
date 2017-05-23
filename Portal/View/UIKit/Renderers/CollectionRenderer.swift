@@ -8,17 +8,18 @@
 
 import UIKit
 
-internal struct CollectionRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct CollectionRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    typealias ActionType = Action<RouteType, MessageType>
     
-    let properties: CollectionProperties<MessageType>
+    let properties: CollectionProperties<ActionType>
     let style: StyleSheet<EmptyStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let collectionView = PortalCollectionView(
             items: properties.items,
             layoutEngine: layoutEngine,

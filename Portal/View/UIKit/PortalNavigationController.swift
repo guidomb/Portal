@@ -9,12 +9,13 @@
 import UIKit
 
 public final class PortalNavigationController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UINavigationController, UINavigationControllerDelegate
-    where CustomComponentRendererType.MessageType == MessageType {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     public typealias ContentControllerType = PortalViewController<MessageType, RouteType, CustomComponentRendererType>
+    public typealias ActionType = Action<RouteType, MessageType>
     
-    public let mailbox = Mailbox<MessageType>()
+    public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
     public var orientation: SupportedOrientations = .all
     
@@ -30,7 +31,7 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
 
     private let statusBarStyle: UIStatusBarStyle
     private var pushingViewController = false
-    private var currentNavigationBarOnBack: MessageType? = .none
+    private var currentNavigationBarOnBack: ActionType? = .none
     private var onControllerDidShow: (() -> Void)? = .none
     private var onPop: (() -> Void)? = .none
     
@@ -65,7 +66,7 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
         disposers.values.forEach { $0() }
     }
     
-    public func push(controller: ContentControllerType, with navigationBar: NavigationBar<MessageType>, animated: Bool,
+    public func push(controller: ContentControllerType, with navigationBar: NavigationBar<ActionType>, animated: Bool,
                      completion: @escaping () -> Void) {
         pushingViewController = true
         onControllerDidShow = completion
@@ -79,7 +80,7 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
         popViewController(animated: true)
     }
     
-    public func render(navigationBar: NavigationBar<MessageType>, inside navigationItem: UINavigationItem) {
+    public func render(navigationBar: NavigationBar<ActionType>, inside navigationItem: UINavigationItem) {
         currentNavigationBarOnBack = navigationBar.properties.onBack
         self.navigationBar.apply(style: navigationBar.style)
         
@@ -153,7 +154,7 @@ extension PortalNavigationController: ContainerController {
 
 fileprivate extension PortalNavigationController {
     
-    fileprivate func render(buttonItem: NavigationBarButton<MessageType>) -> UIBarButtonItem {
+    fileprivate func render(buttonItem: NavigationBarButton<ActionType>) -> UIBarButtonItem {
         switch buttonItem {
             
         case .textButton(let title, let message):

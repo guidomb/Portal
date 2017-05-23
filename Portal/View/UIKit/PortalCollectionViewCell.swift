@@ -8,12 +8,13 @@
 
 import UIKit
 
-public final class PortalCollectionViewCell<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UICollectionViewCell
-    where CustomComponentRendererType.MessageType == MessageType {
+public final class PortalCollectionViewCell<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UICollectionViewCell
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    public typealias ActionType = Action<RouteType, MessageType>
     
-    public var component: Component<MessageType>? = .none
+    public var component: Component<ActionType>? = .none
     public var isDebugModeEnabled: Bool {
         set {
             self.renderer?.isDebugModeEnabled = newValue
@@ -23,9 +24,9 @@ public final class PortalCollectionViewCell<MessageType, CustomComponentRenderer
         }
     }
     
-    fileprivate var renderer: UIKitComponentRenderer<MessageType, CustomComponentRendererType>? = .none
+    fileprivate var renderer: UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>? = .none
     
-    private let mailbox = Mailbox<MessageType>()
+    private let mailbox = Mailbox<ActionType>()
     private var mailboxForwarded = false
     
     public override init(frame: CGRect) {
@@ -54,7 +55,7 @@ public final class PortalCollectionViewCell<MessageType, CustomComponentRenderer
         }
     }
     
-    public func forward(to mailbox: Mailbox<MessageType>) {
+    public func forward(to mailbox: Mailbox<ActionType>) {
         guard !mailboxForwarded else { return }
         
         self.mailbox.forward(to: mailbox)

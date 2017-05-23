@@ -8,13 +8,15 @@
 
 import UIKit
 
-internal struct TextFieldRenderer<MessageType>: UIKitRenderer {
+internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
-    let properties: TextFieldProperties<MessageType>
+    typealias ActionType = Action<RouteType, MessageType>
+    
+    let properties: TextFieldProperties<ActionType>
     let style: StyleSheet<TextFieldStyleSheet>
     let layout: Layout
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let textField = UITextField()
         textField.placeholder = properties.placeholder
         textField.text = properties.text
@@ -28,7 +30,7 @@ internal struct TextFieldRenderer<MessageType>: UIKitRenderer {
         textField.removeTarget(.none, action: .none, for: .editingChanged)
         textField.removeTarget(.none, action: .none, for: .editingDidEnd)
 
-        let mailbox: Mailbox<MessageType> = textField.bindMessageDispatcher { mailbox in
+        let mailbox: Mailbox<ActionType> = textField.bindMessageDispatcher { mailbox in
             properties.onEvents.onEditingBegin |> { _ = textField.dispatch(message: $0, for: .editingDidBegin, with: mailbox) }
             properties.onEvents.onEditingChanged |> { _ = textField.dispatch(message: $0, for: .editingChanged, with: mailbox) }
             properties.onEvents.onEditingEnd |> { _ = textField.dispatch(message: $0, for: .editingDidEnd, with: mailbox) }

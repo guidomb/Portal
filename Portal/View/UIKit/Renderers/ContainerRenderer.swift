@@ -8,22 +8,23 @@
 
 import UIKit
 
-internal struct ContainerRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct ContainerRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
 
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
-
-    let children: [Component<MessageType>]
+    typealias ActionType = Action<RouteType, MessageType>
+    
+    let children: [Component<ActionType>]
     let style: StyleSheet<EmptyStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let view = UIView()
         view.managedByPortal = true
         
         var afterLayoutTasks: [AfterLayoutTask] = []
-        let mailbox = Mailbox<MessageType>()
+        let mailbox = Mailbox<ActionType>()
         for child in children {
             let renderer = ComponentRenderer(component: child, rendererFactory: rendererFactory)
             let renderResult = renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)

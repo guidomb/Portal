@@ -8,15 +8,16 @@
 
 import UIKit
 
-internal struct ComponentRenderer<MessageType, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
-    where CustomComponentRendererType.MessageType == MessageType {
+internal struct ComponentRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    typealias ActionType = Action<RouteType, MessageType>
     
-    let component: Component<MessageType>
+    let component: Component<ActionType>
     let rendererFactory: CustomComponentRendererFactory
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<MessageType> {
+    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         switch component {
             
         case .button(let properties, let style, let layout):
@@ -83,10 +84,17 @@ internal struct ComponentRenderer<MessageType, CustomComponentRendererType: UIKi
             return ProgressRenderer(progress: progress, style: style, layout: layout)
                 .render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
+        case .spinner(let isActive, let style, let layout):
+            return SpinnerRenderer(
+                isActive: isActive,
+                style: style,
+                layout: layout
+            ).render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
+            
         case .custom(let customComponent, let style, let layout):
             let customComponentContainerView = UIView()
             layoutEngine.apply(layout: layout, to: customComponentContainerView)
-            let mailbox = Mailbox<MessageType>()
+            let mailbox = Mailbox<ActionType>()
             return Render(view: customComponentContainerView, mailbox: mailbox) {
                 let component = CustomComponentDescription(
                     identifier: customComponent.identifier,
@@ -97,13 +105,6 @@ internal struct ComponentRenderer<MessageType, CustomComponentRendererType: UIKi
                 let renderer = self.rendererFactory()
                 renderer.renderComponent(component, inside: customComponentContainerView, dispatcher: mailbox.dispatch)
             }
-            
-        case .spinner(let isActive, let style, let layout):
-            return SpinnerRenderer(
-                isActive: isActive,
-                style: style,
-                layout: layout
-            ).render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
         }
     }
