@@ -140,3 +140,6 @@ cd Portal
 script/bootstrap
 open Portal.xcodeproj
 ```
+
+If you want to know how the project is doing, what features are in the pipeline for the next milestone and whare are the ideas that already in the backlog, check [this repo's project](https://github.com/guidomb/Portal/projects/1)
+
