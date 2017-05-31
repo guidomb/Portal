@@ -210,35 +210,39 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
 extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
     
     fileprivate func render(view: ViewType, completion: @escaping () -> Void) {
-        guard case let .component(component) = view.content else {
-            fatalError("Cannot render an alert view. present method must be used")
-        }
-        
-        switch (window.visibleController, view.root) {
+        switch view.content {
             
-        case (.some(.single(let controller)), .simple):
-            controller.component = component
-            controller.render()
-            
-        case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
-            guard !navigationController.isPopingTopController else {
-                print("Rendering skipped because controller is being poped")
-                return
+        case .component(let component):
+            switch (window.visibleController, view.root) {
+                
+            case (.some(.single(let controller)), .simple):
+                controller.component = component
+                controller.render()
+                
+            case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
+                guard !navigationController.isPopingTopController else {
+                    print("Rendering skipped because controller is being poped")
+                    return
+                }
+                guard let topController = navigationController.topController else {
+                    // TODO better handle this case
+                    return
+                }
+                topController.component = component
+                topController.render()
+                navigationController.render(navigationBar: navigationBar, inside: topController.navigationItem)
+                
+            default:
+                setRootController(for: view)
             }
-            guard let topController = navigationController.topController else {
-                // TODO better handle this case
-                return
-            }
-            topController.component = component
-            topController.render()
-            navigationController.render(navigationBar: navigationBar, inside: topController.navigationItem)
             
-        default:
-            setRootController(for: view)
+            completion()
+            // TODO Handle case where window.visibleController.orientation != orientation
+            
+        case .alert(properties: let properties):
+            present(alert: properties, completion: completion)
+            
         }
-        
-        completion()
-        // TODO Handle case where window.visibleController.orientation != orientation
     }
     
     fileprivate func present(view: ViewType, completion: @escaping () -> Void) {
