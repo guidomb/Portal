@@ -30,6 +30,7 @@ public class ApplicationRunner<
     ApplicationType.SubscriptionType            == CustomSubscriptionType,
     ApplicationRendererType.MessageType         == MessageType,
     ApplicationRendererType.RouteType           == RouteType,
+    ApplicationRendererType.NavigatorType       == NavigatorType,
     CommandExecutorType.MessageType             == Action<RouteType, MessageType>,
     CommandExecutorType.CommandType             == CommandType,
     CustomSubscriptionManager.SubscriptionType  == CustomSubscriptionType,
@@ -196,56 +197,14 @@ internal extension ApplicationRunner {
 fileprivate extension ApplicationRunner {
     
     fileprivate func render(view: ViewType) {
-        switch view.content {
-            
-        case .alert(let properties):
-            // When presenting an alert we need to stop
-            // processing messages until the view transition
-            // has been executed to avoid modifying the view
-            // in the middle of an animation / transition.
-            //
-            // By using the `executeRendererTransition` method
-            // we are wrapping the method that performs the
-            // view transition inside a scope that suspend / resumes
-            // operations enqueued in the dispatch queue.
-            executeRendererTransition { renderer, completion in
-                renderer.present(alert: properties, completion: completion)
-            }
-            
-        case .component(let component):
-            self.renderer?.render(component: component, with: view.root, orientation: view.orientation)
-            
-        }
+        executeRendererTransition { $0.render(view: view, completion: $1) }
     }
     
     fileprivate func present(view: ViewType, modally: Bool) {
-        // When presenting a new view we need to stop
-        // processing messages until the view transition
-        // has been executed to avoid modifying the view
-        // in the middle of an animation / transition.
-        //
-        // By using the `executeRendererTransition` method
-        // we are wrapping the method that performs the
-        // view transition inside a scope that suspend / resumes
-        // operations enqueued in the dispatch queue.
-        switch view.content {
-            
-        case .alert(let properties):
-            executeRendererTransition { renderer, completion in
-                renderer.present(alert: properties, completion: completion)
-            }
-            
-        case .component(let component):
-            executeRendererTransition { renderer, completion in
-                renderer.present(
-                    component: component,
-                    with: view.root,
-                    modally: modally,
-                    orientation: view.orientation,
-                    completion: completion
-                )
-            }
-            
+        if modally {
+            executeRendererTransition { $0.presentModal(view: view, completion: $1) }
+        } else {
+            executeRendererTransition { $0.present(view: view, completion: $1) }
         }
     }
     

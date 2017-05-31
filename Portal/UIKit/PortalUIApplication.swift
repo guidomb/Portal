@@ -57,7 +57,7 @@ public class UIKitApplicationContext<
         RouteType,
         NavigatorType,
         ApplicationType,
-        UIKitApplicationRenderer<MessageType, RouteType, CustomComponentRendererType>,
+        UIKitApplicationRenderer<MessageType, RouteType, NavigatorType, CustomComponentRendererType>,
         CommandExecutorType,
         CustomSubscriptionManager>
     

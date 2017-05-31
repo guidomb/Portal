@@ -65,7 +65,6 @@
 		9D8C84B11ECA3B750034C6BC /* TableRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C847E1ECA3B750034C6BC /* TableRenderer.swift */; };
 		9D8C84B21ECA3B750034C6BC /* TextFieldRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C847F1ECA3B750034C6BC /* TextFieldRenderer.swift */; };
 		9D8C84B31ECA3B750034C6BC /* TouchableRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C84801ECA3B750034C6BC /* TouchableRenderer.swift */; };
-		9D8C84B41ECA3B750034C6BC /* UIKitComponentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C84811ECA3B750034C6BC /* UIKitComponentManager.swift */; };
 		9D8C84B51ECA3B750034C6BC /* UIKitRenderable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C84821ECA3B750034C6BC /* UIKitRenderable.swift */; };
 		9D8C84B61ECA3B750034C6BC /* UIKitRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C84831ECA3B750034C6BC /* UIKitRenderer.swift */; };
 		9D8C84B71ECA3B750034C6BC /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D8C84841ECA3B750034C6BC /* UIViewExtensions.swift */; };
@@ -185,7 +184,6 @@
 		9D8C847E1ECA3B750034C6BC /* TableRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableRenderer.swift; sourceTree = "<group>"; };
 		9D8C847F1ECA3B750034C6BC /* TextFieldRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldRenderer.swift; sourceTree = "<group>"; };
 		9D8C84801ECA3B750034C6BC /* TouchableRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TouchableRenderer.swift; sourceTree = "<group>"; };
-		9D8C84811ECA3B750034C6BC /* UIKitComponentManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitComponentManager.swift; sourceTree = "<group>"; };
 		9D8C84821ECA3B750034C6BC /* UIKitRenderable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitRenderable.swift; sourceTree = "<group>"; };
 		9D8C84831ECA3B750034C6BC /* UIKitRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIKitRenderer.swift; sourceTree = "<group>"; };
 		9D8C84841ECA3B750034C6BC /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
@@ -367,7 +365,6 @@
 				9D8C846D1ECA3B750034C6BC /* PortalTableView.swift */,
 				9D8C846E1ECA3B750034C6BC /* PortalTableViewCell.swift */,
 				9D8C846F1ECA3B750034C6BC /* PortalViewController.swift */,
-				9D8C84811ECA3B750034C6BC /* UIKitComponentManager.swift */,
 				9D8C84821ECA3B750034C6BC /* UIKitRenderable.swift */,
 				9D8C84831ECA3B750034C6BC /* UIKitRenderer.swift */,
 				9D8C84841ECA3B750034C6BC /* UIViewExtensions.swift */,
@@ -651,7 +648,6 @@
 				9D8C84A61ECA3B750034C6BC /* CollectionRenderer.swift in Sources */,
 				9D8C849C1ECA3B750034C6BC /* PortalCarouselView.swift in Sources */,
 				9D8C849B1ECA3B750034C6BC /* MessageDispatcher.swift in Sources */,
-				9D8C84B41ECA3B750034C6BC /* UIKitComponentManager.swift in Sources */,
 				9D8C84A11ECA3B750034C6BC /* PortalTableView.swift in Sources */,
 				9D8C84A91ECA3B750034C6BC /* FontRenderer.swift in Sources */,
 				9D8C849A1ECA3B750034C6BC /* StyleSheet.swift in Sources */,

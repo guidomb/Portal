@@ -134,12 +134,18 @@ public protocol ApplicationRenderer {
     
     associatedtype MessageType
     associatedtype RouteType: Route
-        
-    func render(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, orientation: SupportedOrientations)
+    associatedtype NavigatorType: Equatable
     
-    func present(component: Component<Action<RouteType, MessageType>>, with root: RootComponent<Action<RouteType, MessageType>>, modally: Bool, orientation: SupportedOrientations, completion: @escaping () -> Void)
+    typealias ViewType = View<RouteType, MessageType, NavigatorType>
+    typealias ActionType = Action<RouteType, MessageType>
     
-    func present(alert: AlertProperties<Action<RouteType, MessageType>>, completion: @escaping () -> Void)
+    var mailbox: Mailbox<ActionType> { get }
+    
+    func render(view: ViewType, completion: @escaping () -> Void)
+    
+    func present(view: ViewType, completion: @escaping () -> Void)
+    
+    func presentModal(view: ViewType, completion: @escaping () -> Void)
     
     func dismissCurrentNavigator(completion: @escaping () -> Void)
     
