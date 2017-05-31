@@ -30,18 +30,21 @@ public struct NavigationBarProperties<MessageType> {
     public var onBack: MessageType?
     public var leftButtonItems: [NavigationBarButton<MessageType>]?
     public var rightButtonItems: [NavigationBarButton<MessageType>]?
+    public var separatorHidden: Bool
     
     fileprivate init(
         title: NavigationBarTitle<MessageType>? = .none,
         hideBackButtonTitle: Bool = false,
         onBack: MessageType? = .none,
         leftButtonItems: [NavigationBarButton<MessageType>]? = .none,
-        rightButtonItems: [NavigationBarButton<MessageType>]? = .none) {
+        rightButtonItems: [NavigationBarButton<MessageType>]? = .none,
+        separatorHiden: Bool = false) {
         self.title = title
         self.hideBackButtonTitle = hideBackButtonTitle
         self.onBack = onBack
         self.leftButtonItems = leftButtonItems
         self.rightButtonItems = rightButtonItems
+        self.separatorHidden = separatorHiden
     }
     
 }

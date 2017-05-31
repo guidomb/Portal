@@ -91,6 +91,10 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
         }
         navigationItem.rightBarButtonItems = navigationBar.properties.rightButtonItems.map { $0.map(render) }
         
+        if navigationBar.properties.separatorHidden {
+            self.navigationBar.setBackgroundImage(UIImage(), for: .any, barMetrics: .default)
+            self.navigationBar.shadowImage = UIImage()
+        }
         
         if let title = navigationBar.properties.title {
             let renderer = NavigationBarTitleRenderer(

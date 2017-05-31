@@ -481,6 +481,7 @@ final class ExampleApplication: Portal.Application {
                 $0.rightButtonItems = [
                     .textButton(title: "Hello", onTap: .sendMessage(.pong("Hello!"))),
                 ]
+                $0.separatorHidden = true
             },
             style: navigationBarStyleSheet(){ base, navBar in
                 navBar.titleTextColor = .red
