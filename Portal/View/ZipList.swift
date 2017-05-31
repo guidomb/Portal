@@ -32,7 +32,7 @@ public struct ZipList<Element>: Collection, CustomDebugStringConvertible {
     }
     
     fileprivate let left: [Element]
-    fileprivate let center: Element
+    public let center: Element
     fileprivate let right: [Element]
     
     public init(element: Element) {
