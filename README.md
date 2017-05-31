@@ -24,26 +24,26 @@ All you need to do to have a working application is to implement the `Applicatio
 
 ```swift
 public protocol Application {
-
+    
     associatedtype MessageType
     associatedtype StateType
     associatedtype CommandType
     associatedtype RouteType: Route
     associatedtype SubscriptionType: Equatable
-    associatedtype NavigatorType: Navigator
-
+    associatedtype NavigatorType: Equatable
+    
     var initialState: StateType { get }
-
+    
     var initialRoute: RouteType { get }
-
+    
     func translateRouteChange(from currentRoute: RouteType, to nextRoute: RouteType) -> MessageType?
-
+    
     func update(state: StateType, message: MessageType) -> (StateType, CommandType?)?
-
+    
     func view(for state: StateType) -> View<RouteType, MessageType, NavigatorType>
-
+    
     func subscriptions(for state: StateType) -> [Subscription<MessageType, RouteType, SubscriptionType>]
-
+    
 }
 ```
 
