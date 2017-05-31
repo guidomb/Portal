@@ -30,21 +30,18 @@ public struct NavigationBarProperties<MessageType> {
     public var onBack: MessageType?
     public var leftButtonItems: [NavigationBarButton<MessageType>]?
     public var rightButtonItems: [NavigationBarButton<MessageType>]?
-    public var separatorHidden: Bool
     
     fileprivate init(
         title: NavigationBarTitle<MessageType>? = .none,
         hideBackButtonTitle: Bool = false,
         onBack: MessageType? = .none,
         leftButtonItems: [NavigationBarButton<MessageType>]? = .none,
-        rightButtonItems: [NavigationBarButton<MessageType>]? = .none,
-        separatorHiden: Bool = false) {
+        rightButtonItems: [NavigationBarButton<MessageType>]? = .none) {
         self.title = title
         self.hideBackButtonTitle = hideBackButtonTitle
         self.onBack = onBack
         self.leftButtonItems = leftButtonItems
         self.rightButtonItems = rightButtonItems
-        self.separatorHidden = separatorHiden
     }
     
 }
@@ -113,6 +110,7 @@ public struct NavigationBarStyleSheet {
     public var titleTextSize: UInt
     public var isTranslucent: Bool
     public var statusBarStyle: StatusBarStyle
+    public var separatorHidden: Bool
     
     fileprivate init(
         tintColor: Color = .black,
@@ -120,13 +118,15 @@ public struct NavigationBarStyleSheet {
         titleTextFont: Font = defaultFont,
         titleTextSize: UInt = defaultNavigationBarTitleFontSize,
         isTranslucent: Bool = true,
-        statusBarStyle: StatusBarStyle = .`default`) {
+        statusBarStyle: StatusBarStyle = .`default`,
+        separatorHidden: Bool = false) {
         self.tintColor = tintColor
         self.titleTextFont = titleTextFont
         self.titleTextColor = titleTextColor
         self.titleTextSize = titleTextSize
         self.isTranslucent = isTranslucent
         self.statusBarStyle = statusBarStyle
+        self.separatorHidden = separatorHidden
     }
     
 }
