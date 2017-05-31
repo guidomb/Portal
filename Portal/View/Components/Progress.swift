@@ -31,6 +31,10 @@ public struct ProgressCounter {
         self.total = total
     }
     
+    public func add(progress: UInt) -> ProgressCounter? {
+        return ProgressCounter(partial: partial + progress, total: total)
+    }
+    
 }
 
 public func progress<MessageType>(
