@@ -325,7 +325,7 @@ final class ExampleApplication: Portal.Application {
                 root: .stack(exampleNavigationBar(title: "Detail")),
                 component: container(
                     children: [
-                        button(text: "Go back!", onTap: .navigateToPreviousRoute(preformTransition: true)),
+                        button(text: "Go back!", onTap: .navigateToPreviousRoute),
                         label(text: "Count \(counter)"),
                         button(text: "Increment!", onTap: .sendMessage(.increment)),
                         label(text: "Detail screen!"),
@@ -477,7 +477,6 @@ final class ExampleApplication: Portal.Application {
             properties: properties() {
                 $0.title = .text(title)
                 $0.hideBackButtonTitle = false
-                $0.onBack = .navigateToPreviousRoute(preformTransition: false)
                 $0.rightButtonItems = [
                     .textButton(title: "Hello", onTap: .sendMessage(.pong("Hello!"))),
                 ]

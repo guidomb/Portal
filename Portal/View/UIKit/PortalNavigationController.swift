@@ -15,9 +15,14 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
     public typealias ContentControllerType = PortalViewController<MessageType, RouteType, CustomComponentRendererType>
     public typealias ActionType = Action<RouteType, MessageType>
     
-    public let mailbox = Mailbox<ActionType>()
+    internal typealias InternalActionType = InternalAction<RouteType, MessageType>
+    
+    public let mailbox: Mailbox<ActionType>
+    
     public var isDebugModeEnabled: Bool = false
     public var orientation: SupportedOrientations = .all
+    
+    internal let internalMailbox = Mailbox<InternalActionType>()
     
     public var topController: ContentControllerType? {
         return self.topViewController as? ContentControllerType
@@ -28,10 +33,10 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
     fileprivate let layoutEngine: LayoutEngine
     fileprivate let rendererFactory: CustomComponentRendererFactory
     fileprivate var disposers: [String : () -> Void] = [:]
+    fileprivate var currentNavigationBarOnBack: InternalActionType? = .none
 
     private let statusBarStyle: UIStatusBarStyle
     private var pushingViewController = false
-    private var currentNavigationBarOnBack: ActionType? = .none
     private var onControllerDidShow: (() -> Void)? = .none
     private var onPop: (() -> Void)? = .none
     
@@ -54,6 +59,13 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
         self.rendererFactory = rendererFactory
         self.statusBarStyle = statusBarStyle
         self.layoutEngine = layoutEngine
+        self.mailbox = internalMailbox.filterMap { message in
+            if case .action(let action) = message {
+                return action
+            } else {
+                return .none
+            }
+        }
         super.init(nibName: nil, bundle: nil)
         self.delegate = self
     }
@@ -72,7 +84,7 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
         onControllerDidShow = completion
         pushViewController(controller, animated: animated)
         render(navigationBar: navigationBar, inside: controller.navigationItem)
-        controller.mailbox.forward(to: mailbox)
+        controller.mailbox.forwardMap(to: internalMailbox) { .action($0) }
     }
     
     public func popTopController(completion: @escaping () -> Void) {
@@ -81,7 +93,7 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
     }
     
     public func render(navigationBar: NavigationBar<ActionType>, inside navigationItem: UINavigationItem) {
-        currentNavigationBarOnBack = navigationBar.properties.onBack
+        configureOnBackAction(for: navigationBar.properties)
         self.navigationBar.apply(style: navigationBar.style)
         
         if let leftButtonItems = navigationBar.properties.leftButtonItems {
@@ -103,7 +115,9 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
                 navigationBarSize: self.navigationBar.bounds.size,
                 rendererFactory: { self.rendererFactory(self) }
             )
-            renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled) |> { $0.forward(to: mailbox) }
+            renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled) |> { navigationBarMailbox in
+                navigationBarMailbox.forwardMap(to: internalMailbox) { .action($0) }
+            }
         }
     }
     
@@ -130,8 +144,8 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
             isPopingTopController = true
             if let onPop = self.onPop {
                 onControllerDidShow = onPop
-            } else if let message = currentNavigationBarOnBack {
-                onControllerDidShow = { self.mailbox.dispatch(message: message) }
+            } else if let action = currentNavigationBarOnBack {
+                onControllerDidShow = { self.internalMailbox.dispatch(message: action) }
             } else {
                 onControllerDidShow = .none
             }
@@ -171,6 +185,17 @@ fileprivate extension PortalNavigationController {
             button.onTap(dispatch: message, to: mailbox)
             return button
             
+        }
+    }
+    
+    fileprivate func configureOnBackAction(for properties: NavigationBarProperties<ActionType>) {
+        switch properties.onBack {
+        case .some(.navigateToPreviousRoute):
+            currentNavigationBarOnBack = .navigateToPreviousRouteAfterPop
+        case .some(let onBack):
+            currentNavigationBarOnBack = .action(onBack)
+        default:
+            currentNavigationBarOnBack = .navigateToPreviousRouteAfterPop
         }
     }
     

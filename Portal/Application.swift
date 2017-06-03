@@ -17,7 +17,7 @@ public protocol Route: Equatable {
 public indirect enum Action<RouteType: Route, MessageType> {
 
     case dismissNavigator(thenSend: Action<RouteType, MessageType>?)
-    case navigateToPreviousRoute(preformTransition: Bool)
+    case navigateToPreviousRoute
     case navigate(to: RouteType)
     case sendMessage(MessageType)
     
@@ -150,5 +150,12 @@ public protocol ApplicationRenderer {
     func dismissCurrentNavigator(completion: @escaping () -> Void)
     
     func rewindCurrentNavigator(completion: @escaping () -> Void)
+    
+}
+
+internal enum InternalAction<RouteType: Route, MessageType> {
+
+    case navigateToPreviousRouteAfterPop
+    case action(Action<RouteType, MessageType>)
     
 }

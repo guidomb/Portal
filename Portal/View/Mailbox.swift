@@ -40,4 +40,18 @@ extension Mailbox {
         subscribe { mailbox.dispatch(message: $0) }
     }
     
+    internal func forwardMap<NewMessageType>(to mailbox: Mailbox<NewMessageType>, _ transform: @escaping (MessageType) -> NewMessageType) {
+        subscribe { mailbox.dispatch(message: transform($0)) }
+    }
+    
+    internal func filterMap<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType?) -> Mailbox<NewMessageType> {
+        let mailbox = Mailbox<NewMessageType>()
+        subscribe { message in
+            if let transformedMessage = transform(message) {
+                mailbox.dispatch(message: transformedMessage)
+            }
+        }
+        return mailbox
+    }
+    
 }

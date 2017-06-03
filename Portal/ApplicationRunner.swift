@@ -42,7 +42,9 @@ public class ApplicationRunner<
     public typealias Middleware = (StateType, MessageType, CommandType?, NextMiddleware) -> Transition
     public typealias ActionType = Action<RouteType, MessageType>
     public typealias ViewType = View<RouteType, MessageType, NavigatorType>
-    public typealias DispatcherFactory = (@escaping (ActionType) -> Void) -> ApplicationRendererType
+
+    internal typealias InternalActionType = InternalAction<RouteType, MessageType>
+    internal typealias DispatcherFactory = (@escaping (InternalActionType) -> Void) -> ApplicationRendererType
 
     fileprivate typealias NavigationStateType = NavigationState<RouteType, NavigatorType>
     fileprivate typealias ScreenTransition = (@escaping ScreenTransitionCompletion) -> Void
@@ -59,7 +61,7 @@ public class ApplicationRunner<
     fileprivate var subscriptionsManager: SubscriptionsManager<RouteType, MessageType, CustomSubscriptionManager>?
     fileprivate let dispatchQueue = ExecutionQueue()
     
-    public init(
+    internal init(
         application: ApplicationType,
         commandExecutor: CommandExecutorType,
         subscriptionManager: CustomSubscriptionManager,
@@ -70,11 +72,11 @@ public class ApplicationRunner<
         self.currentState = application.initialState
         self.middlewares = [{ (s, m, _, _) in application.update(state: s, message: m) }]
         self.subscriptionsManager = SubscriptionsManager(subscriptionManager: subscriptionManager) { [unowned self] in self.dispatch(action: $0) }
-        self.renderer = rendererFactory { [unowned self] in self.dispatch(action: $0) }
+        self.renderer = rendererFactory { [unowned self] in self.internalDispatch(action: $0) }
     }
     
     public final func dispatch(action: ActionType) {
-        dispatchQueue.enqueue { self.serialDispatch(action: action) }
+        internalDispatch(action: .action(action))
     }
     
     public final func execute(command: CommandType) {
@@ -89,10 +91,14 @@ public class ApplicationRunner<
 
 internal extension ApplicationRunner {
     
-    internal final func serialDispatch(action: ActionType) {
+    internal final func internalDispatch(action: InternalActionType) {
+        dispatchQueue.enqueue { self.serialDispatch(action: action) }
+    }
+    
+    internal final func serialDispatch(action: InternalActionType) {
         switch (action, navigationState) {
             
-        case (.dismissNavigator(let maybeAction), .some(let navigationState)):
+        case (.action(.dismissNavigator(let maybeAction)), .some(let navigationState)):
             if let nextNavigationState = navigationState.dismissCurrentNavigator() {
                 // When dismissing a navigator we need to stop
                 // processing messages until the view transition
@@ -115,50 +121,37 @@ internal extension ApplicationRunner {
                 log("Cannot dismiss root navigator")
             }
             
-        case (.navigateToPreviousRoute(let performTransition), .some(let navigationState)):
-            if let previousRoute = navigationState.currentRoute.previous {
-                func handleChangeToPreviousRoute() {
-                    handleRouteChange(from: navigationState.currentRoute, to: previousRoute) { view, nextState in
-                        self.currentState = nextState
-                        self.navigationState = navigationState.navigate(to: previousRoute, using: view.navigator)
-                        
-                        render(view: view)
-                    }
-                }
-                
-                if performTransition {
-                    // When rewinding a navigator we need to stop
-                    // processing messages until the view transition
-                    // has been executed to avoid modifying the view
-                    // in the middle of an animation / transition.
-                    //
-                    // By using the `performTransition` method
-                    // we are wrapping the method that performs the
-                    // view transition inside a scope that suspend / resumes
-                    // operations enqueued in the dispatch queue.
-                    //
-                    // In this case we need to make sure that `rewindCurrentNavigator`
-                    // is executed before any other operation that could be waiting for
-                    // execution inside the dispatch queue.
-                    let rewindCurrentNavigator = self.performTransition(renderer?.rewindCurrentNavigator)
-                    rewindCurrentNavigator(handleChangeToPreviousRoute)
-                } else {
-                    // If we are not perfoming the transition we can assume that `navigateToPreviousRoute`
-                    // was dispatched by PortalNavigationController when the back button was pressed while
-                    // the pop transition is being executed.
-                    //
-                    // Because there is no way to know in advance that a controller will be poped (by the time
-                    // UIKit notifies that a controller will be presented the animation is already in progress) we 
-                    // cannot avoid handling messages that may want to update a view that is being poped. But it is
-                    // not a big issue because by the time this message is handled the transtion was executed and
-                    // view update executed during the transition are ignored by the renderer.
-                    handleChangeToPreviousRoute()
-                }
-            } else {
+        case (.action(.navigateToPreviousRoute), .some(let navigationState)):
+            guard let previousRoute = navigationState.currentRoute.previous else {
                 log("Cannot change to previous route because there isn't one for current route '\(navigationState.currentRoute)'")
+                return
             }
             
-        case (.navigate(to: let nextRoute), .some(let navigationState)) where navigationState.currentRoute != nextRoute:
+            func handleChangeToPreviousRoute() {
+                handleRouteChange(from: navigationState.currentRoute, to: previousRoute) { view, nextState in
+                    self.currentState = nextState
+                    self.navigationState = navigationState.navigate(to: previousRoute, using: view.navigator)
+                    
+                    render(view: view)
+                }
+            }
+            // When rewinding a navigator we need to stop
+            // processing messages until the view transition
+            // has been executed to avoid modifying the view
+            // in the middle of an animation / transition.
+            //
+            // By using the `performTransition` method
+            // we are wrapping the method that performs the
+            // view transition inside a scope that suspends / resumes
+            // operations enqueued in the dispatch queue.
+            //
+            // In this case we need to make sure that `rewindCurrentNavigator`
+            // is executed before any other operation that could be waiting for
+            // execution inside the dispatch queue.
+            let rewindCurrentNavigator = self.performTransition(renderer?.rewindCurrentNavigator)
+            rewindCurrentNavigator(handleChangeToPreviousRoute)
+            
+        case (.action(.navigate(to: let nextRoute)), .some(let navigationState)) where navigationState.currentRoute != nextRoute:
             handleRouteChange(from: navigationState.currentRoute, to: nextRoute) { view, nextState in
                 self.currentState = nextState
                 self.navigationState = navigationState.navigate(to: nextRoute, using: view.navigator)
@@ -167,7 +160,7 @@ internal extension ApplicationRunner {
                 self.present(view: view, modally: modally)
             }
             
-        case (.sendMessage(let message), .some(let navigationState)):
+        case (.action(.sendMessage(let message)), .some(let navigationState)):
             handle(message: message) { view, nextState in
                 if view.navigator == navigationState.currentNavigator {
                     self.currentState = nextState
@@ -177,13 +170,37 @@ internal extension ApplicationRunner {
                 }
             }
             
-        case (.sendMessage(let message), .none):
+        case (.action(.sendMessage(let message)), .none):
             handle(message: message) { view, nextState in
                 self.currentState = nextState
                 self.navigationState = NavigationState(route: application.initialRoute, navigator: view.navigator)
                 render(view: view)
             }
             
+        // Handling internal actions from here on
+            
+        case (.navigateToPreviousRouteAfterPop, .some(let navigationState)):
+            guard let previousRoute = navigationState.currentRoute.previous else {
+                log("Cannot change to previous route because there isn't one for current route '\(navigationState.currentRoute)'")
+                return
+            }
+    
+            // `navigateToPreviousRouteAfterPop` is an internal action that can only be
+            // dispatched by PortalNavigationController when the back button was pressed while
+            // after the pop transition was executed.
+            //
+            // Because there is no way to know in advance that a controller will be poped (by the time
+            // UIKit notifies that a controller will be presented the animation is already in progress) we
+            // cannot avoid handling messages that may want to update a view that is being poped. But it is
+            // not a big issue because by the time this message is handled the transtion was executed and
+            // view update executed during the transition are ignored by the renderer.
+            handleRouteChange(from: navigationState.currentRoute, to: previousRoute) { view, nextState in
+                self.currentState = nextState
+                self.navigationState = navigationState.navigate(to: previousRoute, using: view.navigator)
+                
+                render(view: view)
+            }
+        
         case (_, .none):
             log("Cannot handle action '\(action)' if navigation state is not initialized")
             
@@ -306,7 +323,7 @@ fileprivate extension ApplicationRunner {
                 // dispatch queue to make sure that this action in handled during
                 // this update cycle without processing any other messages that
                 // could have arrived during the transition.
-                action |> serialDispatch
+                action |> { serialDispatch(action: .action($0)) }
             }
         }
     }

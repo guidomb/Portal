@@ -13,10 +13,14 @@ public final class PortalViewController<MessageType, RouteType: Route, CustomCom
     
     public typealias RendererFactory = (ContainerController) -> UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     public typealias ActionType = Action<RouteType, MessageType>
-    
+
+    internal typealias InternalActionType = InternalAction<RouteType, MessageType>
+
     public var component: Component<ActionType>
-    public let mailbox = Mailbox<ActionType>()
+    public let mailbox: Mailbox<ActionType>
     public var orientation: SupportedOrientations = .all
+    
+    internal let internalMailbox = Mailbox<InternalActionType>()
     
     fileprivate var disposers: [String : () -> Void] = [:]
     
@@ -29,6 +33,13 @@ public final class PortalViewController<MessageType, RouteType: Route, CustomCom
     public init(component: Component<ActionType>, factory createRenderer: @escaping RendererFactory) {
         self.component = component
         self.createRenderer = createRenderer
+        self.mailbox = internalMailbox.filterMap { message in
+            if case .action(let action) = message {
+                return action
+            } else {
+                return .none
+            }
+        }
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -64,7 +75,7 @@ public final class PortalViewController<MessageType, RouteType: Route, CustomCom
         view.frame = calculateViewFrame()
         let renderer = createRenderer(self)
         let componentMailbox = renderer.render(component: component)
-        componentMailbox.forward(to: mailbox)
+        componentMailbox.forwardMap(to: internalMailbox) { .action($0) }
     }
     
 }

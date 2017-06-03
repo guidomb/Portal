@@ -18,10 +18,12 @@ public final class UIKitApplicationRenderer<
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
     
     public typealias ActionType = Action<RouteType, MessageType>
-    public typealias Dispatcher = (ActionType) -> Void
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     public typealias ViewType = View<RouteType, MessageType, NavigatorType>
 
+    internal typealias InternalActionType = InternalAction<RouteType, MessageType>
+    internal typealias Dispatcher = (InternalActionType) -> Void
+    
     public var isDebugModeEnabled: Bool {
         set {
             forwardee.isDebugModeEnabled = newValue
@@ -35,11 +37,16 @@ public final class UIKitApplicationRenderer<
         return forwardee.mailbox
     }
     
+    internal var internalMailbox: Mailbox<InternalActionType> {
+        return forwardee.internalMailbox
+    }
+    
     fileprivate let forwardee: MainThreadUIKitApplicationRenderer<MessageType, RouteType, NavigatorType, CustomComponentRendererType>
 
-    public init(window: UIWindow, layoutEngine: LayoutEngine = YogaLayoutEngine(), rendererFactory: @escaping CustomComponentRendererFactory, dispatch: @escaping Dispatcher) {
+    internal init(window: UIWindow, layoutEngine: LayoutEngine = YogaLayoutEngine(),
+                  rendererFactory: @escaping CustomComponentRendererFactory, dispatch: @escaping Dispatcher) {
         self.forwardee = MainThreadUIKitApplicationRenderer(window: window, layoutEngine: layoutEngine, rendererFactory: rendererFactory)
-        forwardee.mailbox.subscribe(subscriber: dispatch)
+        internalMailbox.subscribe(subscriber: dispatch)
     }
     
     public func render(view: ViewType, completion: @escaping () -> Void) {
@@ -91,12 +98,12 @@ public enum ComponentController<MessageType, RouteType: Route, CustomComponentRe
         }
     }
     
-    public var mailbox: Mailbox<Action<RouteType, MessageType>> {
+    internal var internalMailbox: Mailbox<InternalAction<RouteType, MessageType>> {
         switch self {
         case .navigationController(let navigationController):
-            return navigationController.mailbox
+            return navigationController.internalMailbox
         case .single(let controller):
-            return controller.mailbox
+            return controller.internalMailbox
         }
     }
     
@@ -111,6 +118,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
 
     typealias ActionType = Action<RouteType, MessageType>
+    typealias InternalActionType = InternalAction<RouteType, MessageType>
     typealias ViewType = View<RouteType, MessageType, NavigatorType>
     typealias ControllerType = PortalViewController<MessageType, RouteType, CustomComponentRendererType>
     typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
@@ -118,7 +126,8 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
     typealias NavigatorControllerType = PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>
     typealias ComponentControllerType = ComponentController<CustomComponentRendererType.MessageType, CustomComponentRendererType.RouteType, CustomComponentRendererType>
 
-    fileprivate let mailbox = Mailbox<ActionType>()
+    fileprivate let mailbox: Mailbox<ActionType>
+    fileprivate let internalMailbox = Mailbox<InternalActionType>()
     fileprivate let layoutEngine: LayoutEngine
     fileprivate let rendererFactory: CustomComponentRendererFactory
     
@@ -133,6 +142,13 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
         self.window = WindowManager(window: window)
         self.rendererFactory = rendererFactory
         self.layoutEngine = layoutEngine
+        self.mailbox = internalMailbox.filterMap { internalAction in
+            if case .action(let action) = internalAction {
+                return action
+            } else {
+                return .none
+            }
+        }
     }
     
     fileprivate func present(alert: AlertProperties<ActionType>, completion: @escaping () -> Void) {
@@ -140,7 +156,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
         for button in alert.buttons {
             alertController.addAction(UIAlertAction(title: button.title, style: .default) { [weak self] _ in
                 guard let action = button.onTap else { return }
-                self?.mailbox.dispatch(message: action)
+                self?.internalMailbox.dispatch(message: .action(action))
             })
         }
         visibleController?.renderableController.present(alertController, animated: true, completion: completion)
@@ -202,7 +218,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
             for: view,
             contentController: controller(for: component, orientation: view.orientation)
         )
-        window.rootController?.mailbox.forward(to: mailbox)
+        window.rootController?.internalMailbox.forward(to: internalMailbox)
     }
     
 }
@@ -222,11 +238,11 @@ extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
             case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
                 guard !navigationController.isPopingTopController else {
                     print("Rendering skipped because controller is being poped")
-                    return
+                    break
                 }
                 guard let topController = navigationController.topController else {
                     // TODO better handle this case
-                    return
+                    break
                 }
                 topController.component = component
                 topController.render()
@@ -275,7 +291,7 @@ extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
                     for: view,
                     contentController: self.controller(for: component, orientation: view.orientation)
                 )
-                controllerToPresent.mailbox.forward(to: self.mailbox)
+                controllerToPresent.internalMailbox.forward(to: self.internalMailbox)
                 presenter.present(controllerToPresent.renderableController, animated: true, completion: completion)
                 self.window.currentModal = controllerToPresent
                 
