@@ -83,7 +83,7 @@ fileprivate extension UIKitApplicationRenderer {
 
 }
 
-public enum ComponentController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
+fileprivate enum ComponentController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
     
     case navigationController(PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>)
