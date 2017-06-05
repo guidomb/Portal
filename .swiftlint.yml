@@ -1,0 +1,6 @@
+included: # paths to include during linting. `--path` is ignored if present.
+  - Portal
+
+# Disabled Rules
+disabled_rules:
+  - trailing_whitespace
