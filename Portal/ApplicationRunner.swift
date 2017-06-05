@@ -70,7 +70,7 @@ public class ApplicationRunner<
         self.application = application
         self.commandExecutor = commandExecutor
         self.currentState = application.initialState
-        self.middlewares = [{ (s, m, _, _) in application.update(state: s, message: m) }]
+        self.middlewares = [{ (state, message, _, _) in application.update(state: state, message: message) }]
         self.subscriptionsManager = SubscriptionsManager(subscriptionManager: subscriptionManager) { [unowned self] in self.dispatch(action: $0) }
         self.renderer = rendererFactory { [unowned self] in self.internalDispatch(action: $0) }
     }

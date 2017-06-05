@@ -56,8 +56,8 @@ public struct ZipList<Element>: Collection, CustomDebugStringConvertible {
         }
     }
     
-    public func index(after i: Int) -> Int {
-        return i + 1
+    public func index(after index: Int) -> Int {
+        return index + 1
     }
     
     public func shiftLeft(count: UInt) -> ZipList<Element>? {

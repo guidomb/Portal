@@ -40,7 +40,11 @@ public struct Timer<MessageType, RouteType: Route>: Equatable {
         return lhs.value == rhs.value && lhs.unit == rhs.unit && lhs.repeats == rhs.repeats && lhs.tag == rhs.tag
     }
     
-    public static func every<MessageType, RouteType: Route>(_ value: Double, unit: TimerUnit, tag: String? = .none, transform: @escaping (Date) -> Action<RouteType, MessageType>) -> Timer<MessageType, RouteType> {
+    public static func every<MessageType, RouteType: Route>(
+        _ value: Double,
+        unit: TimerUnit,
+        tag: String? = .none,
+        transform: @escaping (Date) -> Action<RouteType, MessageType>) -> Timer<MessageType, RouteType> {
         return Timer<MessageType, RouteType>(
             every: value,
             unit: unit,
@@ -50,7 +54,12 @@ public struct Timer<MessageType, RouteType: Route>: Equatable {
         )
     }
     
-    public static func only<MessageType, RouteType: Route>(fire times: UInt, every value: Double, unit: TimerUnit, tag: String? = .none, transform: @escaping (Date) -> Action<RouteType, MessageType>) -> Timer<MessageType, RouteType> {
+    public static func only<MessageType, RouteType: Route>(
+        fire times: UInt,
+        every value: Double,
+        unit: TimerUnit,
+        tag: String? = .none,
+        transform: @escaping (Date) -> Action<RouteType, MessageType>) -> Timer<MessageType, RouteType> {
         return Timer<MessageType, RouteType>(
             every: value,
             unit: unit,

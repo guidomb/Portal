@@ -47,15 +47,15 @@ internal struct YogaLayoutEngine : LayoutEngine {
 fileprivate extension YogaLayoutEngine {
 
     fileprivate func apply(flex: Flex, to view: UIView) {
-        view.yoga.flexDirection = flex.direction.yg_flexDirection
+        view.yoga.flexDirection = flex.direction.yogaFlexDirection
         view.yoga.flexGrow = CGFloat(flex.grow.rawValue)
         view.yoga.flexShrink = CGFloat(flex.shrink.rawValue)
-        view.yoga.flexWrap = flex.wrap.yg_flexWrap
+        view.yoga.flexWrap = flex.wrap.yogaFlexWrap
         flex.basis |> { view.yoga.flexBasis = CGFloat($0) }
     }
 
     fileprivate func apply(justifyContent: JustifyContent, to view: UIView) {
-        view.yoga.justifyContent = justifyContent.yg_justifyContent
+        view.yoga.justifyContent = justifyContent.yogaJustifyContent
     }
 
     fileprivate func apply(width: Dimension, to view: UIView) {
@@ -71,9 +71,9 @@ fileprivate extension YogaLayoutEngine {
     }
 
     fileprivate func apply(alignment: Alignment, to view: UIView) {
-        view.yoga.alignContent = alignment.content.yg_alignContent
-        view.yoga.alignItems = alignment.items.yg_alignItems
-        alignment.`self` |> { view.yoga.alignSelf = $0.yg_alignSelf }
+        view.yoga.alignContent = alignment.content.yogaAlignContent
+        view.yoga.alignItems = alignment.items.yogaAlignItems
+        alignment.`self` |> { view.yoga.alignSelf = $0.yogaAlignSelf }
     }
 
     fileprivate func apply(position: Position, to view: UIView) {
@@ -159,14 +159,14 @@ fileprivate extension YogaLayoutEngine {
     }
 
     fileprivate func apply(direction: Direction, to view: UIView) {
-        view.yoga.direction = direction.yg_direction
+        view.yoga.direction = direction.yogaDirection
     }
 
 }
 
 fileprivate extension AlignContent {
 
-    fileprivate var yg_alignContent: YGAlign {
+    fileprivate var yogaAlignContent: YGAlign {
         // TODO review this. It seems there is a mismatch betweeen docs
         switch self {
         case .flexStart:
@@ -186,7 +186,7 @@ fileprivate extension AlignContent {
 
 fileprivate extension AlignSelf {
 
-    fileprivate var yg_alignSelf: YGAlign {
+    fileprivate var yogaAlignSelf: YGAlign {
         switch self {
         case .stretch:
             return .stretch
@@ -203,7 +203,7 @@ fileprivate extension AlignSelf {
 
 fileprivate extension AlignItems {
 
-    fileprivate var yg_alignItems: YGAlign {
+    fileprivate var yogaAlignItems: YGAlign {
         switch self {
         case .stretch:
             return .stretch
@@ -220,7 +220,7 @@ fileprivate extension AlignItems {
 
 fileprivate extension FlexDirection {
 
-    fileprivate var yg_flexDirection: YGFlexDirection {
+    fileprivate var yogaFlexDirection: YGFlexDirection {
         switch self {
         case .row:
             return .row
@@ -237,7 +237,7 @@ fileprivate extension FlexDirection {
 
 fileprivate extension FlexWrap {
 
-    fileprivate var yg_flexWrap: YGWrap {
+    fileprivate var yogaFlexWrap: YGWrap {
         switch self {
         case .nowrap:
             return .noWrap
@@ -250,7 +250,7 @@ fileprivate extension FlexWrap {
 
 fileprivate extension JustifyContent {
 
-    fileprivate var yg_justifyContent: YGJustify {
+    fileprivate var yogaJustifyContent: YGJustify {
         switch self {
         case .flexStart:
             return .flexStart
@@ -269,7 +269,7 @@ fileprivate extension JustifyContent {
 
 fileprivate extension Direction {
 
-    fileprivate var yg_direction: YGDirection {
+    fileprivate var yogaDirection: YGDirection {
         switch self {
         case .inherit:
             return .inherit

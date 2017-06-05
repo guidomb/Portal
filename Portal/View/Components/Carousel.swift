@@ -127,7 +127,11 @@ public func carouselItem<MessageType>(
     return CarouselItemProperties(onTap: onTap, identifier: identifier, renderer: renderer)
 }
 
-public func properties<MessageType>(itemsWidth: UInt, itemsHeight: UInt, items: ZipList<CarouselItemProperties<MessageType>>?, configure: (inout CarouselProperties<MessageType>) -> ()) -> CarouselProperties<MessageType> {
+public func properties<MessageType>(
+    itemsWidth: UInt,
+    itemsHeight: UInt,
+    items: ZipList<CarouselItemProperties<MessageType>>?,
+    configure: (inout CarouselProperties<MessageType>) -> Void) -> CarouselProperties<MessageType> {
     var properties = CarouselProperties<MessageType>(items: items, itemsWidth: itemsWidth, itemsHeight: itemsHeight)
     configure(&properties)
     return properties

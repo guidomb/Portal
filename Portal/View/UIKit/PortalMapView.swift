@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-fileprivate let PortalMapViewAnnotationIdentifier = "PortalMapViewAnnotation"
+fileprivate let mapViewAnnotationIdentifier = "PortalMapViewAnnotation"
 
 internal final class PortalMapView: MKMapView {
     
@@ -54,10 +54,10 @@ extension PortalMapView {
     }
     
     fileprivate func dequeueReusableAnnotationView(for annotation: MapPlacemarkAnnotation) -> MKAnnotationView {
-        if let annotationView = dequeueReusableAnnotationView(withIdentifier: PortalMapViewAnnotationIdentifier) {
+        if let annotationView = dequeueReusableAnnotationView(withIdentifier: mapViewAnnotationIdentifier) {
             return annotationView
         } else {
-            return MKAnnotationView(annotation: annotation, reuseIdentifier: PortalMapViewAnnotationIdentifier)
+            return MKAnnotationView(annotation: annotation, reuseIdentifier: mapViewAnnotationIdentifier)
         }
     }
     
