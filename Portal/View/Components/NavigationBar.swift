@@ -69,7 +69,7 @@ public func navigationBar<MessageType>(
     onBack: MessageType,
     style: StyleSheet<NavigationBarStyleSheet> = navigationBarStyleSheet()) -> NavigationBar<MessageType> {
     return NavigationBar(
-        properties: properties() {
+        properties: properties {
             $0.title = .text(title)
             $0.onBack = onBack
         },
@@ -82,7 +82,7 @@ public func navigationBar<MessageType>(
     onBack: MessageType,
     style: StyleSheet<NavigationBarStyleSheet> = navigationBarStyleSheet()) -> NavigationBar<MessageType> {
     return NavigationBar(
-        properties: properties() {
+        properties: properties {
             $0.title = .image(title)
             $0.onBack = onBack
         },
@@ -91,7 +91,7 @@ public func navigationBar<MessageType>(
 }
 
 public func properties<MessageType>(
-    configure: (inout NavigationBarProperties<MessageType>) -> ()) -> NavigationBarProperties<MessageType> {
+    configure: (inout NavigationBarProperties<MessageType>) -> Void) -> NavigationBarProperties<MessageType> {
     var properties = NavigationBarProperties<MessageType>()
     configure(&properties)
     return properties
@@ -133,7 +133,7 @@ public struct NavigationBarStyleSheet {
 }
 
 public func navigationBarStyleSheet(
-    configure: (inout BaseStyleSheet, inout NavigationBarStyleSheet) -> () = { _ in }
+    configure: (inout BaseStyleSheet, inout NavigationBarStyleSheet) -> Void = { _ in }
     ) -> StyleSheet<NavigationBarStyleSheet> {
     var base = BaseStyleSheet()
     var component = NavigationBarStyleSheet()

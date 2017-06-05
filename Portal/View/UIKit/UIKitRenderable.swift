@@ -8,10 +8,6 @@
 
 import UIKit
 
-
-
-
-
 internal protocol UIImageConvertible {
     
     var asUIImage: UIImage { get }
@@ -65,22 +61,6 @@ public struct UIImageContainer: ImageType, UIImageConvertible {
     
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 extension StatusBarStyle {
     
     internal var asUIStatusBarStyle: UIStatusBarStyle {
@@ -127,16 +107,12 @@ extension TextAligment {
     
 }
 
-
-
 extension String {
     
     func maximumFontSize(forWidth width: CGFloat, font: UIFont) -> CGFloat {
         let text = self as NSString
-        let minimumBoundingRect = text.size(attributes: [NSFontAttributeName : font])
+        let minimumBoundingRect = text.size(attributes: [NSFontAttributeName: font])
         return width * font.pointSize / minimumBoundingRect.width
     }
     
 }
-
-

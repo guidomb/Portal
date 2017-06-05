@@ -67,13 +67,12 @@ extension UISegmentedControl {
     
 }
 
-
 extension UISegmentedControl {
     
     fileprivate func apply(style: SegmentedStyleSheet) {
         self.tintColor = style.borderColor.asUIColor
         var dictionary = [String: Any]()
-        let font = UIFont(name: style.textFont.name , size: CGFloat(style.textSize)) ?? .none
+        let font = UIFont(name: style.textFont.name, size: CGFloat(style.textSize)) ?? .none
         dictionary[NSForegroundColorAttributeName] = style.textColor.asUIColor
         font.apply { dictionary[NSFontAttributeName] = $0 }
         self.setTitleTextAttributes(dictionary, for: .normal)

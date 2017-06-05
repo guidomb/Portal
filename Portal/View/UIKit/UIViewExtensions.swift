@@ -10,7 +10,7 @@ import UIKit
 
 internal extension UIView {
     
-    internal func safeTraverse(visitor: @escaping (UIView) -> ()) {
+    internal func safeTraverse(visitor: @escaping (UIView) -> Void) {
         guard self.managedByPortal else { return }
         
         visitor(self)
@@ -38,7 +38,7 @@ internal extension UIView {
         objc_setAssociatedObject(self, &messageDispatcherAssociationKey, nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
-    internal func bindMessageDispatcher<MessageType>(binder: (Mailbox<MessageType>) -> ()) -> Mailbox<MessageType> {
+    internal func bindMessageDispatcher<MessageType>(binder: (Mailbox<MessageType>) -> Void) -> Mailbox<MessageType> {
         unregisterDispatchers()
         let mailbox = Mailbox<MessageType>()
         binder(mailbox)

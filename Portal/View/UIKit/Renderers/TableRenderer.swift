@@ -35,7 +35,6 @@ internal struct TableRenderer<
         table.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator
         table.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator
         
-        
         table.apply(style: style.base)
         table.apply(style: style.component)
         layoutEngine.apply(layout: layout, to: table)

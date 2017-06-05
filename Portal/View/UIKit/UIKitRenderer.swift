@@ -115,7 +115,7 @@ public struct UIKitComponentRenderer<
     
 }
 
-internal typealias AfterLayoutTask = () -> ()
+internal typealias AfterLayoutTask = () -> Void
 
 internal struct Render<MessageType> {
     

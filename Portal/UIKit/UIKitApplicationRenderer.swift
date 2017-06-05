@@ -15,7 +15,7 @@ public final class UIKitApplicationRenderer<
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: ApplicationRenderer
 
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias ActionType = Action<RouteType, MessageType>
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
@@ -100,7 +100,7 @@ fileprivate enum ComponentController<
     RouteType: Route,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
     
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     case navigationController(PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>)
     case single(PortalViewController<MessageType, RouteType, CustomComponentRendererType>)
@@ -131,7 +131,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
     NavigatorType: Equatable,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
     
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
 
     typealias ActionType = Action<RouteType, MessageType>
     typealias InternalActionType = InternalAction<RouteType, MessageType>
@@ -206,7 +206,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
             navigationController.push(controller: containedController, with: navigationBar, animated: false) { }
             return .navigationController(navigationController)
             
-        case .tab(_):
+        case .tab:
             fatalError("Root component 'tab' not supported")
         }
     }
@@ -349,7 +349,7 @@ fileprivate struct WindowManager<
     RouteType: Route,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
     
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias ComponentControllerType = ComponentController<MessageType, RouteType, CustomComponentRendererType>
     
@@ -380,4 +380,3 @@ fileprivate struct WindowManager<
     }
     
 }
-

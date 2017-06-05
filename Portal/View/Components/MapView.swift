@@ -69,7 +69,7 @@ public func mapView<MessageType>(
     return .mapView(MapProperties(placemarks: placemarks), style, layout)
 }
 
-public func properties(configure: (inout MapProperties) -> ()) -> MapProperties {
+public func properties(configure: (inout MapProperties) -> Void) -> MapProperties {
     var properties = MapProperties()
     configure(&properties)
     return properties

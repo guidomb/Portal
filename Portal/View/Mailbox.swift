@@ -22,7 +22,7 @@ import Foundation
 // See how the `forward` method is implemented.
 public final class Mailbox<MessageType> {
     
-    fileprivate var subscribers: [(MessageType) -> ()] = []
+    fileprivate var subscribers: [(MessageType) -> Void] = []
     
     public func subscribe(subscriber: @escaping (MessageType) -> Void) {
         subscribers.append(subscriber)

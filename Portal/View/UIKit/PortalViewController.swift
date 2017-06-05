@@ -99,7 +99,6 @@ fileprivate extension PortalViewController {
         return UIApplication.shared.statusBarFrame.size.height
     }
     
-    
     /// The bounds of the container view used to render the controller's component
     /// needs to be calcuated using this method because if the component is redenred
     /// on the viewDidLoad method for some reason UIKit reports the controller's view bounds
@@ -172,4 +171,3 @@ fileprivate extension CGSize {
     }
     
 }
-

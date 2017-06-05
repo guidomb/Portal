@@ -154,7 +154,7 @@ extension StatePersistor {
     }
     
     fileprivate func parseMessages(from data: Data) -> [MessageType]? {
-        var messages: Array<MessageType>? = []
+        var messages: [MessageType]? = []
         var currentOffset = 0
         var currentData = data
         
@@ -197,6 +197,6 @@ fileprivate enum StatePersistorError: Error {
     
 }
 
-fileprivate func /(lhs: URL, rhs: String) -> URL {
+fileprivate func / (lhs: URL, rhs: String) -> URL {
     return lhs.appendingPathComponent(rhs)
 }

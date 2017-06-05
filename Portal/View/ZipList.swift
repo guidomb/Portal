@@ -9,8 +9,7 @@
 import Foundation
 
 public struct ZipList<Element>: Collection, CustomDebugStringConvertible {
-    
-    
+        
     public var startIndex: Int {
         return 0
     }

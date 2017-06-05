@@ -18,7 +18,6 @@ public struct TabBar<MessageType> {
     
 }
 
-
 public protocol Renderer {
     
     associatedtype MessageType

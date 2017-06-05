@@ -64,4 +64,3 @@ internal struct CollectionRenderer<
         return layout
     }
 }
-

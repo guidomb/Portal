@@ -13,7 +13,7 @@ public final class PortalTableViewCell<
     RouteType: Route,
     CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableViewCell
     
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
+    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
     public typealias ActionType = Action<RouteType, MessageType>
@@ -56,6 +56,5 @@ public final class PortalTableViewCell<
             componentMailbox.forward(to: mailbox)
         }
     }
-    
     
 }

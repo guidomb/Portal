@@ -16,13 +16,13 @@ precedencegroup ForwardApplication {
 
 infix operator |>: ForwardApplication
 
-internal func |><A>(lhs: A?, rhs: (A) -> ()) {
+internal func |> <A>(lhs: A?, rhs: (A) -> Void) {
     lhs.apply(function: rhs)
 }
 
 extension Optional {
     
-    internal func apply(function: (Wrapped) -> ()) {
+    internal func apply(function: (Wrapped) -> Void) {
         if let value = self {
             function(value)
         }

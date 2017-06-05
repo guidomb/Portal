@@ -1,11 +1,10 @@
-
 //  ApplicationRunner.swift
 //  Portal
 //
 //  Created by Guido Marucci Blas on 4/4/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
-
+// swiftlint:disable file_length
 import Foundation
 
 public class ApplicationRunner<
@@ -71,7 +70,7 @@ public class ApplicationRunner<
         self.application = application
         self.commandExecutor = commandExecutor
         self.currentState = application.initialState
-        self.middlewares = [{ (state, message, _, _) in application.update(state: state, message: message) }]
+        self.middlewares = [ { (state, message, _, _) in application.update(state: state, message: message) } ]
         self.subscriptionsManager = SubscriptionsManager(subscriptionManager: subscriptionManager) { [unowned self] in
             self.dispatch(action: $0)
         }
@@ -98,6 +97,7 @@ internal extension ApplicationRunner {
         dispatchQueue.enqueue { self.serialDispatch(action: action) }
     }
     
+    // swiftlint:disable cyclomatic_complexity function_body_length
     internal final func serialDispatch(action: InternalActionType) {
         switch (action, navigationState) {
             
@@ -215,6 +215,7 @@ internal extension ApplicationRunner {
         }
         
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
 }
 
 fileprivate extension ApplicationRunner {
@@ -234,7 +235,7 @@ fileprivate extension ApplicationRunner {
     fileprivate func handleRouteChange(
         from currentRoute: RouteType,
         to nextRoute: RouteType,
-        updater:(ViewType, StateType) -> Void) {
+        updater: (ViewType, StateType) -> Void) {
         if let message = application.translateRouteChange(from: currentRoute, to: nextRoute) {
             handle(message: message, updater: updater)
         } else {
@@ -242,7 +243,7 @@ fileprivate extension ApplicationRunner {
         }
     }
     
-    fileprivate func handle(message: MessageType, updater:(ViewType, StateType) -> Void) {
+    fileprivate func handle(message: MessageType, updater: (ViewType, StateType) -> Void) {
         if let (nextState, maybeCommand) = applyMiddlewares(for: message) {
             let view = application.view(for: nextState)
             
@@ -461,4 +462,4 @@ fileprivate final class ExecutionQueue {
     }
     
 }
-
+// swiftlint:enable file_length

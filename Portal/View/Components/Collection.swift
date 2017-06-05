@@ -131,7 +131,7 @@ public func collectionItem<MessageType>(
 public func properties<MessageType>(
     itemsWidth: UInt,
     itemsHeight: UInt,
-    configure: (inout CollectionProperties<MessageType>) -> ()) -> CollectionProperties<MessageType> {
+    configure: (inout CollectionProperties<MessageType>) -> Void) -> CollectionProperties<MessageType> {
     var properties = CollectionProperties<MessageType>(itemsWidth: itemsWidth, itemsHeight: itemsHeight)
     configure(&properties)
     return properties

@@ -124,6 +124,7 @@ public indirect enum Component<MessageType> {
 
 extension Component {
 
+    // swiftlint:disable cyclomatic_complexity
     public func map<NewMessageType>(
         _ transform: @escaping (MessageType) -> NewMessageType) -> Component<NewMessageType> {
         switch self {
@@ -172,6 +173,7 @@ extension Component {
 
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
     public var customComponentIdentifiers: [String] {
         switch self {

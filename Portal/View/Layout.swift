@@ -65,21 +65,21 @@ public enum AlignContent {
 public enum Margin {
     
     case all(value: UInt)
-    case by(edge: Edge)
+    case by(edge: Edge) // swiftlint:disable:this identifier_name
     
 }
 
 public enum Border {
     
     case all(value: UInt)
-    case by(edge: Edge)
+    case by(edge: Edge) // swiftlint:disable:this identifier_name
     
 }
 
 public enum Padding {
     
     case all(value: UInt)
-    case by(edge: Edge)
+    case by(edge: Edge) // swiftlint:disable:this identifier_name
     
 }
 
@@ -209,7 +209,6 @@ public struct Dimension {
         self.maximum = maximum
     }
     
-    
 }
 
 public struct AspectRatio: RawRepresentable {
@@ -265,31 +264,31 @@ public struct Layout {
 
 }
 
-public func layout(configure: (inout Layout) -> () = { _ in }) -> Layout {
+public func layout(configure: (inout Layout) -> Void = { _ in }) -> Layout {
     var object = Layout()
     configure(&object)
     return object
 }
 
-public func flex(configure: (inout Flex) -> () = { _ in }) -> Flex {
+public func flex(configure: (inout Flex) -> Void = { _ in }) -> Flex {
     var object = Flex()
     configure(&object)
     return object
 }
 
-public func dimension(configure: (inout Dimension) -> () = { _ in }) -> Dimension {
+public func dimension(configure: (inout Dimension) -> Void = { _ in }) -> Dimension {
     var object = Dimension()
     configure(&object)
     return object
 }
 
-public func aligment(configure: (inout Alignment) -> () = { _ in }) -> Alignment {
+public func aligment(configure: (inout Alignment) -> Void = { _ in }) -> Alignment {
     var object = Alignment()
     configure(&object)
     return object
 }
 
-public func edge(configure: (inout Edge) -> () = { _ in }) -> Edge {
+public func edge(configure: (inout Edge) -> Void = { _ in }) -> Edge {
     var object = Edge()
     configure(&object)
     return object

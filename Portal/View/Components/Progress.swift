@@ -44,7 +44,7 @@ public func progress<MessageType>(
     return .progress(progress, style, layout)
 }
 
-// MARK:- Style sheet
+// MARK: - Style sheet
 
 public enum ProgressContentType {
     
@@ -70,7 +70,7 @@ public struct ProgressStyleSheet {
 }
 
 public func progressStyleSheet(
-    configure: (inout BaseStyleSheet, inout ProgressStyleSheet) -> ()) -> StyleSheet<ProgressStyleSheet> {
+    configure: (inout BaseStyleSheet, inout ProgressStyleSheet) -> Void) -> StyleSheet<ProgressStyleSheet> {
     var base = BaseStyleSheet()
     var custom = ProgressStyleSheet()
     configure(&base, &custom)

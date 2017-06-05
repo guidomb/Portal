@@ -143,7 +143,6 @@ fileprivate extension PortalTableView {
         return CGFloat(items[indexPath.row].height)
     }
     
-    
     /// Returns the cached actual height for the item at the given `indexPath`.
     /// Actual heights are cached using the `cellHeights` instance variable and
     /// are calculated after rending the item component inside the table view cell.
@@ -154,7 +153,6 @@ fileprivate extension PortalTableView {
     fileprivate func itemActualHeight(at indexPath: IndexPath) -> CGFloat? {
         return cellHeights[indexPath.row]
     }
-    
     
     /// Returns the item's cached actual height if available. Otherwise it
     /// returns the item's max height.

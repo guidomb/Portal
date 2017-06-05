@@ -27,7 +27,7 @@ public struct SpinnerStyleSheet {
 }
 
 public func spinnerStyleSheet(
-    configure: (inout BaseStyleSheet, inout SpinnerStyleSheet) -> ()) -> StyleSheet<SpinnerStyleSheet> {
+    configure: (inout BaseStyleSheet, inout SpinnerStyleSheet) -> Void) -> StyleSheet<SpinnerStyleSheet> {
     var base = BaseStyleSheet()
     var custom = SpinnerStyleSheet()
     configure(&base, &custom)

@@ -122,7 +122,7 @@ public func tableItem<MessageType>(
 }
 
 public func properties<MessageType>(
-    configure: (inout TableProperties<MessageType>) -> ()) -> TableProperties<MessageType> {
+    configure: (inout TableProperties<MessageType>) -> Void) -> TableProperties<MessageType> {
     var properties = TableProperties<MessageType>()
     configure(&properties)
     return properties
@@ -143,7 +143,7 @@ public struct TableStyleSheet {
 }
 
 public func tableStyleSheet(
-    configure: (inout BaseStyleSheet, inout TableStyleSheet) -> () = { _ in }) -> StyleSheet<TableStyleSheet> {
+    configure: (inout BaseStyleSheet, inout TableStyleSheet) -> Void = { _ in }) -> StyleSheet<TableStyleSheet> {
     var base = BaseStyleSheet()
     var component = TableStyleSheet()
     configure(&base, &component)

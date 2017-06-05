@@ -61,7 +61,7 @@ public func segment<MessageType>(
     return SegmentProperties(content: .image(image), onTap: onTap, isEnabled: isEnabled)
 }
 
-// MARK:- Style sheet
+// MARK: - Style sheet
 
 public struct SegmentedStyleSheet {
     
@@ -86,7 +86,7 @@ public struct SegmentedStyleSheet {
 }
 
 public func segmentedStyleSheet(
-    configure: (inout BaseStyleSheet, inout SegmentedStyleSheet) -> ()) -> StyleSheet<SegmentedStyleSheet> {
+    configure: (inout BaseStyleSheet, inout SegmentedStyleSheet) -> Void) -> StyleSheet<SegmentedStyleSheet> {
     var base = BaseStyleSheet()
     var custom = SegmentedStyleSheet()
     configure(&base, &custom)

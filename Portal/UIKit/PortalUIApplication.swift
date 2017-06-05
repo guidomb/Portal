@@ -61,7 +61,6 @@ public class UIKitApplicationContext<
         CommandExecutorType,
         CustomSubscriptionManager>
     
-    
     fileprivate let application: ApplicationType
     fileprivate let commandExecutor: CommandExecutorType
     fileprivate let subscriptionManager: CustomSubscriptionManager
@@ -156,7 +155,7 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
         CustomSubscriptionManager.RouteType         == RouteType,
         CustomSubscriptionManager.MessageType       == MessageType,
         CustomComponentRendererType.MessageType     == MessageType,
-        CustomComponentRendererType.RouteType       == RouteType  {
+        CustomComponentRendererType.RouteType       == RouteType {
             
             PortalUIApplication.binder = { window in
                 applicationContext.runner(for: window)(messageMapper)

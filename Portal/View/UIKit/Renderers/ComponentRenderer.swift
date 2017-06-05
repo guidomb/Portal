@@ -22,6 +22,7 @@ internal struct ComponentRenderer<
     let component: Component<ActionType>
     let rendererFactory: CustomComponentRendererFactory
     
+    // swiftlint:disable cyclomatic_complexity function_body_length
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         switch component {
             
@@ -113,5 +114,6 @@ internal struct ComponentRenderer<
             
         }
     }
+    // swiftlint:enable cyclomatic_complexity function_body_length
     
 }

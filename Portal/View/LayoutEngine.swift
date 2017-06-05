@@ -15,7 +15,7 @@ public protocol LayoutEngine {
 
 }
 
-internal struct YogaLayoutEngine : LayoutEngine {
+internal struct YogaLayoutEngine: LayoutEngine {
 
     func layout(view: UIView, inside container: UIView) {
         container.yoga.isEnabled = true

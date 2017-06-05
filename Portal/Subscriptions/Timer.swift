@@ -18,7 +18,7 @@ public enum TimerUnit {
 
 public enum TimerRepeat: Equatable {
     
-    public static func ==(lhs: TimerRepeat, rhs: TimerRepeat) -> Bool {
+    public static func == (lhs: TimerRepeat, rhs: TimerRepeat) -> Bool {
         switch (lhs, rhs) {
         case (.forever, .forever):
             return true

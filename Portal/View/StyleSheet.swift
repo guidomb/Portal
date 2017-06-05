@@ -65,12 +65,11 @@ public struct Color {
         self.init(red: Float(red) / 255.0, green: Float(green) / 255.0, blue: Float(blue) / 255.0, alpha: 1.0)
     }
     
-    public init?(hex:Int) {
+    public init?(hex: Int) {
         self.init(red:(hex >> 16) & 0xff, green:(hex >> 8) & 0xff, blue:hex & 0xff)
     }
     
 }
-
 
 public struct StyleSheet<ComponentStyleSheet> {
     
@@ -131,7 +130,7 @@ public enum StatusBarStyle {
     
 }
 
-public func styleSheet(configure: (inout BaseStyleSheet) -> () = { _ in }) -> StyleSheet<EmptyStyleSheet> {
+public func styleSheet(configure: (inout BaseStyleSheet) -> Void = { _ in }) -> StyleSheet<EmptyStyleSheet> {
     var base = BaseStyleSheet()
     configure(&base)
     return StyleSheet(component: EmptyStyleSheet(), base: base)
