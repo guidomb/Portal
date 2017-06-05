@@ -8,7 +8,12 @@
 
 import UIKit
 
-internal struct CollectionRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIKitRenderer
+internal struct CollectionRenderer<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >: UIKitRenderer
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType

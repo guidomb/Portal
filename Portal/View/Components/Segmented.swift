@@ -85,7 +85,8 @@ public struct SegmentedStyleSheet {
     
 }
 
-public func segmentedStyleSheet(configure: (inout BaseStyleSheet, inout SegmentedStyleSheet) -> ()) -> StyleSheet<SegmentedStyleSheet> {
+public func segmentedStyleSheet(
+    configure: (inout BaseStyleSheet, inout SegmentedStyleSheet) -> ()) -> StyleSheet<SegmentedStyleSheet> {
     var base = BaseStyleSheet()
     var custom = SegmentedStyleSheet()
     configure(&base, &custom)

@@ -66,7 +66,8 @@ public struct CollectionProperties<MessageType> {
         self.scrollDirection = scrollDirection
     }
     
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> CollectionProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> CollectionProperties<NewMessageType> {
         return CollectionProperties<NewMessageType>(
             items: self.items.map { $0.map(transform) },
             showsVerticalScrollIndicator: self.showsVerticalScrollIndicator,
@@ -102,7 +103,8 @@ public struct CollectionItemProperties<MessageType> {
 
 extension CollectionItemProperties {
     
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> CollectionItemProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> CollectionItemProperties<NewMessageType> {
         return CollectionItemProperties<NewMessageType>(
             onTap: self.onTap.map(transform),
             identifier: self.identifier,
@@ -126,7 +128,10 @@ public func collectionItem<MessageType>(
     return CollectionItemProperties(onTap: onTap, identifier: identifier, renderer: renderer)
 }
 
-public func properties<MessageType>(itemsWidth: UInt, itemsHeight: UInt, configure: (inout CollectionProperties<MessageType>) -> ()) -> CollectionProperties<MessageType> {
+public func properties<MessageType>(
+    itemsWidth: UInt,
+    itemsHeight: UInt,
+    configure: (inout CollectionProperties<MessageType>) -> ()) -> CollectionProperties<MessageType> {
     var properties = CollectionProperties<MessageType>(itemsWidth: itemsWidth, itemsHeight: itemsHeight)
     configure(&properties)
     return properties

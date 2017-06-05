@@ -90,7 +90,8 @@ public func navigationBar<MessageType>(
     )
 }
 
-public func properties<MessageType>(configure: (inout NavigationBarProperties<MessageType>) -> ()) -> NavigationBarProperties<MessageType> {
+public func properties<MessageType>(
+    configure: (inout NavigationBarProperties<MessageType>) -> ()) -> NavigationBarProperties<MessageType> {
     var properties = NavigationBarProperties<MessageType>()
     configure(&properties)
     return properties
@@ -131,7 +132,9 @@ public struct NavigationBarStyleSheet {
     
 }
 
-public func navigationBarStyleSheet(configure: (inout BaseStyleSheet, inout NavigationBarStyleSheet) -> () = { _ in }) -> StyleSheet<NavigationBarStyleSheet> {
+public func navigationBarStyleSheet(
+    configure: (inout BaseStyleSheet, inout NavigationBarStyleSheet) -> () = { _ in }
+    ) -> StyleSheet<NavigationBarStyleSheet> {
     var base = BaseStyleSheet()
     var component = NavigationBarStyleSheet()
     configure(&base, &component)

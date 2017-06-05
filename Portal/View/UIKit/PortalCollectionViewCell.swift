@@ -8,7 +8,12 @@
 
 import UIKit
 
-public final class PortalCollectionViewCell<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UICollectionViewCell
+public final class PortalCollectionViewCell<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >: UICollectionViewCell
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType

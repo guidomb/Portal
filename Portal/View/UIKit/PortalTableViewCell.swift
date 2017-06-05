@@ -8,7 +8,11 @@
 
 import UIKit
 
-public final class PortalTableViewCell<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableViewCell
+public final class PortalTableViewCell<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableViewCell
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
@@ -27,7 +31,10 @@ public final class PortalTableViewCell<MessageType, RouteType: Route, CustomComp
     
     private var renderer: UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>? = .none
     
-    public init(reuseIdentifier: String, layoutEngine: LayoutEngine, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public init(
+        reuseIdentifier: String,
+        layoutEngine: LayoutEngine,
+        rendererFactory: @escaping CustomComponentRendererFactory) {
         super.init(style: .default, reuseIdentifier: reuseIdentifier)
         self.renderer = UIKitComponentRenderer(
             containerView: contentView,

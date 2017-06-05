@@ -23,7 +23,9 @@ public protocol StatePersistorSerializer {
     
 }
 
-public final class StatePersistor<CommandType, StatePersistorSerializerType: StatePersistorSerializer>: MiddlewareProtocol {
+public final class StatePersistor<
+    CommandType,
+    StatePersistorSerializerType: StatePersistorSerializer>: MiddlewareProtocol {
     
     public typealias StateType = StatePersistorSerializerType.StateType
     public typealias MessageType = StatePersistorSerializerType.MessageType
@@ -44,7 +46,12 @@ public final class StatePersistor<CommandType, StatePersistorSerializerType: Sta
         self.shouldPersist = shouldPersist
     }
     
-    public func call(state: StateType, message: MessageType, command: CommandType?, next: NextMiddleware) -> Transition {
+    public func call(
+        state: StateType,
+        message: MessageType,
+        command: CommandType?,
+        next: NextMiddleware) -> Transition {
+        
         guard let result = next(state, message, command) else { return .none }
         
         if shouldPersist(state, message, result) {
@@ -172,7 +179,10 @@ extension StatePersistor {
     fileprivate func parseMessage(from data: Data) -> (Int, MessageType?) {
         return data.withUnsafeBytes { (pointer: UnsafePointer<UInt8>) -> (Int, MessageType?) in
             let messageSize = pointer.withMemoryRebound(to: Int.self, capacity: 1) { $0.pointee }
-            let messagePointer = UnsafeBufferPointer(start: pointer.advanced(by: MemoryLayout<Int>.size), count: messageSize)
+            let messagePointer = UnsafeBufferPointer(
+                start: pointer.advanced(by: MemoryLayout<Int>.size),
+                count: messageSize
+            )
             let message = serializer.deserializeMessage(from: Data(buffer: messagePointer))
             return (messageSize, message)
         }

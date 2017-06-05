@@ -50,7 +50,10 @@ public protocol UIKitCustomComponentRenderer {
     
     init(container: ContainerController)
     
-    func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action<RouteType, MessageType>) -> Void)
+    func renderComponent(
+        _ componentDescription: CustomComponentDescription,
+        inside view: UIView,
+        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void)
     
 }
 
@@ -60,12 +63,20 @@ public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitC
         
     }
         
-    public func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action<RouteType, MessageType>) -> Void) {
+    public func renderComponent(
+        _ componentDescription: CustomComponentDescription,
+        inside view: UIView,
+        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void) {
     
     }
 }
 
-public struct UIKitComponentRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: Renderer
+public struct UIKitComponentRenderer<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >: Renderer
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
@@ -112,7 +123,9 @@ internal struct Render<MessageType> {
     let mailbox: Mailbox<MessageType>?
     let afterLayout: AfterLayoutTask?
     
-    init(view: UIView, mailbox: Mailbox<MessageType>? = .none, executeAfterLayout afterLayout: AfterLayoutTask? = .none) {
+    init(view: UIView,
+         mailbox: Mailbox<MessageType>? = .none,
+         executeAfterLayout afterLayout: AfterLayoutTask? = .none) {
         self.view = view
         self.afterLayout = afterLayout
         self.mailbox = mailbox

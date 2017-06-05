@@ -124,7 +124,8 @@ public indirect enum Component<MessageType> {
 
 extension Component {
 
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> Component<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> Component<NewMessageType> {
         switch self {
 
         case .button(let properties, let style, let layout):
@@ -196,6 +197,8 @@ public func container<MessageType>(
     return .container(children, style, layout)
 }
 
-public func touchable<MessageType>(gesture: Gesture<MessageType>, child: Component<MessageType>) -> Component<MessageType> {
+public func touchable<MessageType>(
+    gesture: Gesture<MessageType>,
+    child: Component<MessageType>) -> Component<MessageType> {
     return .touchable(gesture: gesture, child: child)
 }

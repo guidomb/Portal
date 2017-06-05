@@ -23,7 +23,8 @@ public struct TextFieldProperties<MessageType> {
         self.onEvents = onEvents
     }
     
-    public func map<NewMessageType>(_ transform: (MessageType) -> NewMessageType) -> TextFieldProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: (MessageType) -> NewMessageType) -> TextFieldProperties<NewMessageType> {
         return TextFieldProperties<NewMessageType>(
             text: self.text,
             placeholder: self.placeholder,
@@ -58,7 +59,8 @@ public struct TextFieldEvents<MessageType> {
     
 }
 
-public func textFieldEvents<MessageType>(configure: (inout TextFieldEvents<MessageType>) -> ()) -> TextFieldEvents<MessageType> {
+public func textFieldEvents<MessageType>(
+    configure: (inout TextFieldEvents<MessageType>) -> ()) -> TextFieldEvents<MessageType> {
     var events = TextFieldEvents<MessageType>()
     configure(&events)
     return events
@@ -71,7 +73,8 @@ public func textField<MessageType>(
     return .textField(properties, style, layout)
 }
 
-public func properties<MessageType>(configure: (inout TextFieldProperties<MessageType>) -> ()) -> TextFieldProperties<MessageType> {
+public func properties<MessageType>(
+    configure: (inout TextFieldProperties<MessageType>) -> ()) -> TextFieldProperties<MessageType> {
     var properties = TextFieldProperties<MessageType>()
     configure(&properties)
     return properties
@@ -100,7 +103,8 @@ public struct TextFieldStyleSheet {
     
 }
 
-public func textFieldStyleSheet(configure: (inout BaseStyleSheet, inout TextFieldStyleSheet) -> () = { _ in }) -> StyleSheet<TextFieldStyleSheet> {
+public func textFieldStyleSheet(
+    configure: (inout BaseStyleSheet, inout TextFieldStyleSheet) -> () = { _ in }) -> StyleSheet<TextFieldStyleSheet> {
     var base = BaseStyleSheet()
     var component = TextFieldStyleSheet()
     configure(&base, &component)

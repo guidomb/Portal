@@ -8,11 +8,16 @@
 
 import UIKit
 
-public final class PortalViewController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UIViewController
+public final class PortalViewController<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer>: UIViewController
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
-    public typealias RendererFactory = (ContainerController) -> UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     public typealias ActionType = Action<RouteType, MessageType>
+    public typealias RendererFactory = (ContainerController) ->
+        UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
 
     internal typealias InternalActionType = InternalAction<RouteType, MessageType>
 

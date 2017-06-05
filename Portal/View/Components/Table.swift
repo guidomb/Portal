@@ -32,7 +32,8 @@ public struct TableProperties<MessageType> {
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
     }
     
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> TableProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> TableProperties<NewMessageType> {
         return TableProperties<NewMessageType>(items: self.items.map { $0.map(transform) })
     }
     
@@ -62,7 +63,8 @@ public struct TableItemProperties<MessageType> {
 
 extension TableItemProperties {
 
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> TableItemProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> TableItemProperties<NewMessageType> {
         return TableItemProperties<NewMessageType>(
             height: height,
             onTap: self.onTap.map(transform),
@@ -87,7 +89,8 @@ public struct TableItemRender<MessageType> {
 
 extension TableItemRender {
 
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> TableItemRender<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> TableItemRender<NewMessageType> {
         return TableItemRender<NewMessageType>(
             component: self.component.map(transform),
             typeIdentifier: self.typeIdentifier
@@ -118,7 +121,8 @@ public func tableItem<MessageType>(
     return TableItemProperties(height: height, onTap: onTap, selectionStyle: selectionStyle, renderer: renderer)
 }
 
-public func properties<MessageType>(configure: (inout TableProperties<MessageType>) -> ()) -> TableProperties<MessageType> {
+public func properties<MessageType>(
+    configure: (inout TableProperties<MessageType>) -> ()) -> TableProperties<MessageType> {
     var properties = TableProperties<MessageType>()
     configure(&properties)
     return properties
@@ -138,7 +142,8 @@ public struct TableStyleSheet {
     
 }
 
-public func tableStyleSheet(configure: (inout BaseStyleSheet, inout TableStyleSheet) -> () = { _ in }) -> StyleSheet<TableStyleSheet> {
+public func tableStyleSheet(
+    configure: (inout BaseStyleSheet, inout TableStyleSheet) -> () = { _ in }) -> StyleSheet<TableStyleSheet> {
     var base = BaseStyleSheet()
     var component = TableStyleSheet()
     configure(&base, &component)

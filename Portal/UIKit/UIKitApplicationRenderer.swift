@@ -41,11 +41,23 @@ public final class UIKitApplicationRenderer<
         return forwardee.internalMailbox
     }
     
-    fileprivate let forwardee: MainThreadUIKitApplicationRenderer<MessageType, RouteType, NavigatorType, CustomComponentRendererType>
+    fileprivate let forwardee: MainThreadUIKitApplicationRenderer<
+        MessageType,
+        RouteType,
+        NavigatorType,
+        CustomComponentRendererType>
 
-    internal init(window: UIWindow, layoutEngine: LayoutEngine = YogaLayoutEngine(),
-                  rendererFactory: @escaping CustomComponentRendererFactory, dispatch: @escaping Dispatcher) {
-        self.forwardee = MainThreadUIKitApplicationRenderer(window: window, layoutEngine: layoutEngine, rendererFactory: rendererFactory)
+    internal init(
+        window: UIWindow,
+        layoutEngine: LayoutEngine = YogaLayoutEngine(),
+        rendererFactory: @escaping CustomComponentRendererFactory,
+        dispatch: @escaping Dispatcher) {
+        self.forwardee = MainThreadUIKitApplicationRenderer(
+            window: window,
+            layoutEngine:
+            layoutEngine,
+            rendererFactory: rendererFactory
+        )
         internalMailbox.subscribe(subscriber: dispatch)
     }
     
@@ -83,7 +95,11 @@ fileprivate extension UIKitApplicationRenderer {
 
 }
 
-fileprivate enum ComponentController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
+fileprivate enum ComponentController<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer>
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
     
     case navigationController(PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>)
@@ -124,7 +140,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
     typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     typealias NavigatorControllerType = PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>
-    typealias ComponentControllerType = ComponentController<CustomComponentRendererType.MessageType, CustomComponentRendererType.RouteType, CustomComponentRendererType>
+    typealias ComponentControllerType = ComponentController<MessageType, RouteType, CustomComponentRendererType>
 
     fileprivate let mailbox: Mailbox<ActionType>
     fileprivate let internalMailbox = Mailbox<InternalActionType>()
@@ -132,7 +148,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
     fileprivate let rendererFactory: CustomComponentRendererFactory
     
     fileprivate var isDebugModeEnabled: Bool = false
-    fileprivate var window: WindowManager<CustomComponentRendererType.MessageType, CustomComponentRendererType.RouteType, CustomComponentRendererType>
+    fileprivate var window: WindowManager<MessageType, RouteType, CustomComponentRendererType>
     
     fileprivate var visibleController: ComponentController<MessageType, RouteType, CustomComponentRendererType>? {
         return window.visibleController
@@ -162,7 +178,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
         visibleController?.renderableController.present(alertController, animated: true, completion: completion)
     }
     
-    fileprivate func currentNavigationController() -> PortalNavigationController<MessageType, RouteType, CustomComponentRendererType>? {
+    fileprivate func currentNavigationController() -> NavigatorControllerType? {
         if case .some(.navigationController(let navigationController)) = visibleController {
             return navigationController
         } else {
@@ -170,7 +186,9 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
         }
     }
     
-    fileprivate func rootController(for view: ViewType, contentController: @autoclosure () -> ControllerType) -> ComponentControllerType {
+    fileprivate func rootController(
+        for view: ViewType,
+        contentController: @autoclosure () -> ControllerType) -> ComponentControllerType {
         switch view.root {
             
         case .simple:
@@ -193,7 +211,9 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
         }
     }
     
-    fileprivate func controller(for component: Component<ActionType>, orientation: SupportedOrientations) -> ControllerType {
+    fileprivate func controller(
+        for component: Component<ActionType>,
+        orientation: SupportedOrientations) -> ControllerType {
         
         let controller: ControllerType =  ControllerType(component: component) { container in
             var renderer = ComponentRenderer(
@@ -269,7 +289,12 @@ extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
                 
             case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
                 let containedController = controller(for: component, orientation: view.orientation)
-                navigationController.push(controller: containedController, with: navigationBar, animated: true, completion: completion)
+                navigationController.push(
+                    controller: containedController,
+                    with: navigationBar,
+                    animated: true,
+                    completion: completion
+                )
                 
             default:
                 setRootController(for: view)
@@ -319,7 +344,11 @@ extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
     
 }
 
-fileprivate struct WindowManager<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
+fileprivate struct WindowManager<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer>
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType  {
     
     typealias ComponentControllerType = ComponentController<MessageType, RouteType, CustomComponentRendererType>

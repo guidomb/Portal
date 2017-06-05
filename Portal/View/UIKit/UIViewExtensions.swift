@@ -27,9 +27,11 @@ internal extension UIView {
     }
     
     internal func register<MessageType>(dispatcher: MessageDispatcher<MessageType>) {
-        let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey) as? NSMutableArray ?? NSMutableArray()
+        let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
+            as? NSMutableArray ?? NSMutableArray()
         dispatchers.add(dispatcher)
-        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
+                                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
     internal func unregisterDispatchers() {
@@ -78,7 +80,12 @@ fileprivate enum AnimationKey: String {
 fileprivate extension UIView {
 
     fileprivate func topBorder(thickness: Float, color: UIColor) {
-        let borderView = UIView(frame: CGRect(x: 0, y: 0, width: superview!.bounds.width - 1.0, height: CGFloat(thickness)))
+        let borderView = UIView(frame: CGRect(
+            x: 0,
+            y: 0,
+            width: superview!.bounds.width - 1.0,
+            height: CGFloat(thickness))
+        )
         borderView.backgroundColor = color
         addSubview(borderView)
     }

@@ -71,7 +71,8 @@ public struct LabelStyleSheet {
     
 }
 
-public func labelStyleSheet(configure: (inout BaseStyleSheet, inout LabelStyleSheet) -> () = { _ in }) -> StyleSheet<LabelStyleSheet> {
+public func labelStyleSheet(
+    configure: (inout BaseStyleSheet, inout LabelStyleSheet) -> () = { _ in }) -> StyleSheet<LabelStyleSheet> {
     var base = BaseStyleSheet()
     var component = LabelStyleSheet()
     configure(&base, &component)

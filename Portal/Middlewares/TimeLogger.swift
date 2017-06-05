@@ -21,7 +21,12 @@ public final class TimeLogger<StateType, MessageType, CommandType>: MiddlewarePr
         self.log = log
     }
     
-    public func call(state: StateType, message: MessageType, command: CommandType?, next: NextMiddleware) -> Transition {
+    public func call(
+        state: StateType,
+        message: MessageType,
+        command: CommandType?,
+        next: NextMiddleware) -> Transition {
+        
         let timestamp = Date.timeIntervalSinceReferenceDate
         let result = next(state, message, command)
         let dispatchTime = ((Date.timeIntervalSinceReferenceDate - timestamp) * 100000).rounded() / 100

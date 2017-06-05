@@ -50,7 +50,10 @@ internal struct SegmentedRenderer<MessageType, RouteType: Route>: UIKitRenderer 
 
 extension UISegmentedControl {
     
-    fileprivate func dispatch<MessageType>(messages: [MessageType?], for event: UIControlEvents, with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
+    fileprivate func dispatch<MessageType>(
+        messages: [MessageType?],
+        for event: UIControlEvents,
+        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
         
         let dispatcher = MessageDispatcher(mailbox: mailbox) { sender in
             guard let segmentedControl = sender as? UISegmentedControl else { return .none }

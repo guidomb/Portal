@@ -56,7 +56,8 @@ public func button<MessageType>(
     return .button(properties, style, layout)
 }
 
-public func properties<MessageType>(configure: (inout ButtonProperties<MessageType>) -> ()) -> ButtonProperties<MessageType> {
+public func properties<MessageType>(
+    configure: (inout ButtonProperties<MessageType>) -> ()) -> ButtonProperties<MessageType> {
     var properties = ButtonProperties<MessageType>()
     configure(&properties)
     return properties
@@ -83,7 +84,8 @@ public struct ButtonStyleSheet {
     
 }
 
-public func buttonStyleSheet(configure: (inout BaseStyleSheet, inout ButtonStyleSheet) -> ()) -> StyleSheet<ButtonStyleSheet> {
+public func buttonStyleSheet(
+    configure: (inout BaseStyleSheet, inout ButtonStyleSheet) -> ()) -> StyleSheet<ButtonStyleSheet> {
     var base = BaseStyleSheet()
     var custom = ButtonStyleSheet()
     configure(&base, &custom)

@@ -8,7 +8,12 @@
 
 import UIKit
 
-public final class PortalNavigationController<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UINavigationController, UINavigationControllerDelegate
+public final class PortalNavigationController<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >: UINavigationController, UINavigationControllerDelegate
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
@@ -55,7 +60,9 @@ public final class PortalNavigationController<MessageType, RouteType: Route, Cus
         return statusBarStyle
     }
     
-    init(layoutEngine: LayoutEngine, statusBarStyle: UIStatusBarStyle = .`default`, rendererFactory: @escaping CustomComponentRendererFactory) {
+    init(layoutEngine: LayoutEngine,
+         statusBarStyle: UIStatusBarStyle = .`default`,
+         rendererFactory: @escaping CustomComponentRendererFactory) {
         self.rendererFactory = rendererFactory
         self.statusBarStyle = statusBarStyle
         self.layoutEngine = layoutEngine

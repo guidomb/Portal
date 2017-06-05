@@ -4,3 +4,8 @@ included: # paths to include during linting. `--path` is ignored if present.
 # Disabled Rules
 disabled_rules:
   - trailing_whitespace
+
+# Rules configuration
+generic_type_name: 
+  - min_length: 1
+  - max_length: 30

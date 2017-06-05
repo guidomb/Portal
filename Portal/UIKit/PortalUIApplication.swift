@@ -79,7 +79,10 @@ public class UIKitApplicationContext<
         self.rendererFactory = rendererFactory
     }
     
-    public func runner(for window: UIWindow) -> (@escaping (UIApplicationMessage) -> MessageType?) -> (UIApplicationMessage) -> Void {
+    public func runner(for window: UIWindow)
+        -> (@escaping (UIApplicationMessage) -> MessageType?)
+        -> (UIApplicationMessage) -> Void {
+            
         let runner = self.createApplicationRunner(window: window)
         middlewares.forEach(runner.registerMiddleware)
         return { messageMapper in
@@ -103,9 +106,12 @@ public class UIKitApplicationContext<
 extension UIKitApplicationContext {
     
     fileprivate func createApplicationRunner(window: UIWindow) -> Runner {
-        return Runner(application: application, commandExecutor: commandExecutor, subscriptionManager: subscriptionManager) { dispatch in
-            UIKitApplicationRenderer(window: window, rendererFactory: self.rendererFactory, dispatch: dispatch)
-        }
+        return Runner(
+            application: application,
+            commandExecutor: commandExecutor,
+            subscriptionManager: subscriptionManager) { dispatch in
+                UIKitApplicationRenderer(window: window, rendererFactory: self.rendererFactory, dispatch: dispatch)
+            }
     }
     
 }
@@ -174,11 +180,16 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
         subscribers.forEach { $0(message) }
     }
     
-    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    public func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
         PortalUIApplication.subscribe(subscriber: PortalUIApplication.binder(window))
-        PortalUIApplication.dispatch(message: .didFinishLaunching(application: application, launchOptions: launchOptions))
+        PortalUIApplication.dispatch(message: .didFinishLaunching(
+            application: application,
+            launchOptions: launchOptions)
+        )
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         return true

@@ -65,7 +65,8 @@ public struct CarouselProperties<MessageType> {
         self.onSelectionChange = onSelectionChange
     }
     
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> CarouselProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> CarouselProperties<NewMessageType> {
         return CarouselProperties<NewMessageType>(
             items: self.items.map { $0.map { $0.map(transform) } },
             showsScrollIndicator: self.showsScrollIndicator,
@@ -102,7 +103,8 @@ public struct CarouselItemProperties<MessageType> {
 
 extension CarouselItemProperties {
     
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> CarouselItemProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType) -> CarouselItemProperties<NewMessageType> {
         
         return CarouselItemProperties<NewMessageType>(
             onTap: self.onTap.map(transform),

@@ -49,6 +49,7 @@ public class ApplicationRunner<
     fileprivate typealias NavigationStateType = NavigationState<RouteType, NavigatorType>
     fileprivate typealias ScreenTransition = (@escaping ScreenTransitionCompletion) -> Void
     fileprivate typealias ScreenTransitionCompletion = () -> Void
+    fileprivate typealias RenderTransition = (ApplicationRendererType, @escaping ScreenTransitionCompletion) -> Void
     
     public var log: (String) -> Void = { print($0) }
     
@@ -71,7 +72,9 @@ public class ApplicationRunner<
         self.commandExecutor = commandExecutor
         self.currentState = application.initialState
         self.middlewares = [{ (state, message, _, _) in application.update(state: state, message: message) }]
-        self.subscriptionsManager = SubscriptionsManager(subscriptionManager: subscriptionManager) { [unowned self] in self.dispatch(action: $0) }
+        self.subscriptionsManager = SubscriptionsManager(subscriptionManager: subscriptionManager) { [unowned self] in
+            self.dispatch(action: $0)
+        }
         self.renderer = rendererFactory { [unowned self] in self.internalDispatch(action: $0) }
     }
     
@@ -123,7 +126,8 @@ internal extension ApplicationRunner {
             
         case (.action(.navigateToPreviousRoute), .some(let navigationState)):
             guard let previousRoute = navigationState.currentRoute.previous else {
-                log("Cannot change to previous route because there isn't one for current route '\(navigationState.currentRoute)'")
+                log("Cannot change to previous route because there isn't one for " +
+                    "current route '\(navigationState.currentRoute)'")
                 return
             }
             
@@ -151,7 +155,8 @@ internal extension ApplicationRunner {
             let rewindCurrentNavigator = self.performTransition(renderer?.rewindCurrentNavigator)
             rewindCurrentNavigator(handleChangeToPreviousRoute)
             
-        case (.action(.navigate(to: let nextRoute)), .some(let navigationState)) where navigationState.currentRoute != nextRoute:
+        case (.action(.navigate(to: let nextRoute)), .some(let navigationState))
+            where navigationState.currentRoute != nextRoute:
             handleRouteChange(from: navigationState.currentRoute, to: nextRoute) { view, nextState in
                 self.currentState = nextState
                 self.navigationState = navigationState.navigate(to: nextRoute, using: view.navigator)
@@ -181,7 +186,8 @@ internal extension ApplicationRunner {
             
         case (.navigateToPreviousRouteAfterPop, .some(let navigationState)):
             guard let previousRoute = navigationState.currentRoute.previous else {
-                log("Cannot change to previous route because there isn't one for current route '\(navigationState.currentRoute)'")
+                log("Cannot change to previous route because there isn't one " +
+                    "for current route '\(navigationState.currentRoute)'")
                 return
             }
     
@@ -225,7 +231,10 @@ fileprivate extension ApplicationRunner {
         }
     }
     
-    fileprivate func handleRouteChange(from currentRoute: RouteType, to nextRoute: RouteType, updater:(ViewType, StateType) -> Void) {
+    fileprivate func handleRouteChange(
+        from currentRoute: RouteType,
+        to nextRoute: RouteType,
+        updater:(ViewType, StateType) -> Void) {
         if let message = application.translateRouteChange(from: currentRoute, to: nextRoute) {
             handle(message: message, updater: updater)
         } else {
@@ -252,7 +261,11 @@ fileprivate extension ApplicationRunner {
     
     fileprivate func applyMiddlewares(for message: MessageType) -> Transition {
         
-        func recusivelyApply(_ state: StateType, _ message: MessageType, _ command: CommandType?, _ middlewares: [Middleware]) -> Transition {
+        func recusivelyApply(
+            _ state: StateType,
+            _ message: MessageType,
+            _ command: CommandType?,
+            _ middlewares: [Middleware]) -> Transition {
             guard let middleware = middlewares.first else { return (state, command) }
             
             let remaining = Array(middlewares.dropFirst())
@@ -266,7 +279,10 @@ fileprivate extension ApplicationRunner {
         return recusivelyApply(currentState, message, .none, middlewares.reversed())
     }
     
-    fileprivate func handleNavigatorDismissal(from currentNavigationState: NavigationStateType, to intermdiateNavigationState: NavigationStateType, action: ActionType?) {
+    fileprivate func handleNavigatorDismissal(
+        from currentNavigationState: NavigationStateType,
+        to intermdiateNavigationState: NavigationStateType,
+        action: ActionType?) {
         // If the action that needs to be dispatched after the
         // navigator dismissal is a route change request, then we
         // don't make the application's update handle the intermidate
@@ -313,7 +329,10 @@ fileprivate extension ApplicationRunner {
                 self.present(view: view, modally: modally)
             }
         } else {
-            handleRouteChange(from: currentNavigationState.currentRoute, to: intermdiateNavigationState.currentRoute) { view, nextState in
+            handleRouteChange(
+                from: currentNavigationState.currentRoute,
+                to: intermdiateNavigationState.currentRoute) { view, nextState in
+                    
                 self.currentState = nextState
                 self.navigationState = intermdiateNavigationState
                 
@@ -328,7 +347,7 @@ fileprivate extension ApplicationRunner {
         }
     }
     
-    fileprivate func executeRendererTransition(_ transition: (ApplicationRendererType, @escaping ScreenTransitionCompletion) -> Void) {
+    fileprivate func executeRendererTransition(_ transition: RenderTransition) {
         guard let renderer = self.renderer else { return }
         
         dispatchQueue.suspend()
@@ -337,7 +356,8 @@ fileprivate extension ApplicationRunner {
         })
     }
     
-    fileprivate func performTransition(_ maybeTransition: ScreenTransition?) -> (@escaping ScreenTransitionCompletion) -> Void {
+    fileprivate func performTransition(
+        _ maybeTransition: ScreenTransition?) -> (@escaping ScreenTransitionCompletion) -> Void {
         guard let transition = maybeTransition else { return { _ in } }
         
         return { completion in

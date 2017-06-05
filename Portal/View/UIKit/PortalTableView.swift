@@ -8,11 +8,17 @@
 
 import UIKit
 
-public final class PortalTableView<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableView, UITableViewDataSource, UITableViewDelegate
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
+public final class PortalTableView<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >: UITableView, UITableViewDataSource, UITableViewDelegate
+    
+where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
     public typealias ActionType = Action<RouteType, MessageType>
+    public typealias TableViewCell = PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType>
     
     public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
@@ -26,7 +32,10 @@ public final class PortalTableView<MessageType, RouteType: Route, CustomComponen
     // cells have dynamic height.
     fileprivate var cellHeights: [CGFloat?]
     
-    public init(items: [TableItemProperties<ActionType>], layoutEngine: LayoutEngine, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public init(
+        items: [TableItemProperties<ActionType>],
+        layoutEngine: LayoutEngine,
+        rendererFactory: @escaping CustomComponentRendererFactory) {
         self.rendererFactory = rendererFactory
         self.items = items
         self.layoutEngine = layoutEngine
@@ -54,8 +63,8 @@ public final class PortalTableView<MessageType, RouteType: Route, CustomComponen
         
         let componentHeight = cell.component?.layout.height
         if componentHeight?.value == .none && componentHeight?.maximum == .none {
-            // TODO replace this with a logger
-            print("WARNING: Table item component with identifier '\(cellRender.typeIdentifier)' does not specify layout height! You need to either set layout.height.value or layout.height.maximum")
+            print(  "WARNING: Table item component with identifier '\(cellRender.typeIdentifier)' does not " +
+                    "specify layout height! You need to either set layout.height.value or layout.height.maximum")
         }
         
         // For some reason the first page loads its cells with smaller bounds.
@@ -97,11 +106,13 @@ public final class PortalTableView<MessageType, RouteType: Route, CustomComponen
 
 fileprivate extension PortalTableView {
     
-    fileprivate func dequeueReusableCell(with identifier: String) -> PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType> {
-        if let cell = dequeueReusableCell(withIdentifier: identifier) as? PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType> {
+    fileprivate func dequeueReusableCell(with identifier: String) ->
+        PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType> {
+            
+        if let cell = dequeueReusableCell(withIdentifier: identifier) as? TableViewCell {
             return cell
         } else {
-            let cell = PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType>(
+            let cell = TableViewCell(
                 reuseIdentifier: identifier,
                 layoutEngine: layoutEngine,
                 rendererFactory: rendererFactory

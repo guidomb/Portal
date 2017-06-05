@@ -8,7 +8,12 @@
 
 import UIKit
 
-internal struct NavigationBarTitleRenderer<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>
+internal struct NavigationBarTitleRenderer<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     typealias CustomComponentRendererFactory = () -> CustomComponentRendererType

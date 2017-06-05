@@ -36,7 +36,9 @@ public enum TimerRepeat: Equatable {
 
 public struct Timer<MessageType, RouteType: Route>: Equatable {
     
-    public static func ==<MessageType, RouteType: Route>(lhs: Timer<MessageType, RouteType>, rhs: Timer<MessageType, RouteType>) -> Bool {
+    public static func ==<MessageType, RouteType: Route>(
+        lhs: Timer<MessageType, RouteType>,
+        rhs: Timer<MessageType, RouteType>) -> Bool {
         return lhs.value == rhs.value && lhs.unit == rhs.unit && lhs.repeats == rhs.repeats && lhs.tag == rhs.tag
     }
     
@@ -86,7 +88,11 @@ public struct Timer<MessageType, RouteType: Route>: Equatable {
         }
     }
     
-    init(every value: Double, unit: TimerUnit, repeats: TimerRepeat, tag: String?, transform: @escaping (Date) -> Action<RouteType, MessageType>) {
+    init(every value: Double,
+         unit: TimerUnit,
+         repeats: TimerRepeat,
+         tag: String?,
+         transform: @escaping (Date) -> Action<RouteType, MessageType>) {
         self.value = value
         self.unit = unit
         self.repeats = repeats
@@ -113,7 +119,10 @@ public final class TimerSubscriptionManager<MessageType, RouteType: Route>: Subs
     
     private var activeTimers: [UUID : ActiveTimer] = [:]
     
-    public func add(subscription: Timer<MessageType, RouteType>, dispatch: @escaping (Action<RouteType, MessageType>) -> Void) {
+    public func add(
+        subscription: Timer<MessageType, RouteType>,
+        dispatch: @escaping (Action<RouteType, MessageType>) -> Void) {
+        
         guard !activeTimers.values.contains(where: { $0.timer == subscription }) else { return }
         
         let uuid = UUID()

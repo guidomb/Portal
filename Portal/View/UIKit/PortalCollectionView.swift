@@ -8,7 +8,12 @@
 
 import UIKit
 
-public class PortalCollectionView<MessageType, RouteType: Route, CustomComponentRendererType: UIKitCustomComponentRenderer>: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
+public class PortalCollectionView<
+    MessageType,
+    RouteType: Route,
+    CustomComponentRendererType: UIKitCustomComponentRenderer
+    >: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
+    
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
@@ -22,7 +27,11 @@ public class PortalCollectionView<MessageType, RouteType: Route, CustomComponent
     let items: [CollectionItemProperties<ActionType>]
     let rendererFactory: CustomComponentRendererFactory
     
-    public init(items: [CollectionItemProperties<ActionType>], layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public init(
+        items: [CollectionItemProperties<ActionType>],
+        layoutEngine: LayoutEngine,
+        layout: UICollectionViewLayout,
+        rendererFactory: @escaping CustomComponentRendererFactory) {
         self.items = items
         self.layoutEngine = layoutEngine
         self.rendererFactory = rendererFactory
@@ -43,7 +52,10 @@ public class PortalCollectionView<MessageType, RouteType: Route, CustomComponent
         return items.count
     }
     
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         let item = items[indexPath.row]
         if let cell = dequeueReusableCell(with: item.identifier, for: indexPath) {
             cell.component = itemRender(at: indexPath)

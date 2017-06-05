@@ -73,15 +73,27 @@ public struct View<RouteType: Route, MessageType, NavigatorType: Equatable> {
     public let content: Content
     public var orientation: SupportedOrientations = .all
     
-    public init(navigator: NavigatorType, root: RootComponent<ActionType>, orientation: SupportedOrientations = .portrait, component: Component<ActionType>) {
+    public init(
+        navigator: NavigatorType,
+        root: RootComponent<ActionType>,
+        orientation: SupportedOrientations = .portrait,
+        component: Component<ActionType>) {
         self.init(navigator: navigator, root: root, orientation: orientation, content: .component(component))
     }
     
-    public init(navigator: NavigatorType, root: RootComponent<ActionType>,  orientation: SupportedOrientations = .portrait, alert properties: AlertProperties<ActionType>) {
+    public init(
+        navigator: NavigatorType,
+        root: RootComponent<ActionType>,
+        orientation: SupportedOrientations = .portrait,
+        alert properties: AlertProperties<ActionType>) {
         self.init(navigator: navigator, root: root, orientation: orientation, content: .alert(properties: properties))
     }
     
-    internal init(navigator: NavigatorType, root: RootComponent<ActionType>, orientation: SupportedOrientations = .portrait, content: Content) {
+    internal init(
+        navigator: NavigatorType,
+        root: RootComponent<ActionType>,
+        orientation: SupportedOrientations = .portrait,
+        content: Content) {
         self.navigator = navigator
         self.root = root
         self.content = content

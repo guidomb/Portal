@@ -31,9 +31,21 @@ internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer 
         textField.removeTarget(.none, action: .none, for: .editingDidEnd)
 
         let mailbox: Mailbox<ActionType> = textField.bindMessageDispatcher { mailbox in
-            properties.onEvents.onEditingBegin |> { _ = textField.dispatch(message: $0, for: .editingDidBegin, with: mailbox) }
-            properties.onEvents.onEditingChanged |> { _ = textField.dispatch(message: $0, for: .editingChanged, with: mailbox) }
-            properties.onEvents.onEditingEnd |> { _ = textField.dispatch(message: $0, for: .editingDidEnd, with: mailbox) }
+            properties.onEvents.onEditingBegin |> { _ = textField.dispatch(
+                message: $0,
+                for: .editingDidBegin,
+                with: mailbox)
+            }
+            properties.onEvents.onEditingChanged |> { _ = textField.dispatch(
+                message: $0,
+                for: .editingChanged,
+                with: mailbox)
+            }
+            properties.onEvents.onEditingEnd |> { _ = textField.dispatch(
+                message: $0,
+                for: .editingDidEnd,
+                with: mailbox)
+            }
         }
         
         return Render(view: textField, mailbox: mailbox)
@@ -54,7 +66,11 @@ extension UITextField {
 
 extension UITextField {
     
-    fileprivate func dispatch<MessageType>(message: MessageType, for event: UIControlEvents, with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
+    fileprivate func dispatch<MessageType>(
+        message: MessageType,
+        for event: UIControlEvents,
+        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
+        
         let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
         self.register(dispatcher: dispatcher)
         self.addTarget(dispatcher, action: dispatcher.selector, for: event)

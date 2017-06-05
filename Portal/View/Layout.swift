@@ -139,7 +139,10 @@ public struct Alignment {
     public var `self`: AlignSelf?
     public var items: AlignItems
     
-    public init(content: AlignContent = .flexStart, `self` alignSelf: AlignSelf? = .none, items: AlignItems = .stretch) {
+    public init(
+        content: AlignContent = .flexStart,
+        `self` alignSelf: AlignSelf? = .none,
+        items: AlignItems = .stretch) {
         self.content = content
         self.`self` = alignSelf
         self.items = items

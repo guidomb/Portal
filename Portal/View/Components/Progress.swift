@@ -69,7 +69,8 @@ public struct ProgressStyleSheet {
     
 }
 
-public func progressStyleSheet(configure: (inout BaseStyleSheet, inout ProgressStyleSheet) -> ()) -> StyleSheet<ProgressStyleSheet> {
+public func progressStyleSheet(
+    configure: (inout BaseStyleSheet, inout ProgressStyleSheet) -> ()) -> StyleSheet<ProgressStyleSheet> {
     var base = BaseStyleSheet()
     var custom = ProgressStyleSheet()
     configure(&base, &custom)

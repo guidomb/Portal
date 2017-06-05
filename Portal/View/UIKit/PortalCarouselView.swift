@@ -23,7 +23,11 @@ public final class PortalCarouselView<
     fileprivate var lastOffset: CGFloat = 0
     fileprivate var selectedIndex: Int = 0
     
-    public override init(items: [CollectionItemProperties<ActionType>], layoutEngine: LayoutEngine, layout: UICollectionViewLayout, rendererFactory: @escaping CustomComponentRendererFactory) {
+    public override init(
+        items: [CollectionItemProperties<ActionType>],
+        layoutEngine: LayoutEngine,
+        layout: UICollectionViewLayout,
+        rendererFactory: @escaping CustomComponentRendererFactory) {
         onSelectionChange = { _ in .none }
         super.init(
             items: items,
