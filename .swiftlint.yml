@@ -4,6 +4,7 @@ included: # paths to include during linting. `--path` is ignored if present.
 # Disabled Rules
 disabled_rules:
   - trailing_whitespace
+  - generic_type_name
 
 # Rules configuration
 generic_type_name: 
