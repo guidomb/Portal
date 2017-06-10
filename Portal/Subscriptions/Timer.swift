@@ -36,13 +36,13 @@ public enum TimerRepeat: Equatable {
 
 public struct Timer<MessageType, RouteType: Route>: Equatable {
     
-    public static func ==<MessageType, RouteType: Route>(
+    public static func ==<MessageType, RouteType>(
         lhs: Timer<MessageType, RouteType>,
         rhs: Timer<MessageType, RouteType>) -> Bool {
         return lhs.value == rhs.value && lhs.unit == rhs.unit && lhs.repeats == rhs.repeats && lhs.tag == rhs.tag
     }
     
-    public static func every<MessageType, RouteType: Route>(
+    public static func every<MessageType, RouteType>(
         _ value: Double,
         unit: TimerUnit,
         tag: String? = .none,
@@ -56,7 +56,7 @@ public struct Timer<MessageType, RouteType: Route>: Equatable {
         )
     }
     
-    public static func only<MessageType, RouteType: Route>(
+    public static func only<MessageType, RouteType>(
         fire times: UInt,
         every value: Double,
         unit: TimerUnit,

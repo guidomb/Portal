@@ -10,7 +10,7 @@ import Foundation
 
 public enum Subscription<MessageType, RouteType: Route, CustomSubscriptionType: Equatable>: Equatable {
     
-    static public func ==<MessageType, RouteType: Route, CustomSubscriptionType: Equatable>(
+    static public func ==<MessageType, RouteType, CustomSubscriptionType>(
         lhs: Subscription<MessageType, RouteType, CustomSubscriptionType>,
         rhs: Subscription<MessageType, RouteType, CustomSubscriptionType>) -> Bool {
         switch (lhs, rhs) {
@@ -37,7 +37,7 @@ public protocol SubscriptionManager {
     
 }
 
-internal final class SubscriptionsManager<RouteType: Route, MessageType, CustomSubscriptionManager: SubscriptionManager>
+internal final class SubscriptionsManager<RouteType, MessageType, CustomSubscriptionManager: SubscriptionManager>
     where CustomSubscriptionManager.RouteType == RouteType, CustomSubscriptionManager.MessageType == MessageType {
     
     typealias ActionType = Action<RouteType, MessageType>

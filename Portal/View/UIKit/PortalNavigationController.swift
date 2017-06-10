@@ -10,7 +10,7 @@ import UIKit
 
 public final class PortalNavigationController<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: UINavigationController, UINavigationControllerDelegate
     

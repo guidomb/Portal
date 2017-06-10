@@ -73,7 +73,7 @@ public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitC
 
 public struct UIKitComponentRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: Renderer
     

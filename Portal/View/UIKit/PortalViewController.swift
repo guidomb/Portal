@@ -10,7 +10,7 @@ import UIKit
 
 public final class PortalViewController<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer>: UIViewController
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {

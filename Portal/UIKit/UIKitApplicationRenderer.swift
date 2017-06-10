@@ -10,7 +10,7 @@ import UIKit
 
 public final class UIKitApplicationRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     NavigatorType: Equatable,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: ApplicationRenderer
@@ -97,7 +97,7 @@ fileprivate extension UIKitApplicationRenderer {
 
 fileprivate enum ComponentController<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
@@ -127,7 +127,7 @@ fileprivate enum ComponentController<
 
 fileprivate final class MainThreadUIKitApplicationRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     NavigatorType: Equatable,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
     
@@ -346,7 +346,7 @@ extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
 
 fileprivate struct WindowManager<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {

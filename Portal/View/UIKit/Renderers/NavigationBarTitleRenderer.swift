@@ -10,7 +10,7 @@ import UIKit
 
 internal struct NavigationBarTitleRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >
     

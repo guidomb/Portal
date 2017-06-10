@@ -10,7 +10,7 @@ import UIKit
 
 public class PortalCollectionView<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
     

@@ -10,7 +10,7 @@ import UIKit
 
 internal struct CarouselRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: UIKitRenderer
     

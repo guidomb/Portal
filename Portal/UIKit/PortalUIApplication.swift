@@ -24,8 +24,8 @@ public class UIKitApplicationContext<
     MessageType,
     CommandType,
     CustomSubscriptionType,
-    RouteType: Route,
-    NavigatorType: Equatable,
+    RouteType,
+    NavigatorType,
     ApplicationType: Application,
     CommandExecutorType: CommandExecutor,
     CustomSubscriptionManager: SubscriptionManager,
@@ -122,12 +122,12 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
         MessageType,
         CommandType,
         CustomSubscriptionType,
-        RouteType: Route,
-        NavigatorType: Equatable,
-        ApplicationType: Application,
-        CommandExecutorType: CommandExecutor,
-        CustomSubscriptionManager: SubscriptionManager,
-        CustomComponentRendererType: UIKitCustomComponentRenderer> (
+        RouteType,
+        NavigatorType,
+        ApplicationType,
+        CommandExecutorType,
+        CustomSubscriptionManager,
+        CustomComponentRendererType> (
             applicationContext: UIKitApplicationContext<
                 StateType,
                 MessageType,
@@ -143,13 +143,6 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
     
         where
         
-        ApplicationType.StateType                   == StateType,
-        ApplicationType.MessageType                 == MessageType,
-        ApplicationType.CommandType                 == CommandType,
-        ApplicationType.RouteType                   == RouteType,
-        ApplicationType.NavigatorType               == NavigatorType,
-        ApplicationType.SubscriptionType            == CustomSubscriptionType,
-        CommandExecutorType.MessageType             == Action<RouteType, MessageType>,
         CommandExecutorType.CommandType             == CommandType,
         CustomSubscriptionManager.SubscriptionType  == CustomSubscriptionType,
         CustomSubscriptionManager.RouteType         == RouteType,

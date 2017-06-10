@@ -10,7 +10,7 @@ import UIKit
 
 internal struct TouchableRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: UIKitRenderer
     

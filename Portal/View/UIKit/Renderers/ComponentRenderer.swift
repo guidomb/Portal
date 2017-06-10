@@ -10,7 +10,7 @@ import UIKit
 
 internal struct ComponentRenderer<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: UIKitRenderer
     

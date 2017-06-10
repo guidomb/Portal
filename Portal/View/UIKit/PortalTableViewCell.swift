@@ -10,7 +10,7 @@ import UIKit
 
 public final class PortalTableViewCell<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer>: UITableViewCell
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {

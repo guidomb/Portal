@@ -9,7 +9,7 @@ import UIKit
 
 public final class PortalCarouselView<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: PortalCollectionView<MessageType, RouteType, CustomComponentRendererType>
     

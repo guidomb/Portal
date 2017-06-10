@@ -10,7 +10,7 @@ import UIKit
 
 public final class PortalTableView<
     MessageType,
-    RouteType: Route,
+    RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: UITableView, UITableViewDataSource, UITableViewDelegate
     
