@@ -14,6 +14,10 @@ enum IgniteSubscription: Equatable {
     
 }
 
+enum Command {
+    
+}
+
 final class ExampleSubscriptionManager: Portal.SubscriptionManager {
     
     func add(subscription: IgniteSubscription, dispatch: @escaping (ExampleApplication.Action) -> Void) {
@@ -30,17 +34,12 @@ final class ExampleCommandExecutor: Portal.CommandExecutor {
     
     let loadState: () -> State?
     
-    init(loadState: @escaping () -> State?) {
+    init(loadState: @escaping () -> State? = { .none }) {
         self.loadState = loadState
     }
     
     func execute(command: Command, dispatch: @escaping (ExampleApplication.Action) -> Void) {
-        switch command {
-            
-        case .loadStoredState:
-            dispatch(.sendMessage(.stateLoaded(loadState())))
-            
-        }
+        
     }
     
 }
