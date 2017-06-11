@@ -70,43 +70,6 @@ enum State {
     
 }
 
-enum IgniteSubscription: Equatable {
-    
-    case foo
-    
-}
-
-final class ExampleSubscriptionManager: Portal.SubscriptionManager {
-    
-    func add(subscription: IgniteSubscription, dispatch: @escaping (ExampleApplication.Action) -> Void) {
-        
-    }
-    
-    func remove(subscription: IgniteSubscription) {
-        
-    }
-    
-}
-
-final class ExampleCommandExecutor: Portal.CommandExecutor {
-    
-    let loadState: () -> State?
-    
-    init(loadState: @escaping () -> State?) {
-        self.loadState = loadState
-    }
-    
-    func execute(command: Command, dispatch: @escaping (ExampleApplication.Action) -> Void) {
-        switch command {
-            
-        case .loadStoredState:
-            dispatch(.sendMessage(.stateLoaded(loadState())))
-            
-        }
-    }
-    
-}
-
 final class ExampleApplication: Portal.Application {
     
     typealias Action = Portal.Action<Route, Message>
@@ -201,249 +164,25 @@ final class ExampleApplication: Portal.Application {
         switch state {
             
         case .started(_, true):
-            return View(
-                navigator: .main,
-                root: .stack(exampleNavigationBar(title: "Root")),
-                alert: AlertProperties(
-                    title: "Hello!",
-                    text: "This is an alert",
-                    button: AlertProperties<Action>.Button(title: "OK")
-                )
-            )
+            return MainScreen.alert()
             
         case .started(let date, false):
-            return View(
-                navigator: .main,
-                root: .stack(exampleNavigationBar(title: "Root")),
-                component: container(
-                    children: [
-                        button(
-                            text: "Replace content",
-                            onTap: .sendMessage(.replaceContent),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .red
-                                button.textColor = .white
-                            },
-                            layout: layout() {
-                                $0.margin = .by(edge: edge() {
-                                    $0.top = 30
-                                })
-                            }
-                        ),
-                        button(
-                            text: "Present modal",
-                            onTap: .navigate(to: .modal),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .green
-                                button.textColor = .white
-                            }
-                        ),
-                        button(
-                            text: "Present detail",
-                            onTap: .navigate(to: .detail),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .blue
-                                button.textColor = .white
-                            }
-                        ),
-                        button(
-                            text: "Present modal landscape",
-                            onTap: .navigate(to: .landscape),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .green
-                                button.textColor = .white
-                            }
-                        ),
-                        touchable(
-                            gesture: .tap(message: .navigate(to: .modal)),
-                            child: container(
-                                children: [],
-                                style: styleSheet() {
-                                    $0.backgroundColor = .yellow
-                                },
-                                layout: layout() {
-                                    $0.width = Dimension(value: 50)
-                                    $0.height = Dimension(value: 50)
-                                }
-                            )
-                        ),
-                        label(text: date?.description ?? "Unknown date"),
-                        segmented(
-                            segments: ZipList(
-                                left: [segment(title: "First", onTap: .sendMessage(.pong("First")))],
-                                center: segment(title: "Second", onTap: .sendMessage(.pong("Second"))),
-                                right: [segment(title: "Third", onTap: .sendMessage(.pong("Third")))]
-                            )
-                        ),
-                        myCustomComponent(layout: layout() {
-                            $0.width = Dimension(value: 100)
-                            $0.height = Dimension(value: 100)
-                        })
-                    ],
-                    style: styleSheet() {
-                        $0.backgroundColor = .gray
-                    },
-                    layout: layout() {
-                        $0.flex = flex() {
-                            $0.grow = .one
-                        }
-                    }
-                )
-            )
+            return MainScreen.mainView(date: date)
             
         case .replacedContent:
-            return View(
-                navigator: .main,
-                root: .stack(exampleNavigationBar(title: "Root")),
-                component: container(
-                    children: [
-                        label(text: "Button pressed"),
-                        button(
-                            text: "Go back",
-                            onTap: .sendMessage(.goToRoot),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .green
-                                button.textColor = .white
-                            }
-                        )
-                    ],
-                    style: styleSheet() {
-                        $0.backgroundColor = .red
-                    },
-                    layout: layout() {
-                        $0.flex = flex() {
-                            $0.grow = .one
-                        }
-                    }
-                )
-            )
-            
+            return MainScreen.replacedContent()
             
         case .detailedScreen(let counter):
-            return View(
-                navigator: .main,
-                root: .stack(exampleNavigationBar(title: "Detail")),
-                component: container(
-                    children: [
-                        button(text: "Go back!", onTap: .navigateToPreviousRoute),
-                        label(text: "Count \(counter)"),
-                        button(text: "Increment!", onTap: .sendMessage(.increment)),
-                        label(text: "Detail screen!"),
-                        myCustomComponent2(layout: layout() {
-                            $0.width = Dimension(value: 100)
-                            $0.height = Dimension(value: 100)
-                        })
-                    ],
-                    style: styleSheet() {
-                        $0.backgroundColor = .green
-                    },
-                    layout: layout() {
-                        $0.flex = flex() {
-                            $0.grow = .one
-                        }
-                        $0.justifyContent = .flexEnd
-                    }
-                )
-            )
+            return DetailScreen.view(counter: counter)
             
         case .modalScreen(let counter):
-            let modalButtonStyleSheet = buttonStyleSheet { base, button in
-                base.backgroundColor = .green
-                button.textColor = .white
-            }
-            return View(
-                navigator: .modal,
-                root: .stack(exampleNavigationBar(title: "Modal")),
-                component: container(
-                    children: [
-                        label(text: "Modal screen"),
-                        button(
-                            text: "Close and present detail",
-                            onTap: .dismissNavigator(thenSend: .navigate(to: .detail)),
-                            style: modalButtonStyleSheet
-                        ),
-                        button(
-                            text: "Close",
-                            onTap: .dismissNavigator(thenSend: .none),
-                            style: modalButtonStyleSheet
-                        ),
-                        label(text: "Counter \(counter)"),
-                        button(
-                            text: "Increment!",
-                            onTap: .sendMessage(.increment),
-                            style: modalButtonStyleSheet
-                        ),
-                        button(
-                            text: "Present modal landscape",
-                            onTap: .navigate(to: .landscape),
-                            style: buttonStyleSheet { base, button in
-                                base.backgroundColor = .green
-                                button.textColor = .white
-                            }
-                        ),
-                    ],
-                    style: styleSheet() {
-                        $0.backgroundColor = .red
-                    },
-                    layout: layout() {
-                        $0.flex = flex() {
-                            $0.grow = .one
-                        }
-                    }
-                )
-            )
+            return ModalScreen.view(counter: counter)
             
         case .landscapeScreen(let text, let count):
-            let modalButtonStyleSheet = buttonStyleSheet { base, button in
-                base.backgroundColor = .green
-                button.textColor = .white
-            }
-            return View(
-                navigator: .other,
-                root: .simple,
-                orientation: .landscape,
-                component: container(
-                    children: [
-                        button(
-                            text: "Close",
-                            onTap: .dismissNavigator(thenSend: .none),
-                            style: modalButtonStyleSheet
-                        ),
-                        button(
-                            text: "Increment!",
-                            onTap: .sendMessage(.increment),
-                            style: modalButtonStyleSheet
-                        ),
-                        label(text: text),
-                        label(text: "Count \(count)")
-                    ],
-                    style: styleSheet() {
-                        $0.backgroundColor = .red
-                    },
-                    layout: layout() {
-                        $0.flex = flex() {
-                            $0.grow = .one
-                        }
-                    }
-                )
-            )
+            return LandscapeScreen.view(text: text, count: count)
             
         default:
-            return View(
-                navigator: .main,
-                root: .simple,
-                component: container(
-                    children: [],
-                    style: styleSheet() {
-                        $0.backgroundColor = .red
-                    },
-                    layout: layout() {
-                        $0.flex = flex() {
-                            $0.grow = .one
-                        }
-                    }
-                )
-            )
+            return DefaultScreen.view()
             
         }
     }
