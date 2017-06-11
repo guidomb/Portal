@@ -85,6 +85,8 @@ final class ExampleApplication: Portal.Application {
         case (.uninitialized, .applicationStarted):
             return (.started(date: .none, showAlert: false), .none)
             
+        // MARK:- Started state transitions
+            
         case (.started, .replaceContent):
             return (.replacedContent, .none)
             
@@ -100,8 +102,16 @@ final class ExampleApplication: Portal.Application {
         case (.started, .tick(let date)):
             return (.started(date: date, showAlert: false), .none)
             
+        case (.started(let date, _), .pong(let text)):
+            print("PONG -> \(text)")
+            return (.started(date: date, showAlert: true), .none)
+            
+        // MARK:- Replaced content state transitions
+            
         case (.replacedContent, .goToRoot):
             return (.started(date: .none, showAlert: false), .none)
+            
+        // MARK:- Detailed screen state transitions
             
         case (.detailedScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
@@ -115,6 +125,8 @@ final class ExampleApplication: Portal.Application {
         case (.modalScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
             
+        // MARK:- Modal screen state transitions
+            
         case (.modalScreen(let counter), .routeChanged(.detail)):
             return (.detailedScreen(counter: counter + 5), .none)
             
@@ -124,6 +136,8 @@ final class ExampleApplication: Portal.Application {
         case (.modalScreen, .routeChanged(.landscape)):
             return (.landscapeScreen(text: "Modal after modal!", counter: 0), .none)
             
+        // MARK:- Landscape screen state transitions
+            
         case (.landscapeScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
             
@@ -132,10 +146,8 @@ final class ExampleApplication: Portal.Application {
             
         case (.landscapeScreen(let text, let count), .increment):
             return (.landscapeScreen(text: text, counter: count + 1), .none)
-        
-        case (.started(let date, _), .pong(let text)):
-            print("PONG -> \(text)")
-            return (.started(date: date, showAlert: true), .none)
+            
+        // MARK:- Miscelaneus state transitions
             
         case (_, .pong(let text)):
             print("PONG -> \(text)")
@@ -179,20 +191,20 @@ final class ExampleApplication: Portal.Application {
         switch state {
         case .started:
             return [
-                .timer(.only(fire: 3, every: 1, unit: .second, tag: "Main") { .sendMessage(.tick($0)) })
+                .timer(.only(fire: 3, every: 1, unit: .second, tag: "Main timer") { .sendMessage(.tick($0)) })
             ]
         case .detailedScreen:
             return [
-                .timer(.only(fire: 3, every: 1, unit: .second, tag: "Main") { .sendMessage(.tick($0)) }),
-                .timer(.only(fire: 10, every: 1, unit: .second, tag: "Detail") { .sendMessage(.ping($0)) })
+                .timer(.only(fire: 3, every: 1, unit: .second, tag: "Main timer") { .sendMessage(.tick($0)) }),
+                .timer(.only(fire: 10, every: 1, unit: .second, tag: "Detail timer") { .sendMessage(.ping($0)) })
             ]
         case .landscapeScreen:
             return [
-                .timer(.only(fire: 1, every: 1, unit: .millisecond, tag: "BUG!") { .sendMessage(.tick($0)) })
+                .timer(.only(fire: 1, every: 1, unit: .millisecond, tag: "Landscape timer") { .sendMessage(.tick($0)) })
             ]
         case .modalScreen:
             return [
-                .timer(.only(fire: 10, every: 1, unit: .second, tag: "BUG2!") { _ in .sendMessage(.increment) })
+                .timer(.only(fire: 10, every: 1, unit: .second, tag: "Modal timer") { _ in .sendMessage(.increment) })
             ]
         default:
             return []
