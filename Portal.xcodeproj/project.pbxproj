@@ -20,6 +20,8 @@
 		9D3A6E1E1EECBC4900DCFA2D /* DetailScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E1D1EECBC4900DCFA2D /* DetailScreen.swift */; };
 		9D3A6E201EECBCF000DCFA2D /* DefaultScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E1F1EECBCF000DCFA2D /* DefaultScreen.swift */; };
 		9D3A6E221EECBE6000DCFA2D /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E211EECBE3D00DCFA2D /* MainScreen.swift */; };
+		9D3A6E251EECC9A500DCFA2D /* CustomComponentRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E241EECC9A500DCFA2D /* CustomComponentRenderer.swift */; };
+		9D3A6E271EECC9BF00DCFA2D /* CustomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E261EECC9BF00DCFA2D /* CustomController.swift */; };
 		9D3AB7321EA5AD760038988D /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
 		9D3AB7331EA5AD760038988D /* Portal.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D7824121E92B9C8004455B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D7824111E92B9C8004455B1 /* Assets.xcassets */; };
@@ -143,6 +145,8 @@
 		9D3A6E1D1EECBC4900DCFA2D /* DetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailScreen.swift; sourceTree = "<group>"; };
 		9D3A6E1F1EECBCF000DCFA2D /* DefaultScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultScreen.swift; sourceTree = "<group>"; };
 		9D3A6E211EECBE3D00DCFA2D /* MainScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
+		9D3A6E241EECC9A500DCFA2D /* CustomComponentRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComponentRenderer.swift; sourceTree = "<group>"; };
+		9D3A6E261EECC9BF00DCFA2D /* CustomController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomController.swift; sourceTree = "<group>"; };
 		9D3AB7361EA5AD760038988D /* PortalView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PortalView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D3AB73A1EA5AD950038988D /* YogaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YogaKit.framework; path = Carthage/Build/iOS/YogaKit.framework; sourceTree = "<group>"; };
 		9D7824081E92B9C7004455B1 /* PortalExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PortalExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -317,9 +321,8 @@
 		9D3A6E141EECB95200DCFA2D /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9D3A6E231EECC98600DCFA2D /* CustomComponent */,
 				9D3A6E211EECBE3D00DCFA2D /* MainScreen.swift */,
-				9D8C844D1EC655600034C6BC /* CustomView.swift */,
-				9D93F2211E9D67E700B36914 /* CustomView.xib */,
 				9D3A6E171EECBA3F00DCFA2D /* Shared.swift */,
 				9D3A6E191EECBB1F00DCFA2D /* ModalScreen.swift */,
 				9D3A6E1B1EECBBC000DCFA2D /* LandscapeScreen.swift */,
@@ -327,6 +330,17 @@
 				9D3A6E1F1EECBCF000DCFA2D /* DefaultScreen.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		9D3A6E231EECC98600DCFA2D /* CustomComponent */ = {
+			isa = PBXGroup;
+			children = (
+				9D8C844D1EC655600034C6BC /* CustomView.swift */,
+				9D93F2211E9D67E700B36914 /* CustomView.xib */,
+				9D3A6E241EECC9A500DCFA2D /* CustomComponentRenderer.swift */,
+				9D3A6E261EECC9BF00DCFA2D /* CustomController.swift */,
+			);
+			path = CustomComponent;
 			sourceTree = "<group>";
 		};
 		9D7824091E92B9C8004455B1 /* Example */ = {
@@ -723,6 +737,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D3A6E271EECC9BF00DCFA2D /* CustomController.swift in Sources */,
 				9D3A6E1A1EECBB1F00DCFA2D /* ModalScreen.swift in Sources */,
 				9D3A6E181EECBA3F00DCFA2D /* Shared.swift in Sources */,
 				9D3A6E221EECBE6000DCFA2D /* MainScreen.swift in Sources */,
@@ -731,6 +746,7 @@
 				9D8C844E1EC655600034C6BC /* CustomView.swift in Sources */,
 				9D78241D1E92BA47004455B1 /* Example.swift in Sources */,
 				9D3A6E201EECBCF000DCFA2D /* DefaultScreen.swift in Sources */,
+				9D3A6E251EECC9A500DCFA2D /* CustomComponentRenderer.swift in Sources */,
 				9D78241B1E92BA01004455B1 /* main.swift in Sources */,
 				9D3A6E1E1EECBC4900DCFA2D /* DetailScreen.swift in Sources */,
 			);
