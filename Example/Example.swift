@@ -204,7 +204,7 @@ final class ExampleApplication: Portal.Application {
             ]
         case .modalScreen:
             return [
-                .timer(.only(fire: 10, every: 1, unit: .second, tag: "Modal timer") { _ in .sendMessage(.increment) })
+                .timer(.only(fire: 5, every: 1, unit: .second, tag: "Modal timer") { _ in .sendMessage(.increment) })
             ]
         default:
             return []

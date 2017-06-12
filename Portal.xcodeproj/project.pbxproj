@@ -22,6 +22,10 @@
 		9D3A6E221EECBE6000DCFA2D /* MainScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E211EECBE3D00DCFA2D /* MainScreen.swift */; };
 		9D3A6E251EECC9A500DCFA2D /* CustomComponentRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E241EECC9A500DCFA2D /* CustomComponentRenderer.swift */; };
 		9D3A6E271EECC9BF00DCFA2D /* CustomController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E261EECC9BF00DCFA2D /* CustomController.swift */; };
+		9D3A6E2F1EEE007200DCFA2D /* PortalExampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E2E1EEE007200DCFA2D /* PortalExampleUITests.swift */; };
+		9D3A6E371EEE065000DCFA2D /* PortalExampleApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E361EEE065000DCFA2D /* PortalExampleApplication.swift */; };
+		9D3A6E3A1EEE07F100DCFA2D /* ModalScreenDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E391EEE07F100DCFA2D /* ModalScreenDriver.swift */; };
+		9D3A6E3C1EEE098000DCFA2D /* MainScreenDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3A6E3B1EEE098000DCFA2D /* MainScreenDriver.swift */; };
 		9D3AB7321EA5AD760038988D /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
 		9D3AB7331EA5AD760038988D /* Portal.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9D7824121E92B9C8004455B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9D7824111E92B9C8004455B1 /* Assets.xcassets */; };
@@ -105,6 +109,13 @@
 			remoteGlobalIDString = 9D0F333C1E78F81800C65BED;
 			remoteInfo = Portal;
 		};
+		9D3A6E311EEE007200DCFA2D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9D0F33341E78F81800C65BED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9D7824071E92B9C7004455B1;
+			remoteInfo = PortalExample;
+		};
 		9D3AB7341EA5AD760038988D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9D0F33341E78F81800C65BED /* Project object */;
@@ -147,6 +158,12 @@
 		9D3A6E211EECBE3D00DCFA2D /* MainScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreen.swift; sourceTree = "<group>"; };
 		9D3A6E241EECC9A500DCFA2D /* CustomComponentRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomComponentRenderer.swift; sourceTree = "<group>"; };
 		9D3A6E261EECC9BF00DCFA2D /* CustomController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomController.swift; sourceTree = "<group>"; };
+		9D3A6E2C1EEE007200DCFA2D /* PortalExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PortalExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D3A6E2E1EEE007200DCFA2D /* PortalExampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortalExampleUITests.swift; sourceTree = "<group>"; };
+		9D3A6E301EEE007200DCFA2D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9D3A6E361EEE065000DCFA2D /* PortalExampleApplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortalExampleApplication.swift; sourceTree = "<group>"; };
+		9D3A6E391EEE07F100DCFA2D /* ModalScreenDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalScreenDriver.swift; sourceTree = "<group>"; };
+		9D3A6E3B1EEE098000DCFA2D /* MainScreenDriver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenDriver.swift; sourceTree = "<group>"; };
 		9D3AB7361EA5AD760038988D /* PortalView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PortalView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D3AB73A1EA5AD950038988D /* YogaKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = YogaKit.framework; path = Carthage/Build/iOS/YogaKit.framework; sourceTree = "<group>"; };
 		9D7824081E92B9C7004455B1 /* PortalExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PortalExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -240,6 +257,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9D3A6E291EEE007100DCFA2D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9D7824051E92B9C7004455B1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -258,6 +282,7 @@
 				9D0F333F1E78F81800C65BED /* Portal */,
 				9D0F334A1E78F81800C65BED /* PortalTests */,
 				9D7824091E92B9C8004455B1 /* Example */,
+				9D3A6E2D1EEE007200DCFA2D /* PortalExampleUITests */,
 				9D0F333E1E78F81800C65BED /* Products */,
 				9D0F33671E79073600C65BED /* Frameworks */,
 			);
@@ -269,6 +294,7 @@
 				9D0F333D1E78F81800C65BED /* Portal.framework */,
 				9D0F33461E78F81800C65BED /* PortalTests.xctest */,
 				9D7824081E92B9C7004455B1 /* PortalExample.app */,
+				9D3A6E2C1EEE007200DCFA2D /* PortalExampleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -341,6 +367,26 @@
 				9D3A6E261EECC9BF00DCFA2D /* CustomController.swift */,
 			);
 			path = CustomComponent;
+			sourceTree = "<group>";
+		};
+		9D3A6E2D1EEE007200DCFA2D /* PortalExampleUITests */ = {
+			isa = PBXGroup;
+			children = (
+				9D3A6E381EEE07CA00DCFA2D /* ViewDrivers */,
+				9D3A6E2E1EEE007200DCFA2D /* PortalExampleUITests.swift */,
+				9D3A6E301EEE007200DCFA2D /* Info.plist */,
+				9D3A6E361EEE065000DCFA2D /* PortalExampleApplication.swift */,
+			);
+			path = PortalExampleUITests;
+			sourceTree = "<group>";
+		};
+		9D3A6E381EEE07CA00DCFA2D /* ViewDrivers */ = {
+			isa = PBXGroup;
+			children = (
+				9D3A6E391EEE07F100DCFA2D /* ModalScreenDriver.swift */,
+				9D3A6E3B1EEE098000DCFA2D /* MainScreenDriver.swift */,
+			);
+			path = ViewDrivers;
 			sourceTree = "<group>";
 		};
 		9D7824091E92B9C8004455B1 /* Example */ = {
@@ -544,6 +590,24 @@
 			productReference = 9D0F33461E78F81800C65BED /* PortalTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		9D3A6E2B1EEE007100DCFA2D /* PortalExampleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9D3A6E331EEE007200DCFA2D /* Build configuration list for PBXNativeTarget "PortalExampleUITests" */;
+			buildPhases = (
+				9D3A6E281EEE007100DCFA2D /* Sources */,
+				9D3A6E291EEE007100DCFA2D /* Frameworks */,
+				9D3A6E2A1EEE007100DCFA2D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				9D3A6E321EEE007200DCFA2D /* PBXTargetDependency */,
+			);
+			name = PortalExampleUITests;
+			productName = PortalExampleUITests;
+			productReference = 9D3A6E2C1EEE007200DCFA2D /* PortalExampleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		9D7824071E92B9C7004455B1 /* PortalExample */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9D7824191E92B9C8004455B1 /* Build configuration list for PBXNativeTarget "PortalExample" */;
@@ -569,7 +633,7 @@
 		9D0F33341E78F81800C65BED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0830;
+				LastSwiftUpdateCheck = 0900;
 				LastUpgradeCheck = 0900;
 				ORGANIZATIONNAME = "Guido Marucci Blas";
 				TargetAttributes = {
@@ -583,6 +647,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 7SMPV9L38V;
 						ProvisioningStyle = Automatic;
+					};
+					9D3A6E2B1EEE007100DCFA2D = {
+						CreatedOnToolsVersion = 9.0;
+						DevelopmentTeam = 36UGBW7HEL;
+						TestTargetID = 9D7824071E92B9C7004455B1;
 					};
 					9D7824071E92B9C7004455B1 = {
 						CreatedOnToolsVersion = 8.3;
@@ -608,6 +677,7 @@
 				9D0F333C1E78F81800C65BED /* Portal */,
 				9D0F33451E78F81800C65BED /* PortalTests */,
 				9D7824071E92B9C7004455B1 /* PortalExample */,
+				9D3A6E2B1EEE007100DCFA2D /* PortalExampleUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -621,6 +691,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		9D0F33441E78F81800C65BED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D3A6E2A1EEE007100DCFA2D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -733,6 +810,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9D3A6E281EEE007100DCFA2D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9D3A6E2F1EEE007200DCFA2D /* PortalExampleUITests.swift in Sources */,
+				9D3A6E3A1EEE07F100DCFA2D /* ModalScreenDriver.swift in Sources */,
+				9D3A6E3C1EEE098000DCFA2D /* MainScreenDriver.swift in Sources */,
+				9D3A6E371EEE065000DCFA2D /* PortalExampleApplication.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9D7824041E92B9C7004455B1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -759,6 +847,11 @@
 			isa = PBXTargetDependency;
 			target = 9D0F333C1E78F81800C65BED /* Portal */;
 			targetProxy = 9D0F33481E78F81800C65BED /* PBXContainerItemProxy */;
+		};
+		9D3A6E321EEE007200DCFA2D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9D7824071E92B9C7004455B1 /* PortalExample */;
+			targetProxy = 9D3A6E311EEE007200DCFA2D /* PBXContainerItemProxy */;
 		};
 		9D3AB7351EA5AD760038988D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -961,6 +1054,46 @@
 			};
 			name = Release;
 		};
+		9D3A6E341EEE007200DCFA2D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 36UGBW7HEL;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PortalExampleUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.guidomb.PortalExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PortalExample;
+			};
+			name = Debug;
+		};
+		9D3A6E351EEE007200DCFA2D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 36UGBW7HEL;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = PortalExampleUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = me.guidomb.PortalExampleUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PortalExample;
+			};
+			name = Release;
+		};
 		9D7824171E92B9C8004455B1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1027,6 +1160,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		9D3A6E331EEE007200DCFA2D /* Build configuration list for PBXNativeTarget "PortalExampleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9D3A6E341EEE007200DCFA2D /* Debug */,
+				9D3A6E351EEE007200DCFA2D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		9D7824191E92B9C8004455B1 /* Build configuration list for PBXNativeTarget "PortalExample" */ = {
 			isa = XCConfigurationList;
