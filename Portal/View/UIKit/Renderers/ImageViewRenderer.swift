@@ -13,12 +13,13 @@ internal struct ImageViewRenderer<MessageType, RouteType: Route>: UIKitRenderer 
     typealias ActionType = Action<RouteType, MessageType>
     
     let image: Image
+    let clipToBounds: Bool
     let style: StyleSheet<EmptyStyleSheet>
     let layout: Layout
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let imageView = UIImageView(image: image.asUIImage)
-        imageView.clipsToBounds = true
+        imageView.clipsToBounds = clipToBounds
         
         imageView.apply(style: style.base)
         layoutEngine.apply(layout: layout, to: imageView)
