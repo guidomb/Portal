@@ -150,7 +150,27 @@ extension UIView {
         style.borderColor       |> { self.layer.borderColor = $0.asUIColor.cgColor }
         style.borderWidth       |> { self.layer.borderWidth = CGFloat($0) }
         style.alpha             |> { self.alpha = CGFloat($0) }
+        style.contentMode       |> { self.contentMode = $0.toUIViewContentMode }
         
+    }
+    
+}
+
+fileprivate extension ContentMode {
+    
+    var toUIViewContentMode: UIViewContentMode {
+        switch self {
+            
+        case .scaleToFill:
+            return UIViewContentMode.scaleToFill
+            
+        case .scaleAspectFill:
+            return UIViewContentMode.scaleAspectFill
+            
+        case .scaleAspectFit:
+            return UIViewContentMode.scaleAspectFit
+            
+        }
     }
     
 }

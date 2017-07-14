@@ -83,6 +83,14 @@ public struct StyleSheet<ComponentStyleSheet> {
     
 }
 
+public enum ContentMode {
+    
+    case scaleToFill
+    case scaleAspectFit
+    case scaleAspectFill
+    
+}
+
 public struct BaseStyleSheet {
     
     public var backgroundColor: Color
@@ -90,19 +98,22 @@ public struct BaseStyleSheet {
     public var borderColor: Color
     public var borderWidth: Float
     public var alpha: Float
+    public var contentMode: ContentMode?
     
     public init(
         backgroundColor: Color = .clear,
         cornerRadius: Float? = .none,
         borderColor: Color = .clear,
         borderWidth: Float = 0.0,
-        alpha: Float = 1.0
+        alpha: Float = 1.0,
+        contentMode: ContentMode? = .none
     ) {
         self.backgroundColor = backgroundColor
         self.cornerRadius = cornerRadius
         self.borderColor = borderColor
         self.borderWidth = borderWidth
         self.alpha = alpha
+        self.contentMode = contentMode
     }
     
 }
