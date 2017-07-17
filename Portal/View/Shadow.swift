@@ -31,18 +31,19 @@ public struct Shadow {
     
 }
 
+// swiftlint:disable identifier_name
 public struct Offset {
     
-    public var posX: Float
-    public var posY: Float
+    public var x: Float
+    public var y: Float
     
     internal var asCGSize: CGSize {
-        return CGSize(width: CGFloat(posX), height: CGFloat(posY))
+        return CGSize(width: CGFloat(x), height: CGFloat(y))
     }
     
-    public init(posX: Float = 0, posY: Float = 0) {
-        self.posX = posX
-        self.posY = posY
+    public init(x: Float = 0, y: Float = 0) {
+        self.x = x
+        self.y = y
     }
 }
 
