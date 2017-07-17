@@ -150,6 +150,7 @@ extension UIView {
         style.borderColor       |> { self.layer.borderColor = $0.asUIColor.cgColor }
         style.borderWidth       |> { self.layer.borderWidth = CGFloat($0) }
         style.alpha             |> { self.alpha = CGFloat($0) }
+        style.clipToBounds      |> { self.clipsToBounds = $0 }
         style.shadow            |> { shadow in
             self.layer.shadowColor = shadow.color.asUIColor.cgColor
             self.layer.shadowOpacity = shadow.opacity

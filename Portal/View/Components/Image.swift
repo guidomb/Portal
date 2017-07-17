@@ -23,8 +23,7 @@ public protocol ImageType {
 
 public func imageView<MessageType>(
     image: Image,
-    clipToBounds: Bool = false,
     style: StyleSheet<EmptyStyleSheet> = EmptyStyleSheet.`default`,
     layout: Layout = layout()) -> Component<MessageType> {
-    return .imageView(image, clipToBounds, style, layout)
+    return .imageView(image, style, layout)
 }

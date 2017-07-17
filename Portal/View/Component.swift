@@ -60,7 +60,7 @@ public indirect enum Component<MessageType> {
     case button(ButtonProperties<MessageType>, StyleSheet<ButtonStyleSheet>, Layout)
     case label(LabelProperties, StyleSheet<LabelStyleSheet>, Layout)
     case mapView(MapProperties, StyleSheet<EmptyStyleSheet>, Layout)
-    case imageView(Image, Bool, StyleSheet<EmptyStyleSheet>, Layout)
+    case imageView(Image, StyleSheet<EmptyStyleSheet>, Layout)
     case container([Component<MessageType>], StyleSheet<EmptyStyleSheet>, Layout)
     case table(TableProperties<MessageType>, StyleSheet<TableStyleSheet>, Layout)
     case collection(CollectionProperties<MessageType>, StyleSheet<EmptyStyleSheet>, Layout)
@@ -87,7 +87,7 @@ public indirect enum Component<MessageType> {
         case .mapView(_, _, let layout):
             return layout
 
-        case .imageView(_, _, _, let layout):
+        case .imageView(_, _, let layout):
             return layout
 
         case .container(_, _, let layout):
@@ -141,8 +141,8 @@ extension Component {
         case .mapView(let properties, let style, let layout):
             return .mapView(properties, style, layout)
 
-        case .imageView(let image, let clipToBounds, let style, let layout):
-            return .imageView(image, clipToBounds, style, layout)
+        case .imageView(let image, let style, let layout):
+            return .imageView(image, style, layout)
 
         case .container(let children, let style, let layout):
             return .container(children.map { $0.map(transform) }, style, layout)

@@ -42,8 +42,8 @@ internal struct ComponentRenderer<
             return MapViewRenderer(properties: properties, style: style, layout: layout)
                 .render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
-        case .imageView(let image, let clipToBounds, let style, let layout):
-            return ImageViewRenderer(image: image, clipToBounds: clipToBounds, style: style, layout: layout)
+        case .imageView(let image, let style, let layout):
+            return ImageViewRenderer(image: image, style: style, layout: layout)
                 .render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
         case .container(let children, let style, let layout):
