@@ -5,7 +5,6 @@
 //  Created by Cristian Ames on 7/11/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
-import UIKit
 
 public struct Shadow {
     
@@ -36,10 +35,6 @@ public struct Offset {
     
     public var x: Float
     public var y: Float
-    
-    internal var asCGSize: CGSize {
-        return CGSize(width: CGFloat(x), height: CGFloat(y))
-    }
     
     public init(x: Float = 0, y: Float = 0) {
         self.x = x

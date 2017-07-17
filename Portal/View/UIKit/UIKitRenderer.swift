@@ -177,3 +177,11 @@ extension SupportedOrientations {
     }
     
 }
+
+extension Offset {
+    
+    internal var asCGSize: CGSize {
+        return CGSize(width: CGFloat(x), height: CGFloat(y))
+    }
+    
+}
