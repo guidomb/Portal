@@ -41,6 +41,12 @@ public final class PortalTableViewCell<
             layoutEngine: layoutEngine,
             rendererFactory: rendererFactory
         )
+        
+        // This is needed to avoid a visual bug
+        // If the user sets the container's backgroundColor as clear inside a PortalTableViewCell
+        // the user will see a white background because this class has a default background (.white),
+        // that is why we need to the the table view cell's background to clear.
+        backgroundColor = .clear
     }
     
     required public init?(coder aDecoder: NSCoder) {
