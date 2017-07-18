@@ -97,6 +97,13 @@ internal struct ComponentRenderer<
                 layout: layout
             ).render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
+        case .textView(let textType, let style, let layout):
+            return TextViewRenderer(
+                textType: textType,
+                style: style,
+                layout: layout
+            ).render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
+            
         case .custom(let customComponent, let style, let layout):
             let customComponentContainerView = UIView()
             layoutEngine.apply(layout: layout, to: customComponentContainerView)

@@ -99,6 +99,8 @@
 		9DDF07921E94296500ABEB33 /* ApplicationRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDF07911E94296500ABEB33 /* ApplicationRunner.swift */; };
 		9DDF07951E94377700ABEB33 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDF07941E94377700ABEB33 /* Subscription.swift */; };
 		9DDF07991E952E0100ABEB33 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDF07981E952E0100ABEB33 /* Timer.swift */; };
+		D802989E1F1EA74200436C6C /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802989D1F1EA74200436C6C /* TextView.swift */; };
+		D80298A01F1EAA9D00436C6C /* TextViewRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */; };
 		D82F84EB1F152881007A4016 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F84EA1F152881007A4016 /* Shadow.swift */; };
 /* End PBXBuildFile section */
 
@@ -240,6 +242,8 @@
 		9DDF07911E94296500ABEB33 /* ApplicationRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApplicationRunner.swift; sourceTree = "<group>"; };
 		9DDF07941E94377700ABEB33 /* Subscription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		9DDF07981E952E0100ABEB33 /* Timer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Timer.swift; path = Subscriptions/Timer.swift; sourceTree = "<group>"; };
+		D802989D1F1EA74200436C6C /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
+		D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRenderer.swift; sourceTree = "<group>"; };
 		D82F84EA1F152881007A4016 /* Shadow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -437,6 +441,7 @@
 				9D8C845B1ECA3B750034C6BC /* Spinner.swift */,
 				9D8C845C1ECA3B750034C6BC /* Table.swift */,
 				9D8C845D1ECA3B750034C6BC /* TextField.swift */,
+				D802989D1F1EA74200436C6C /* TextView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -480,6 +485,7 @@
 				9D8C847E1ECA3B750034C6BC /* TableRenderer.swift */,
 				9D8C847F1ECA3B750034C6BC /* TextFieldRenderer.swift */,
 				9D8C84801ECA3B750034C6BC /* TouchableRenderer.swift */,
+				D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */,
 			);
 			path = Renderers;
 			sourceTree = "<group>";
@@ -765,6 +771,7 @@
 				9D8C85191ECA3C990034C6BC /* UIView+Yoga.m in Sources */,
 				9D8C84881ECA3B750034C6BC /* Carousel.swift in Sources */,
 				D82F84EB1F152881007A4016 /* Shadow.swift in Sources */,
+				D802989E1F1EA74200436C6C /* TextView.swift in Sources */,
 				9D8C851B1ECA3C990034C6BC /* YGLayout.m in Sources */,
 				9D8C84B71ECA3B750034C6BC /* UIViewExtensions.swift in Sources */,
 				9D8C84A31ECA3B750034C6BC /* PortalViewController.swift in Sources */,
@@ -780,6 +787,7 @@
 				9D8C84891ECA3B750034C6BC /* Collection.swift in Sources */,
 				9D8C84A21ECA3B750034C6BC /* PortalTableViewCell.swift in Sources */,
 				9D8C848A1ECA3B750034C6BC /* Image.swift in Sources */,
+				D80298A01F1EAA9D00436C6C /* TextViewRenderer.swift in Sources */,
 				9D8C84AB1ECA3B750034C6BC /* LabelRenderer.swift in Sources */,
 				9D8C84B01ECA3B750034C6BC /* SpinnerRenderer.swift in Sources */,
 				9D8C848B1ECA3B750034C6BC /* Label.swift in Sources */,
