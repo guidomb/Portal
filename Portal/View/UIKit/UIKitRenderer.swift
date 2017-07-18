@@ -150,6 +150,14 @@ extension UIView {
         style.borderColor       |> { self.layer.borderColor = $0.asUIColor.cgColor }
         style.borderWidth       |> { self.layer.borderWidth = CGFloat($0) }
         style.alpha             |> { self.alpha = CGFloat($0) }
+        style.clipToBounds      |> { self.clipsToBounds = $0 }
+        style.shadow            |> { shadow in
+            self.layer.shadowColor = shadow.color.asUIColor.cgColor
+            self.layer.shadowOpacity = shadow.opacity
+            self.layer.shadowOffset = shadow.offset.asCGSize
+            self.layer.shadowRadius = CGFloat(shadow.radius)
+            self.layer.shouldRasterize = shadow.shouldRasterize
+        }
         
     }
     
@@ -166,6 +174,14 @@ extension SupportedOrientations {
         case .portrait:
             return .portrait
         }
+    }
+    
+}
+
+extension Offset {
+    
+    internal var asCGSize: CGSize {
+        return CGSize(width: CGFloat(x), height: CGFloat(y))
     }
     
 }

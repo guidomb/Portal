@@ -18,7 +18,6 @@ internal struct ImageViewRenderer<MessageType, RouteType: Route>: UIKitRenderer 
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let imageView = UIImageView(image: image.asUIImage)
-        imageView.clipsToBounds = true
         
         imageView.apply(style: style.base)
         layoutEngine.apply(layout: layout, to: imageView)

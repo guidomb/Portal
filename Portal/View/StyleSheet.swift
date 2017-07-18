@@ -90,19 +90,25 @@ public struct BaseStyleSheet {
     public var borderColor: Color
     public var borderWidth: Float
     public var alpha: Float
+    public var clipToBounds: Bool
+    public var shadow: Shadow?
     
     public init(
         backgroundColor: Color = .clear,
         cornerRadius: Float? = .none,
         borderColor: Color = .clear,
         borderWidth: Float = 0.0,
-        alpha: Float = 1.0
+        alpha: Float = 1.0,
+        clipToBounds: Bool = false,
+        shadow: Shadow? = .none
     ) {
         self.backgroundColor = backgroundColor
         self.cornerRadius = cornerRadius
         self.borderColor = borderColor
         self.borderWidth = borderWidth
         self.alpha = alpha
+        self.clipToBounds = clipToBounds
+        self.shadow = shadow
     }
     
 }
