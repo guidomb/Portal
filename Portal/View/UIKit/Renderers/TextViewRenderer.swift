@@ -22,6 +22,7 @@ internal struct TextViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
         textView.apply(style: style.component)
         textView.isEditable = false
         textView.isUserInteractionEnabled = true
+        textView.isScrollEnabled = false
         
         switch textType {
             
