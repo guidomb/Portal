@@ -14,7 +14,7 @@ extension ExampleApplication {
         return Portal.navigationBar(
             properties: properties() {
                 $0.title = .text(title)
-                $0.hideBackButtonTitle = false
+                $0.backButtonTitle = "test"
                 $0.rightButtonItems = [
                     .textButton(title: "Hello", onTap: .sendMessage(.pong("Hello!"))),
                 ]
