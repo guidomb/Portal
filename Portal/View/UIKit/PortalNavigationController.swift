@@ -105,8 +105,8 @@ public final class PortalNavigationController<
         
         if let leftButtonItems = navigationBar.properties.leftButtonItems {
             navigationItem.leftBarButtonItems = leftButtonItems.map(render)
-        } else if navigationBar.properties.hideBackButtonTitle {
-            navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        } else if let backButtonTitle = navigationBar.properties.backButtonTitle {
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: backButtonTitle, style: .plain, target: nil, action: nil)
         }
         navigationItem.rightBarButtonItems = navigationBar.properties.rightButtonItems.map { $0.map(render) }
         
