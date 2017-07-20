@@ -71,6 +71,7 @@ public indirect enum Component<MessageType> {
     case textField(TextFieldProperties<MessageType>, StyleSheet<TextFieldStyleSheet>, Layout)
     case custom(CustomComponent, StyleSheet<EmptyStyleSheet>, Layout)
     case spinner(Bool, StyleSheet<SpinnerStyleSheet>, Layout)
+    case textView(TextType, StyleSheet<TextViewStyleSheet>, Layout)
 
     public var layout: Layout {
         switch self {
@@ -115,6 +116,9 @@ public indirect enum Component<MessageType> {
             return layout
 
         case .spinner(_, _, let layout):
+            return layout
+            
+        case .textView(_, _, let layout):
             return layout
             
         }
@@ -170,7 +174,10 @@ extension Component {
             
         case .spinner(let isActive, let style, let layout):
             return .spinner(isActive, style, layout)
-
+            
+        case .textView(let text, let style, let layout):
+            return .textView(text, style, layout)
+            
         }
     }
     // swiftlint:enable cyclomatic_complexity
