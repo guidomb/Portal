@@ -62,7 +62,7 @@ public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitC
     public init(container: ContainerController) {
         
     }
-        
+    
     public func renderComponent(
         _ componentDescription: CustomComponentDescription,
         inside view: UIView,
@@ -150,6 +150,7 @@ extension UIView {
         style.borderColor       |> { self.layer.borderColor = $0.asUIColor.cgColor }
         style.borderWidth       |> { self.layer.borderWidth = CGFloat($0) }
         style.alpha             |> { self.alpha = CGFloat($0) }
+        style.contentMode       |> { self.contentMode = $0.toUIViewContentMode }
         style.clipToBounds      |> { self.clipsToBounds = $0 }
         style.shadow            |> { shadow in
             self.layer.shadowColor = shadow.color.asUIColor.cgColor
@@ -159,6 +160,25 @@ extension UIView {
             self.layer.shouldRasterize = shadow.shouldRasterize
         }
         
+    }
+    
+}
+
+fileprivate extension ContentMode {
+    
+    var toUIViewContentMode: UIViewContentMode {
+        switch self {
+            
+        case .scaleToFill:
+            return UIViewContentMode.scaleToFill
+            
+        case .scaleAspectFill:
+            return UIViewContentMode.scaleAspectFill
+            
+        case .scaleAspectFit:
+            return UIViewContentMode.scaleAspectFit
+            
+        }
     }
     
 }
