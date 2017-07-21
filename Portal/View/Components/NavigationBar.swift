@@ -26,19 +26,19 @@ public enum NavigationBarButton<MessageType> {
 public struct NavigationBarProperties<MessageType> {
     
     public var title: NavigationBarTitle<MessageType>?
-    public var hideBackButtonTitle: Bool
+    public var backButtonTitle: String?
     public var onBack: MessageType?
     public var leftButtonItems: [NavigationBarButton<MessageType>]?
     public var rightButtonItems: [NavigationBarButton<MessageType>]?
     
     fileprivate init(
         title: NavigationBarTitle<MessageType>? = .none,
-        hideBackButtonTitle: Bool = false,
+        backButtonTitle: String? = .none,
         onBack: MessageType? = .none,
         leftButtonItems: [NavigationBarButton<MessageType>]? = .none,
         rightButtonItems: [NavigationBarButton<MessageType>]? = .none) {
         self.title = title
-        self.hideBackButtonTitle = hideBackButtonTitle
+        self.backButtonTitle = backButtonTitle
         self.onBack = onBack
         self.leftButtonItems = leftButtonItems
         self.rightButtonItems = rightButtonItems

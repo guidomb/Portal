@@ -99,6 +99,8 @@ public struct BaseStyleSheet {
     public var borderWidth: Float
     public var alpha: Float
     public var contentMode: ContentMode?
+    public var clipToBounds: Bool
+    public var shadow: Shadow?
     
     public init(
         backgroundColor: Color = .clear,
@@ -106,7 +108,9 @@ public struct BaseStyleSheet {
         borderColor: Color = .clear,
         borderWidth: Float = 0.0,
         alpha: Float = 1.0,
-        contentMode: ContentMode? = .none
+        contentMode: ContentMode? = .none,
+        clipToBounds: Bool = false,
+        shadow: Shadow? = .none
     ) {
         self.backgroundColor = backgroundColor
         self.cornerRadius = cornerRadius
@@ -114,6 +118,8 @@ public struct BaseStyleSheet {
         self.borderWidth = borderWidth
         self.alpha = alpha
         self.contentMode = contentMode
+        self.clipToBounds = clipToBounds
+        self.shadow = shadow
     }
     
 }
