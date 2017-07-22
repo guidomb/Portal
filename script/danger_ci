@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+set -x
+
+pip install proselint
+bundle install
+bundle exec danger
