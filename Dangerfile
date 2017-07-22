@@ -18,3 +18,6 @@ prose.lint_files
 
 # Xcode summary
 xcode_summary.report 'xcodebuild.json'
+
+# Profile Swift compilation time
+xcprofiler.report 'Portal'
