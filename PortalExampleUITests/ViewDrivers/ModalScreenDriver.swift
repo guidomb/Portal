@@ -58,7 +58,7 @@ private func matchGroups(in string: String, with regexpString: String) -> [Strin
     
     var extractedMatches: [String] = []
     for index in (1..<result.numberOfRanges) {
-        if let range = Range(result.rangeAt(index), in: string) {
+        if let range = Range(result.range(at: index), in: string) {
             extractedMatches.append(string.substring(with: range))
         }
     }
