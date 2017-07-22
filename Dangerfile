@@ -15,3 +15,6 @@ swiftlint.lint_files
 
 # Runs a linter with all styles, on modified and added markdown files in this PR
 prose.lint_files
+
+# Xcode summary
+xcode_summary.report 'xcodebuild.json'
