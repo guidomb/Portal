@@ -12,7 +12,6 @@ pip install proselint
 
 # Install Ruby gems
 bundle install
-bundle rehash
 
 # Clean artifacts and directories
 if [ ! -d ./output ]
