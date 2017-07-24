@@ -33,9 +33,6 @@ GEM
       thor (~> 0.19)
     danger-xcode_summary (0.3.0)
       danger-plugin-api (~> 1.0)
-    danger-xcprofiler (0.1.0)
-      danger-plugin-api (~> 1.0)
-      xcprofiler
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     faraday-http-cache (1.3.1)
@@ -49,6 +46,7 @@ GEM
     open4 (1.3.4)
     public_suffix (2.0.5)
     rake (12.0.0)
+    rouge (2.0.7)
     sawyer (0.8.1)
       addressable (>= 2.3.5, < 2.6)
       faraday (~> 0.8, < 1.0)
@@ -56,6 +54,10 @@ GEM
       unicode-display_width (~> 1.1, >= 1.1.1)
     thor (0.19.4)
     unicode-display_width (1.3.0)
+    xcpretty (0.2.8)
+      rouge (~> 2.0.7)
+    xcpretty-json-formatter (0.1.0)
+      xcpretty (~> 0.2, >= 0.0.7)
     xcprofiler (0.6.1)
       colorize
       terminal-table
@@ -68,7 +70,9 @@ DEPENDENCIES
   danger-prose
   danger-swiftlint
   danger-xcode_summary
-  danger-xcprofiler
+  xcpretty
+  xcpretty-json-formatter
+  xcprofiler
 
 BUNDLED WITH
    1.15.3
