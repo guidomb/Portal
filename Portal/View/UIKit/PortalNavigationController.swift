@@ -189,12 +189,12 @@ fileprivate extension PortalNavigationController {
             
         case .textButton(let title, let message):
             let button = UIBarButtonItem(title: title)
-            button.onTap(dispatch: message, to: mailbox)
+            button.onTap(dispatch: .action(message), to: internalMailbox)
             return button
             
         case .imageButton(let icon, let message):
             let button = UIBarButtonItem(icon: icon)
-            button.onTap(dispatch: message, to: mailbox)
+            button.onTap(dispatch: .action(message), to: internalMailbox)
             return button
             
         }
