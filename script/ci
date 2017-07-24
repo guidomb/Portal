@@ -4,7 +4,7 @@ set -e
 set -x
 
 # Setup development environment
-script/boostrap
+script/bootstrap
 
 # Install CI environment dependencies
 # proselint is a dependency needed by danger-prose plugin.
