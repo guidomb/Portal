@@ -39,7 +39,7 @@ if over_threshold > 0
   fail("There are #{over_threshold} functions over #{fail_threshold}ms build time threshold")
 end
 if within_threshold > 0
-  warn("There are #{within_threshold} functions within [#{warn_threshold}, #{fail_threshold}]ms build time threshold")
+  warn("There are #{within_threshold} functions within #{warn_threshold}ms to #{fail_threshold}ms build time threshold")
 end
 
 unless outliers.empty?
@@ -51,8 +51,9 @@ Time | File | Line | Function |
 EOS
   table_body = outliers.map do |outlier|
     filename = File.basename(outlier.file_path)
-    github_location =
-    "#{outlier.time} | [#{filename}]() | #{outlier.line_number} | #{outlier.function_signature}"
+    github_location = outlier.file_path.gsub(Dir.pwd, "/guidomb/Portal/tree/#{github.branch_for_head}")
+    github_location += "#L#{outlier.line_number}"
+    "#{outlier.time} | [#{filename}](github_location) | #{outlier.line_number} | #{outlier.function_signature}"
   end
   markdown(table_header + table_body.join("\n"))
 end
