@@ -20,40 +20,16 @@ prose.lint_files
 xcode_summary.report 'build/reports/errors.json'
 
 # Profile Swift compilation time
-require_relative 'script/lib/build_profiler'
+require_relative 'script/lib/build_time_profiler'
 warn_threshold = 100.0
 fail_threshold = 500.0
 build_log_file = "output/xcodebuild_build_raw.log"
 fail("Build log file '#{build_log_file}' could not be found") unless File.exist?(build_log_file)
 
-profiler = BuildProfiler.new(build_log_file)
-outliers = profiler.most_expensive(build_time_threshold: warn_threshold)
-over_threshold, within_threshold = outliers.reduce([0,0]) do |(over, within), outlier|
-  if outlier.time >= fail_threshold
-    [over + 1, within]
-  else
-    [over, within + 1]
-  end
-end
-if over_threshold > 0
-  fail("There are #{over_threshold} functions over #{fail_threshold}ms build time threshold")
-end
-if within_threshold > 0
-  warn("There are #{within_threshold} functions within #{warn_threshold}ms to #{fail_threshold}ms build time threshold")
-end
-
-unless outliers.empty?
-  table_header = <<EOS
-## Compilation time outliers
-
-Time | File | Line | Function |
------|------|------|----------|
-EOS
-  table_body = outliers.map do |outlier|
-    filename = File.basename(outlier.file_path)
-    github_location = outlier.file_path.gsub(Dir.pwd, "/guidomb/Portal/tree/#{github.branch_for_head}")
-    github_location += "#L#{outlier.line_number}"
-    "#{outlier.time} | [#{filename}](github_location) | #{outlier.line_number} | #{outlier.function_signature}"
-  end
-  markdown(table_header + table_body.join("\n"))
-end
+profiler = BuildTimeProfiler.new(
+  warn_threshold: 100.0,
+  fail_threshold: 500.0,
+  build_log_file: build_log_file
+)
+profiler_analysis = profiler.analysis_output(github.branch_for_head)
+profiler_analysis.each { |type, message| send(type, message) }

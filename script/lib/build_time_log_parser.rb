@@ -1,6 +1,6 @@
 require 'ostruct'
 
-class BuildProfiler
+class BuildTimeLogParser
 
   attr_reader :log_file
 
