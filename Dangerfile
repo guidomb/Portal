@@ -21,15 +21,23 @@ xcode_summary.report 'build/reports/errors.json'
 
 # Profile Swift compilation time
 require_relative 'script/lib/build_time_profiler'
+require_relative 'script/lib/git_utils'
 warn_threshold = 100.0
 fail_threshold = 500.0
 build_log_file = "output/xcodebuild_build_raw.log"
 fail("Build log file '#{build_log_file}' could not be found") unless File.exist?(build_log_file)
 
+pr_commits = Set.new(git.commits.map { |commit| commit.sha })
 profiler = BuildTimeProfiler.new(
   warn_threshold: 100.0,
   fail_threshold: 500.0,
-  build_log_file: build_log_file
-)
+  build_log_file: build_log_file) do |outlier|
+    # We only show build time outliers introduced in this PR, previous
+    # outliers are ignored. We do this by using git blame to get
+    # the commit sha where the outlier was introduced.
+    blame_output = git_blame(outlier.file_path, outlier.line_number)
+    commit_sha = /^([0-9a-f]+)\w.*/.match(blame_output)[1]
+    pr_commits.include?(commit_sha)
+end
 profiler_analysis = profiler.analysis_output(github.branch_for_head)
 profiler_analysis.each { |type, message| send(type, message) }

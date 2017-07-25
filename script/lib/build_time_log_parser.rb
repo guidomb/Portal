@@ -41,6 +41,6 @@ class BuildTimeLogParser
 
 end
 
-if __FILE__==$0
+if __FILE__== $0
   puts BuildProfiler.new(ARGV[0]).most_expensive(amount: 10)
 end

@@ -6,17 +6,21 @@ class BuildTimeProfiler
   attr_reader :warn_threshold
   attr_reader :fail_threshold
   attr_reader :build_log_file
+  attr_reader :filter_block
 
-  def initialize(warn_threshold:, fail_threshold:, build_log_file:)
+  def initialize(warn_threshold:, fail_threshold:, build_log_file:, &filter_block)
     @warn_threshold = warn_threshold
     @fail_threshold = fail_threshold
     @build_log_file = build_log_file
+    @filter_block = filter_block
   end
 
   def build_time_outliers
     @build_time_outliers ||= begin
-      BuildTimeLogParser.new(build_log_file)
+      result = BuildTimeLogParser.new(build_log_file)
         .most_expensive(build_time_threshold: warn_threshold)
+      result = result.select(&filter_block) if filter_block
+      result
     end
   end
 
@@ -70,7 +74,7 @@ EOS
 
 end
 
-if __FILE__==$0
+if __FILE__== $0
   profiler = BuildTimeProfiler.new(
     warn_threshold: 100.0,
     fail_threshold: 500.0,
