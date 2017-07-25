@@ -738,7 +738,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -f bin/swiftlint/swiftlint ]\nthen\n    bin/swiftlint/swiftlint\nelse\n    echo \"warning: SwiftLint not installed, run script/bootstrap\"\nfi";
+			shellScript = "if [ ! -z $SKIP_SWIFTLINT ]\nthen\n    echo \"Skipping SwiftLint build phase\"\n    exit 0\nfi\n\nif [ -f bin/swiftlint/swiftlint ]\nthen\n    bin/swiftlint/swiftlint\nelse\n    echo \"warning: SwiftLint not installed, run script/bootstrap\"\nfi";
 		};
 /* End PBXShellScriptBuildPhase section */
 

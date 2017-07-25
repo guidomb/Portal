@@ -20,7 +20,8 @@ then
 fi
 
 # Clean, build & test project
-set -o pipefail && xcodebuild clean test                            \
+SKIP_SWIFTLINT=1                                                    \
+  set -o pipefail && xcodebuild clean test                          \
   -project Portal.xcodeproj                                         \
   -scheme Portal                                                    \
   -sdk iphonesimulator                                              \
