@@ -3,12 +3,14 @@ require_relative 'build_time_log_parser'
 
 class BuildTimeProfiler
 
+  attr_reader :outliers_deviation
   attr_reader :warn_threshold
   attr_reader :fail_threshold
   attr_reader :build_log_file
   attr_reader :filter_block
 
-  def initialize(warn_threshold:, fail_threshold:, build_log_file:, &filter_block)
+  def initialize(outliers_deviation:, warn_threshold:, fail_threshold:, build_log_file:, &filter_block)
+    @outliers_deviation = outliers_deviation
     @warn_threshold = warn_threshold
     @fail_threshold = fail_threshold
     @build_log_file = build_log_file
@@ -17,8 +19,8 @@ class BuildTimeProfiler
 
   def build_time_outliers
     @build_time_outliers ||= begin
-      result = BuildTimeLogParser.new(build_log_file)
-        .most_expensive(build_time_threshold: warn_threshold)
+      parser = BuildTimeLogParser.new(build_log_file)
+      result = parser.outliers(deviation: outliers_deviation, build_time_threshold: warn_threshold)
       result = result.select(&filter_block) if filter_block
       result
     end
@@ -26,7 +28,8 @@ class BuildTimeProfiler
 
   def build_time_outliers_count
     @build_time_outliers_count ||= begin
-      build_time_outliers.reduce(OpenStruct.new({over_threshold: 0, within_threshold: 0})) do |counters, outlier|
+      initial = OpenStruct.new({over_threshold: 0, within_threshold: 0})
+      build_time_outliers.reduce(initial) do |counters, outlier|
         if outlier.time >= fail_threshold
           counters.over_threshold += 1
         else
@@ -76,6 +79,7 @@ end
 
 if __FILE__== $0
   profiler = BuildTimeProfiler.new(
+    outliers_deviation: 3,
     warn_threshold: 100.0,
     fail_threshold: 500.0,
     build_log_file: ARGV[0]

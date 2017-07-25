@@ -29,6 +29,7 @@ fail("Build log file '#{build_log_file}' could not be found") unless File.exist?
 
 pr_commits = Set.new(git.commits.map { |commit| commit.sha })
 profiler = BuildTimeProfiler.new(
+  outliers_deviation: 3,
   warn_threshold: 100.0,
   fail_threshold: 500.0,
   build_log_file: build_log_file) do |outlier|

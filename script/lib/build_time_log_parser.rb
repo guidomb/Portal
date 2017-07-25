@@ -1,4 +1,5 @@
 require 'ostruct'
+require_relative 'enumerable_stats'
 
 class BuildTimeLogParser
 
@@ -16,6 +17,12 @@ class BuildTimeLogParser
         .map { |line| parse_line(line) }
         .sort { |a, b| b.time <=> a.time }
     end
+  end
+
+  def outliers(deviation: 3, build_time_threshold: 50)
+    time_values = build_times.map { |value| value.time.to_i }.reject { |value| value == 0 }
+    outliers = time_values.outliers(deviation)
+    build_times[0...outliers.count]
   end
 
   def most_expensive(amount: nil, build_time_threshold: 50)
