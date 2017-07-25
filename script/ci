@@ -24,5 +24,15 @@ SKIP_SWIFTLINT=1                                                    \
   | tee ./output/xcodebuild_build_raw.log                           \
   | xcpretty -f `xcpretty-json-formatter`
 
+# Run UITests
+SKIP_SWIFTLINT=1                                                    \
+  set -o pipefail && xcodebuild test                                \
+  -project Portal.xcodeproj                                         \
+  -scheme PortalExample                                             \
+  -sdk iphonesimulator                                              \
+  -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'     \
+  -derivedDataPath './output'                                       \
+  | tee ./output/xcodebuild_uitest_raw.log                          \
+  | xcpretty -f `xcpretty-json-formatter`
 
 bundle exec danger
