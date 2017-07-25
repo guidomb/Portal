@@ -6,13 +6,6 @@ set -x
 # Setup development environment
 script/bootstrap
 
-# Install CI environment dependencies
-# proselint is a dependency needed by danger-prose plugin.
-pip install proselint
-
-# Install Ruby gems
-bundle install
-
 # Clean artifacts and directories
 if [ ! -d ./output ]
 then

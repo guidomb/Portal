@@ -2,7 +2,7 @@
 
 if [ ! -f bin/swiftlint/swiftlint ]
 then
-  puts "swiftlint is not installed in './bin'. Run 'script/boostrap'."
+  puts "swiftlint is not installed in './bin'. Run 'script/install_swiftlint'."
   exit 1
 fi
 bin/swiftlint/swiftlint lint --config .swiftlint.yml
