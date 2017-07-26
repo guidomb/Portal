@@ -1,0 +1,38 @@
+#!/bin/bash
+
+set -e
+set -x
+
+# Setup development environment
+script/bootstrap
+
+# Clean artifacts and directories
+if [ ! -d ./output ]
+then
+  mkdir ./output
+fi
+
+# Clean, build & test project
+SKIP_SWIFTLINT=1                                                    \
+  set -o pipefail && xcodebuild clean test                          \
+  -project Portal.xcodeproj                                         \
+  -scheme Portal                                                    \
+  -sdk iphonesimulator                                              \
+  -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'     \
+  -derivedDataPath './output'                                       \
+  OTHER_SWIFT_FLAGS='-Xfrontend -debug-time-function-bodies'        \
+  | tee ./output/xcodebuild_build_raw.log                           \
+  | xcpretty -f `xcpretty-json-formatter`
+
+# Run UITests
+SKIP_SWIFTLINT=1                                                    \
+  set -o pipefail && xcodebuild test                                \
+  -project Portal.xcodeproj                                         \
+  -scheme PortalExample                                             \
+  -sdk iphonesimulator                                              \
+  -destination 'platform=iOS Simulator,name=iPhone 6,OS=latest'     \
+  -derivedDataPath './output'                                       \
+  | tee ./output/xcodebuild_uitest_raw.log                          \
+  | xcpretty -f `xcpretty-json-formatter`
+
+bundle exec danger
