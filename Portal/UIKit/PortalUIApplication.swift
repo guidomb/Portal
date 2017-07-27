@@ -16,6 +16,15 @@ public enum UIApplicationMessage {
     case willEnterBackground(application: UIApplication)
     case didBecomeActive(application: UIApplication)
     case willTerminate(application: UIApplication)
+    case remoteNotification(RemoteNotification, application: UIApplication)
+    
+}
+
+public enum RemoteNotification {
+    
+    case register(deviceToken: Data)
+    case failToRegister(error: Error)
+    case recieve(userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void)
     
 }
 
@@ -205,6 +214,34 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
     
     public func applicationWillTerminate(_ application: UIApplication) {
         PortalUIApplication.dispatch(message: .willTerminate(application: application))
+    }
+    
+    public func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+         PortalUIApplication.dispatch(
+            message: .remoteNotification(.register(deviceToken: deviceToken), application: application)
+        )
+    }
+    
+    public func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        PortalUIApplication.dispatch(
+            message: .remoteNotification(.failToRegister(error: error), application: application)
+        )
+    }
+    
+    public func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        PortalUIApplication.dispatch(
+            message: .remoteNotification(
+                .recieve(userInfo: userInfo, completionHandler: completionHandler),
+                application: application
+            )
+        )
     }
     
 }
