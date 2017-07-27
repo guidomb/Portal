@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -e
-set -x
-
 # Setup development environment
 script/bootstrap
 
