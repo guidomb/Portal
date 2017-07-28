@@ -1,10 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env ruby
 
-script/install_swiftlint
+require_relative 'script/lib/install_swiftlint'
+require_relative 'script/lib/installers'
+
+install_swiftlint
 
 # Install CI environment dependencies
 # proselint is a dependency needed by danger-prose plugin.
-pip install proselint
+pip_install "proselint"
 
 # Install Ruby gems
-bundle install
+bundle_install
