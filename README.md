@@ -1,6 +1,7 @@
 Portal
 ======
 
+[![Build Status](https://www.bitrise.io/app/35802d5e71a76792/status.svg?token=Lk2FPQhMq_PaxQDKN47dRA&branch=master)](https://www.bitrise.io/app/35802d5e71a76792)
 [![Swift](https://img.shields.io/badge/swift-3-orange.svg?style=flat)](#)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/badge/platform-iOS-lightgrey.svg?style=flat)](#)
@@ -24,26 +25,26 @@ All you need to do to have a working application is to implement the `Applicatio
 
 ```swift
 public protocol Application {
-    
+
     associatedtype MessageType
     associatedtype StateType
     associatedtype CommandType
     associatedtype RouteType: Route
     associatedtype SubscriptionType: Equatable
     associatedtype NavigatorType: Equatable
-    
+
     var initialState: StateType { get }
-    
+
     var initialRoute: RouteType { get }
-    
+
     func translateRouteChange(from currentRoute: RouteType, to nextRoute: RouteType) -> MessageType?
-    
+
     func update(state: StateType, message: MessageType) -> (StateType, CommandType?)?
-    
+
     func view(for state: StateType) -> View<RouteType, MessageType, NavigatorType>
-    
+
     func subscriptions(for state: StateType) -> [Subscription<MessageType, RouteType, SubscriptionType>]
-    
+
 }
 ```
 
@@ -142,4 +143,3 @@ open Portal.xcodeproj
 ```
 
 If you want to know how the project is doing, what features are in the pipeline for the next milestone and whare are the ideas that already in the backlog, check [this repo's project](https://github.com/guidomb/Portal/projects/1)
-
