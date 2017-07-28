@@ -5,7 +5,7 @@ def pip_install(egg_name)
   safe_exec("pip", "install proselint", "-V") do
     puts "\t * Command 'pip' is not available"
     puts "\t * Installing 'pip' using 'easy_install' ..."
-    pretty_print(`sudo easy_install pip`, "easy_install: ")
+    pretty_print(`easy_install pip`, "easy_install: ")
   end
 end
 
