@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative 'script/lib/install_swiftlint'
-require_relative 'script/lib/installers'
+require_relative 'lib/install_swiftlint'
+require_relative 'lib/installers'
 
 install_swiftlint
 
