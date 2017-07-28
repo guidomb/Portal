@@ -20,7 +20,7 @@ def bundle_install
 end
 
 def safe_exec(command, command_args, check_args: "-v")
-  execute_command = ->() { pretty_print(`#{command} #{command_args}`, "#{command}: ") }
+  execute_command = ->() { pretty_print(`#{command} #{command_args}`, prefix: "#{command}: ") }
   if system("#{command} #{check_args} > /dev/null 2>&1")
     execute_command.call()
   elsif block_given?
