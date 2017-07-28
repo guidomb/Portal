@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Setup development environment
-script/bootstrap
+set -e
 
 # Clean artifacts and directories
 if [ ! -d ./output ]
@@ -31,5 +30,3 @@ SKIP_SWIFTLINT=1                                                    \
   -derivedDataPath './output'                                       \
   | tee ./output/xcodebuild_uitest_raw.log                          \
   | xcpretty -f `xcpretty-json-formatter`
-
-bundle exec danger
