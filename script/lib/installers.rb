@@ -1,5 +1,7 @@
 
 def pip_install(egg_name)
+  puts ""
+  puts " → Installing '#{egg_name}' using 'pip' ..."
   safe_exec("pip", "install proselint", "-V") do
     puts "Command 'pip' is not available"
     puts "Installing 'pip' using 'easy_install' ..."
@@ -8,6 +10,8 @@ def pip_install(egg_name)
 end
 
 def bundle_install
+  puts ""
+  puts " → Installing gems using bundler ..."
   safe_exec("bundle", "install") do
     puts "Command 'bundle' is not available"
     puts "Installing 'bundle' using 'gem install' ..."
