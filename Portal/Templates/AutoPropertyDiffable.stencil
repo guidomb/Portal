@@ -6,7 +6,11 @@ extension {{ type.name }} {
     enum Property {
 
         {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if instanceVariable.type.based.AutoPropertyDiffable %}
+        case {{ instanceVariable.name }}([{{ instanceVariable.type.name }}.Property]{% if instanceVariable.isOptional %}?{% endif %})
+        {% else %}
         case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
+        {% endif %}
         {% endfor %}
 
     }
@@ -14,7 +18,11 @@ extension {{ type.name }} {
     var fullChangeSet: [{{ type.name }}.Property] {
         return [
         {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if instanceVariable.type.based.AutoPropertyDiffable %}
+            .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}{% if instanceVariable.isOptional %}?{% endif %}.fullChangeSet),
+        {% else %}
             .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}),
+        {% endif %}
         {% endfor %}
         ]
     }
@@ -23,11 +31,30 @@ extension {{ type.name }} {
         var changeSet: [{{ type.name }}.Property] = []
         {% for instanceVariable in type.instanceVariables|publicGet %}
         {% if instanceVariable.annotations.skipDiff %}
+          {% if instanceVariable.type.based.AutoPropertyDiffable %}
+        changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}.fullChangeSet))
+          {% else %}
         changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
+          {% endif %}
         {% else %}
+          {% if instanceVariable.type.based.AutoPropertyDiffable %}
+            {% if instanceVariable.isOptional %}
+        switch (self.{{ instanceVariable.name}}, {{ type.name|lowerFirst }}.{{ instanceVariable.name }}) {
+        case (.some(let old), .some(let new)):
+            changeSet.append(.{{ instanceVariable.name }}(old.changeSet(for: new)))
+        case (.none, .some(let new)):
+            changeSet.append(.{{ instanceVariable.name }}(new.fullChangeSet))
+        default:
+            changeSet.append(.{{ instanceVariable.name }}(.none))
+        }
+            {% else %}
+        changeSet.append(.{{ instanceVariable.name }}(self.{{ instanceVariable.name}}.changeSet(for: {{ type.name|lowerFirst }}.{{ instanceVariable.name }})))
+            {% endif %}
+          {% else %}
         if self.{{ instanceVariable.name }} != {{ type.name|lowerFirst }}.{{ instanceVariable.name }} {
             changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
         }
+          {% endif %}
         {% endif%}
         {% endfor %}
         return changeSet

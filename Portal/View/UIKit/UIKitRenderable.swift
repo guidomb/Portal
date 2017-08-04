@@ -63,7 +63,7 @@ public struct UIImageContainer: ImageType, UIImageConvertible {
 
 extension UIImageContainer: Equatable {
     
-    public static func ==(lhs: UIImageContainer, rhs: UIImageContainer) -> Bool {
+    public static func == (lhs: UIImageContainer, rhs: UIImageContainer) -> Bool {
         return lhs.image == rhs.image
     }
     

@@ -21,17 +21,20 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
             switch property {
                 
             case .text(let text):
-                text |> { button.setTitle($0, for: .normal) }
+                button.setTitle(text, for: .normal)
                 
             case .icon(let icon):
-                icon |> { button.setImage($0.asUIImage, for: .normal) }
+                let image = icon.map { $0.asUIImage }
+                button.setImage(image, for: .normal)
                 
             case .isActive(let isActive):
                 button.isSelected = isActive
                 
             case .onTap(let onTap):
-                onTap |> {
-                    mailbox = button.dispatch(message: $0, for: .touchUpInside)
+                if let message = onTap {
+                    mailbox = button.dispatch(message: message, for: .touchUpInside)
+                } else {
+                    _ = button.unregisterDispatcher(for: .touchUpInside) as MessageDispatcher<MessageType>?
                 }
                 
             }
@@ -85,13 +88,29 @@ extension UIButton {
     fileprivate func register<MessageType>(
         dispatcher: MessageDispatcher<MessageType>,
         for event: UIControlEvents) {
-        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatcher,
+        
+        var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
+            as? [UInt : MessageDispatcher<MessageType>] ?? [:]
+        dispatchers[event.rawValue] = dispatcher
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
                                  .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
+    fileprivate func unregisterDispatcher<MessageType>(
+        for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
+        
+        guard var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
+            as? [UInt : MessageDispatcher<MessageType>] else { return .none }
+        let dispatcher = dispatchers.removeValue(forKey: event.rawValue)
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
+                                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        return dispatcher
+    }
+    
     fileprivate func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
-        return objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
-            as? MessageDispatcher<MessageType>
+        let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
+            as? [UInt : MessageDispatcher<MessageType>] ?? [:]
+        return dispatchers[event.rawValue]
     }
     
 }
