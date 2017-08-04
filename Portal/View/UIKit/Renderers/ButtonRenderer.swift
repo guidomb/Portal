@@ -12,6 +12,34 @@ public let defaultButtonFontSize = UInt(UIFont.buttonFontSize)
 
 internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
+    static func apply<RouteType, MessageType>(
+        changeSet: [ButtonProperties<Action<RouteType, MessageType>>.Property],
+        to button: UIButton) -> Render<Action<RouteType, MessageType>> {
+        
+        var mailbox: Mailbox<Action<RouteType, MessageType>>?
+        for property in changeSet {
+            switch property {
+                
+            case .text(let text):
+                text |> { button.setTitle($0, for: .normal) }
+                
+            case .icon(let icon):
+                icon |> { button.setImage($0.asUIImage, for: .normal) }
+                
+            case .isActive(let isActive):
+                button.isSelected = isActive
+                
+            case .onTap(let onTap):
+                onTap |> {
+                    mailbox = button.dispatch(message: $0, for: .touchUpInside)
+                }
+                
+            }
+        }
+        
+        return Render(view: button, mailbox: mailbox, executeAfterLayout: .none)
+    }
+    
     typealias ActionType = Action<RouteType, MessageType>
     
     let properties: ButtonProperties<ActionType>
@@ -21,36 +49,49 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let button = UIButton()
         
-        properties.text |> { button.setTitle($0, for: .normal) }
-        properties.icon |> { button.setImage($0.asUIImage, for: .normal) }
-        button.isSelected = properties.isActive
-        
+        let result = ButtonRenderer.apply(changeSet: properties.fullChangeSet, to: button)
         button.apply(style: style.base)
         button.apply(style: style.component)
         layoutEngine.apply(layout: layout, to: button)
         
-        button.unregisterDispatchers()
-        button.removeTarget(.none, action: .none, for: .touchUpInside)
-        let mailbox = button.bindMessageDispatcher { mailbox in
-            properties.onTap |> { _ = button.dispatch(message: $0, for: .touchUpInside, with: mailbox) }
-        }
-        
-        return Render(view: button, mailbox: mailbox)
+        return result
     }
     
 }
+
+fileprivate var messageDispatcherAssociationKey = 0
 
 extension UIButton {
     
     fileprivate func dispatch<MessageType>(
         message: MessageType,
-        for event: UIControlEvents,
-        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
+        for event: UIControlEvents) -> Mailbox<MessageType> {
+        
+        let mailbox: Mailbox<MessageType>
+        if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
+            mailbox = oldDispatcher.mailbox
+            self.removeTarget(oldDispatcher, action: oldDispatcher.selector, for: event)
+        } else {
+            mailbox = Mailbox<MessageType>()
+        }
         
         let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-        self.register(dispatcher: dispatcher)
+        self.register(dispatcher: dispatcher, for: event)
         self.addTarget(dispatcher, action: dispatcher.selector, for: event)
+        
         return dispatcher.mailbox
+    }
+    
+    fileprivate func register<MessageType>(
+        dispatcher: MessageDispatcher<MessageType>,
+        for event: UIControlEvents) {
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatcher,
+                                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    }
+    
+    fileprivate func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
+        return objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
+            as? MessageDispatcher<MessageType>
     }
     
 }

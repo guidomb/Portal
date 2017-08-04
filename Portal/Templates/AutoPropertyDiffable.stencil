@@ -1,0 +1,39 @@
+// swiftlint:disable identifier_name
+// swiftlint:disable trailing_comma
+{% for type in types.implementing.AutoPropertyDiffable %}
+extension {{ type.name }} {
+
+    enum Property {
+
+        {% for instanceVariable in type.instanceVariables|publicGet %}
+        case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
+        {% endfor %}
+
+    }
+
+    var fullChangeSet: [{{ type.name }}.Property] {
+        return [
+        {% for instanceVariable in type.instanceVariables|publicGet %}
+            .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}),
+        {% endfor %}
+        ]
+    }
+
+    internal func changeSet(for {{ type.name|lowerFirst }}: {{ type.name }}) -> [{{ type.name }}.Property] {
+        var changeSet: [{{ type.name }}.Property] = []
+        {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if instanceVariable.annotations.skipDiff %}
+        changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
+        {% else %}
+        if self.{{ instanceVariable.name }} != {{ type.name|lowerFirst }}.{{ instanceVariable.name }} {
+            changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
+        }
+        {% endif%}
+        {% endfor %}
+        return changeSet
+    }
+
+}
+{% endfor %}
+// swiftlint:enable identifier_name
+// swiftlint:enable trailing_comma

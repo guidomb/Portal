@@ -53,10 +53,18 @@ public struct UIImageContainer: ImageType, UIImageConvertible {
         return image
     }
     
-    private let image: UIImage
+    fileprivate let image: UIImage
     
     public init(image: UIImage) {
         self.image = image
+    }
+    
+}
+
+extension UIImageContainer: Equatable {
+    
+    public static func ==(lhs: UIImageContainer, rhs: UIImageContainer) -> Bool {
+        return lhs.image == rhs.image
     }
     
 }

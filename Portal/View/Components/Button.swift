@@ -8,13 +8,14 @@
 
 import Foundation
 
-public struct ButtonProperties<MessageType> {
-    
+public struct ButtonProperties<MessageType>: AutoPropertyDiffable {
+
     public var text: String?
     public var isActive: Bool
     public var icon: Image?
+    // sourcery: skipDiff
     public var onTap: MessageType?
-    
+
     fileprivate init(
         text: String? = .none,
         isActive: Bool = false,
@@ -25,11 +26,11 @@ public struct ButtonProperties<MessageType> {
         self.icon = icon
         self.onTap = onTap
     }
-    
+
 }
 
 public extension ButtonProperties {
-    
+
     public func map<NewMessageType>(_ transform: (MessageType) -> NewMessageType) -> ButtonProperties<NewMessageType> {
         return ButtonProperties<NewMessageType>(
             text: self.text,
@@ -38,7 +39,7 @@ public extension ButtonProperties {
             onTap: self.onTap.map(transform)
         )
     }
-    
+
 }
 
 public func button<MessageType>(
@@ -66,13 +67,13 @@ public func properties<MessageType>(
 // MARK: - Style sheet
 
 public struct ButtonStyleSheet {
-    
+
     public static let defaultStyleSheet = StyleSheet<ButtonStyleSheet>(component: ButtonStyleSheet())
-    
+
     public var textColor: Color
     public var textFont: Font
     public var textSize: UInt
-    
+
     public init(
         textColor: Color = .black,
         textFont: Font = defaultFont,
@@ -81,7 +82,7 @@ public struct ButtonStyleSheet {
         self.textFont = textFont
         self.textSize = textSize
     }
-    
+
 }
 
 public func buttonStyleSheet(
