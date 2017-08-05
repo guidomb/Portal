@@ -112,4 +112,13 @@ internal struct ButtonChangeSet<MessageType> {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let buttonStyleSheet: [ButtonStyleSheet.Property]
     
+    init(
+        properties: [ButtonProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        buttonStyleSheet: [ButtonStyleSheet.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.buttonStyleSheet = buttonStyleSheet
+    }
+    
 }

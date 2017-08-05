@@ -36,8 +36,7 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
 
 extension UIButton {
     
-    internal func apply<RouteType, MessageType>(
-        changeSet: ButtonChangeSet<Action<RouteType, MessageType>>) -> Render<Action<RouteType, MessageType>> {
+    internal func apply<MessageType>(changeSet: ButtonChangeSet<MessageType>) -> Render<MessageType> {
         
         apply(changeSet: changeSet.properties)
         apply(changeSet: changeSet.baseStyleSheet)
@@ -46,9 +45,16 @@ extension UIButton {
         return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
     
-    internal func apply<RouteType, MessageType>(
-        changeSet: [ButtonProperties<Action<RouteType, MessageType>>.Property]) {
+}
 
+fileprivate var messageDispatcherAssociationKey = 0
+fileprivate var mailboxAssociationKey = 1
+
+fileprivate extension UIButton {
+    
+    fileprivate func apply<MessageType>(
+        changeSet: [ButtonProperties<MessageType>.Property]) {
+        
         for property in changeSet {
             switch property {
                 
@@ -64,7 +70,7 @@ extension UIButton {
                 
             case .onTap(let onTap):
                 if let message = onTap {
-                    _ = self.dispatch(message: message, for: .touchUpInside)
+                    _ = self.on(event: .touchUpInside, dispatch: message)
                 } else {
                     _ = self.unregisterDispatcher(for: .touchUpInside) as MessageDispatcher<MessageType>?
                 }
@@ -72,7 +78,7 @@ extension UIButton {
         }
     }
     
-    internal func apply(changeSet: [ButtonStyleSheet.Property]) {
+    fileprivate func apply(changeSet: [ButtonStyleSheet.Property]) {
         for property in changeSet {
             switch property {
                 
@@ -91,23 +97,13 @@ extension UIButton {
         }
     }
     
-}
-
-
-fileprivate var messageDispatcherAssociationKey = 0
-fileprivate var mailboxAssociationKey = 1
-
-fileprivate extension UIButton {
-    
-    fileprivate func dispatch<MessageType>(
-        message: MessageType,
-        for event: UIControlEvents) -> Mailbox<MessageType> {
+    fileprivate func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType> {
         
         if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
             self.removeTarget(oldDispatcher, action: oldDispatcher.selector, for: event)
         }
         
-        let mailbox = getMailbox() ?? Mailbox<MessageType>()
+        let mailbox: Mailbox<MessageType> = getMailbox()
         let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
         self.register(dispatcher: dispatcher, for: event)
         self.addTarget(dispatcher, action: dispatcher.selector, for: event)
@@ -143,8 +139,19 @@ fileprivate extension UIButton {
         return dispatchers[event.rawValue]
     }
     
-    fileprivate func getMailbox<MessageType>() -> Mailbox<MessageType>? {
-        return objc_getAssociatedObject(self, &mailboxAssociationKey) as? Mailbox<MessageType>
+    fileprivate func getMailbox<MessageType>() -> Mailbox<MessageType> {
+        let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)
+        let mailbox: Mailbox<MessageType>
+        if associatedObject == nil {
+            mailbox = Mailbox()
+            objc_setAssociatedObject(self, &mailboxAssociationKey, mailbox,
+                                     .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        } else {
+            assert(associatedObject is Mailbox<MessageType>,
+                   "Associated Mailbox's message type does not match '\(MessageType.self)'")
+            mailbox = associatedObject as! Mailbox<MessageType> // swiftlint:disable:this force_cast
+        }
+        return mailbox
     }
     
 }
