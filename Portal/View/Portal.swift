@@ -8,9 +8,9 @@
 
 import Foundation
 
-public protocol Font {
+public struct Font: AutoEquatable {
     
-    var name: String { get }
+    let name: String
     
 }
 

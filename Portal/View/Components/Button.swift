@@ -66,7 +66,7 @@ public func properties<MessageType>(
 
 // MARK: - Style sheet
 
-public struct ButtonStyleSheet {
+public struct ButtonStyleSheet: AutoPropertyDiffable {
 
     public static let defaultStyleSheet = StyleSheet<ButtonStyleSheet>(component: ButtonStyleSheet())
 
@@ -91,4 +91,25 @@ public func buttonStyleSheet(
     var custom = ButtonStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: - Change set
+
+internal struct ButtonChangeSet<MessageType> {
+ 
+    static func fullChangeSet(
+        properties: ButtonProperties<MessageType>,
+        style: StyleSheet<ButtonStyleSheet>,
+        layout: Layout) -> ButtonChangeSet<MessageType> {
+        return ButtonChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            buttonStyleSheet: style.component.fullChangeSet
+        )
+    }
+    
+    let properties: [ButtonProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let buttonStyleSheet: [ButtonStyleSheet.Property]
+    
 }
