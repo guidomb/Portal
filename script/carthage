@@ -1,0 +1,25 @@
+#!/bin/bash
+
+function check_carthage_version
+{
+  if type brew > /dev/null 2>&1
+  then
+    local carthage_required_version=`ruby script/lib/read_version.rb carthage`
+    local carthage_installed_version=`carthage version`
+    if [ "$carthage_required_version" != "$carthage_installed_version" ]
+    then
+      echo "Error: Carthage installed version ($carthage_installed_version) does not match required version ($carthage_required_version)."
+      echo "Run 'script/bootstrap' to install required version or update '.version.yml' file and then run boostrap script."
+      echo ""
+      exit 1
+    fi
+  else
+    echo "Error: Carthage is not installed."
+    echo "Run 'script/bootstrap' to propery set up your development environment."
+    echo ""
+    exit 1
+  fi
+}
+
+check_carthage_version
+carthage $@

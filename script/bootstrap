@@ -4,8 +4,8 @@ require_relative 'lib/install_swiftlint'
 require_relative 'lib/install_sourcery'
 require_relative 'lib/installers'
 
+# Install local binaries in ./bin directory
 install_swiftlint
-
 install_sourcery
 
 # Install CI environment dependencies
@@ -14,6 +14,9 @@ pip_install "proselint"
 
 # Install Ruby gems
 bundle_install
+
+# Install dependencies using Carthage
+carthage_bootstrap
 
 # Generate code based on Sourcery templates.
 `script/sourcery`
