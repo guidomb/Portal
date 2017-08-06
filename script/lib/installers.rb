@@ -30,7 +30,9 @@ end
 def pip_install(egg_name)
   puts ""
   puts " → Installing '#{egg_name}' using 'pip' ..."
-  safe_exec("pip", "install proselint", check_args: "-V") do
+  command = "pip"
+  command = "sudo #{command}" if ENV["RUN_PIP_WITH_SUDO"]
+  safe_exec(command, "install proselint", check_args: "-V") do
     puts "\t * Command 'pip' is not available"
     puts "\t * Installing 'pip' using 'easy_install' ..."
     execute_command("sudo easy_install pip", prefix: "easy_install: ")
