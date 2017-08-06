@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 
 require_relative 'lib/install_swiftlint'
+require_relative 'lib/install_sourcery'
 require_relative 'lib/installers'
 
 install_swiftlint
+
+install_sourcery
 
 # Install CI environment dependencies
 # proselint is a dependency needed by danger-prose plugin.
@@ -11,3 +14,6 @@ pip_install "proselint"
 
 # Install Ruby gems
 bundle_install
+
+# Generate code based on Sourcery templates.
+`script/sourcery`
