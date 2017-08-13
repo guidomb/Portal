@@ -62,21 +62,21 @@ public enum AlignContent {
 
 }
 
-public enum Margin {
+public enum Margin: AutoEquatable {
     
     case all(value: UInt)
     case by(edge: Edge) // swiftlint:disable:this identifier_name
     
 }
 
-public enum Border {
+public enum Border: AutoEquatable {
     
     case all(value: UInt)
     case by(edge: Edge) // swiftlint:disable:this identifier_name
     
 }
 
-public enum Padding {
+public enum Padding: AutoEquatable {
     
     case all(value: UInt)
     case by(edge: Edge) // swiftlint:disable:this identifier_name
@@ -91,7 +91,7 @@ public enum Direction {
     
 }
 
-public struct Edge {
+public struct Edge: AutoEquatable {
 
     public var left: UInt?
     public var top: UInt?
@@ -126,14 +126,14 @@ public struct Edge {
 
 }
 
-public enum Position {
+public enum Position: AutoEquatable {
 
     case relative
     case absolute(forEdge: Edge)
 
 }
 
-public struct Alignment {
+public struct Alignment: AutoPropertyDiffable {
 
     public var content: AlignContent
     public var `self`: AlignSelf?
@@ -150,7 +150,7 @@ public struct Alignment {
 
 }
 
-public struct FlexValue: RawRepresentable {
+public struct FlexValue: RawRepresentable, AutoEquatable {
 
     public var rawValue: Double
 
@@ -173,7 +173,7 @@ public struct FlexValue: RawRepresentable {
 
 }
 
-public struct Flex {
+public struct Flex: AutoPropertyDiffable {
 
     public var direction: FlexDirection
     public var grow: FlexValue
@@ -197,7 +197,7 @@ public struct Flex {
 
 }
 
-public struct Dimension {
+public struct Dimension: AutoPropertyDiffable {
 
     public var minimum: UInt?
     public var maximum: UInt?
@@ -211,7 +211,7 @@ public struct Dimension {
     
 }
 
-public struct AspectRatio: RawRepresentable {
+public struct AspectRatio: RawRepresentable, AutoEquatable {
 
     public var rawValue: Double
 
@@ -222,7 +222,7 @@ public struct AspectRatio: RawRepresentable {
 
 }
 
-public struct Layout {
+public struct Layout: AutoPropertyDiffable {
 
     public var flex: Flex
     public var justifyContent: JustifyContent

@@ -5,6 +5,7 @@
 //  Created by Guido Marucci Blas on 12/11/16.
 //  Copyright © 2016 Guido Marucci Blas. All rights reserved.
 //
+// swiftlint:disable file_length
 import UIKit
 
 public protocol LayoutEngine {
@@ -12,6 +13,8 @@ public protocol LayoutEngine {
     func layout(view: UIView, inside container: UIView)
 
     func apply(layout: Layout, to view: UIView)
+
+    func apply(changeSet: [Layout.Property], to view: UIView)
 
 }
 
@@ -26,54 +29,175 @@ internal struct YogaLayoutEngine: LayoutEngine {
     }
 
     func apply(layout: Layout, to view: UIView) {
-        view.yoga.isEnabled = true
-
-        apply(flex: layout.flex, to: view)
-        apply(justifyContent: layout.justifyContent, to: view)
-        apply(alignment: layout.alignment, to: view)
-        apply(position: layout.position, to: view)
-        apply(direction: layout.direction, to: view)
-
-        layout.width        |> { apply(width: $0, to: view) }
-        layout.height       |> { apply(height: $0, to: view) }
-        layout.margin       |> { apply(margin: $0, to: view) }
-        layout.padding      |> { apply(padding: $0, to: view) }
-        layout.border       |> { apply(border: $0, to: view) }
-        layout.aspectRatio  |> { apply(aspectRation: $0, to: view) }
+        apply(changeSet: layout.fullChangeSet, to: view)
     }
+
+    // swiftlint:disable cyclomatic_complexity
+    func apply(changeSet: [Layout.Property], to view: UIView) {
+        view.yoga.isEnabled = true
+        
+        for property in changeSet {
+            switch property {
+
+            case .flex(let flexChangeSet):
+                apply(changeSet: flexChangeSet, to: view)
+
+            case .justifyContent(let justifyContent):
+                apply(justifyContent: justifyContent, to: view)
+
+            case .width(let widthChangeSet):
+                apply(widthChangeSet: widthChangeSet, to: view)
+
+            case .height(let heightChangeSet):
+                apply(heightChangeSet: heightChangeSet, to: view)
+
+            case .alignment(let alignmentChangeSet):
+                apply(changeSet: alignmentChangeSet, to: view)
+
+            case .position(let position):
+                apply(position: position, to: view)
+
+            case .margin(let margin):
+                apply(margin: margin, to: view)
+
+            case .padding(let padding):
+                apply(padding: padding, to: view)
+
+            case .border(let border):
+                apply(border: border, to: view)
+                
+            case .aspectRatio(let aspectRatio):
+                apply(aspectRatio: aspectRatio, to: view)
+
+            case .direction(let direction):
+                apply(direction: direction, to: view)
+
+            }
+        }
+    }
+    // swiftlint:enable cyclomatic_complexity
 
 }
 
 fileprivate extension YogaLayoutEngine {
+    
+    fileprivate func apply(changeSet: [Flex.Property], to view: UIView) {
+        for property in changeSet {
+            switch property {
+                
+            case .basis(let maybeBasis):
+                if let basis = maybeBasis {
+                    view.yoga.flexBasis = CGFloat(basis)
+                } else {
+                    view.yoga.flexBasis = .nan
+                }
+                
+            case .direction(let direction):
+                view.yoga.flexDirection = direction.yogaFlexDirection
+                
+            case .grow(let grow):
+                view.yoga.flexGrow = CGFloat(grow.rawValue)
+                
+            case .shrink(let shrink):
+                view.yoga.flexShrink = CGFloat(shrink.rawValue)
+                
+            case .wrap(let wrap):
+                view.yoga.flexWrap = wrap.yogaFlexWrap
+                
+            }
+        }
+    }
 
-    fileprivate func apply(flex: Flex, to view: UIView) {
-        view.yoga.flexDirection = flex.direction.yogaFlexDirection
-        view.yoga.flexGrow = CGFloat(flex.grow.rawValue)
-        view.yoga.flexShrink = CGFloat(flex.shrink.rawValue)
-        view.yoga.flexWrap = flex.wrap.yogaFlexWrap
-        flex.basis |> { view.yoga.flexBasis = CGFloat($0) }
+    fileprivate func apply(changeSet: [Alignment.Property], to view: UIView) {
+        for property in changeSet {
+            switch property {
+
+            case .content(let content):
+                view.yoga.alignContent = content.yogaAlignContent
+
+            case .items(let items):
+                view.yoga.alignItems = items.yogaAlignItems
+
+            case .self(let maybeAlignSelf):
+                if let alignSelf = maybeAlignSelf {
+                    view.yoga.alignSelf = alignSelf.yogaAlignSelf
+                } else {
+                    view.yoga.alignSelf = .auto
+                }
+            }
+        }
+    }
+
+    fileprivate func apply(widthChangeSet: [Dimension.Property]?, to view: UIView) {
+        apply(
+            changeSet: widthChangeSet,
+            to: view,
+            valueSetter: { $0.yoga.width = $1 },
+            minSetter: { $0.yoga.minWidth = $1 },
+            maxSetter: { $0.yoga.maxWidth = $1}
+        )
+    }
+
+    fileprivate func apply(heightChangeSet: [Dimension.Property]?, to view: UIView) {
+        apply(
+            changeSet: heightChangeSet,
+            to: view,
+            valueSetter: { $0.yoga.height = $1 },
+            minSetter: { $0.yoga.minHeight = $1 },
+            maxSetter: { $0.yoga.maxHeight = $1 }
+        )
+    }
+
+    // XXX we are using `CGFloat.nan` to "unset" width-related properties
+    // because Yoga defines `YGUndefined` as `NAN` and `YGUndefined` is
+    // the default value for layout dimension properties.
+    //
+    // This is an implementation detail and may change between Yoga
+    // releases. Yoga does not expose a way to set a property to its
+    // default value.
+    fileprivate func apply(
+        changeSet maybeChangeSet: [Dimension.Property]?,
+        to view: UIView,
+        valueSetter: (UIView, CGFloat) -> Void,
+        minSetter: (UIView, CGFloat) -> Void,
+        maxSetter: (UIView, CGFloat) -> Void) {
+        guard let widthChangeSet = maybeChangeSet else {
+            valueSetter(view, .nan)
+            minSetter(view, .nan)
+            maxSetter(view, .nan)
+            return
+        }
+
+        for property in widthChangeSet {
+            switch property {
+
+            case .value(let maybeValue):
+                if let value = maybeValue {
+                    valueSetter(view, CGFloat(value))
+                } else {
+                    valueSetter(view, .nan)
+                }
+
+            case .minimum(let maybeMinimum):
+                if let minimum = maybeMinimum {
+                    minSetter(view, CGFloat(minimum))
+                } else {
+                    minSetter(view, .nan)
+                }
+
+            case .maximum(let maybeMaximum):
+                if let maximum = maybeMaximum {
+                    maxSetter(view, CGFloat(maximum))
+                } else {
+                    maxSetter(view, .nan)
+                }
+
+            }
+        }
     }
 
     fileprivate func apply(justifyContent: JustifyContent, to view: UIView) {
         view.yoga.justifyContent = justifyContent.yogaJustifyContent
-    }
-
-    fileprivate func apply(width: Dimension, to view: UIView) {
-        width.value     |> { view.yoga.width = CGFloat($0) }
-        width.minimum   |> { view.yoga.minWidth = CGFloat($0) }
-        width.maximum   |> { view.yoga.maxWidth = CGFloat($0) }
-    }
-
-    fileprivate func apply(height: Dimension, to view: UIView) {
-        height.value    |> { view.yoga.height = CGFloat($0) }
-        height.minimum  |> { view.yoga.minHeight = CGFloat($0) }
-        height.maximum  |> { view.yoga.maxHeight = CGFloat($0) }
-    }
-
-    fileprivate func apply(alignment: Alignment, to view: UIView) {
-        view.yoga.alignContent = alignment.content.yogaAlignContent
-        view.yoga.alignItems = alignment.items.yogaAlignItems
-        alignment.`self` |> { view.yoga.alignSelf = $0.yogaAlignSelf }
     }
 
     fileprivate func apply(position: Position, to view: UIView) {
@@ -87,7 +211,7 @@ fileprivate extension YogaLayoutEngine {
             edge.bottom     |> { view.yoga.bottom = CGFloat($0) }
             edge.start      |> { view.yoga.start = CGFloat($0) }
             edge.end        |> { view.yoga.end = CGFloat($0) }
-            
+
             // TODO review why this properties are missing
             // edge.horizontal |> { view.yoga.horizontal = CGFloat($0) }
             // edge.vertical   |> { view.yoga.vertical = CGFloat($0) }
@@ -97,7 +221,20 @@ fileprivate extension YogaLayoutEngine {
         }
     }
 
-    fileprivate func apply(margin: Margin, to view: UIView) {
+    fileprivate func apply(margin maybeMargin: Margin?, to view: UIView) {
+        guard let margin = maybeMargin else {
+            view.yoga.margin = .nan
+            view.yoga.marginLeft = .nan
+            view.yoga.marginRight = .nan
+            view.yoga.marginTop = .nan
+            view.yoga.marginBottom = .nan
+            view.yoga.marginStart = .nan
+            view.yoga.marginEnd = .nan
+            view.yoga.marginHorizontal = .nan
+            view.yoga.marginVertical = .nan
+            return
+        }
+
         switch margin {
 
         case .all(let value):
@@ -116,7 +253,20 @@ fileprivate extension YogaLayoutEngine {
         }
     }
 
-    fileprivate func apply(padding: Padding, to view: UIView) {
+    fileprivate func apply(padding maybePadding: Padding?, to view: UIView) {
+        guard let padding = maybePadding else {
+            view.yoga.padding = .nan
+            view.yoga.paddingLeft = .nan
+            view.yoga.paddingRight = .nan
+            view.yoga.paddingTop = .nan
+            view.yoga.paddingBottom = .nan
+            view.yoga.paddingStart = .nan
+            view.yoga.paddingEnd = .nan
+            view.yoga.paddingHorizontal = .nan
+            view.yoga.paddingVertical = .nan
+            return
+        }
+
         switch padding {
 
         case .all(let value):
@@ -134,7 +284,18 @@ fileprivate extension YogaLayoutEngine {
         }
     }
 
-    fileprivate func apply(border: Border, to view: UIView) {
+    fileprivate func apply(border maybeBorder: Border?, to view: UIView) {
+        guard let border = maybeBorder else {
+            view.yoga.borderWidth = .nan 
+            view.yoga.borderLeftWidth = .nan
+            view.yoga.borderRightWidth = .nan
+            view.yoga.borderTopWidth = .nan
+            view.yoga.borderBottomWidth = .nan
+            view.yoga.borderStartWidth = .nan
+            view.yoga.borderEndWidth = .nan
+            return
+        }
+
         switch border {
 
         case .all(let value):
@@ -147,15 +308,19 @@ fileprivate extension YogaLayoutEngine {
             edge.bottom     |> { view.yoga.borderBottomWidth = CGFloat($0) }
             edge.start      |> { view.yoga.borderStartWidth = CGFloat($0) }
             edge.end        |> { view.yoga.borderEndWidth = CGFloat($0) }
-            
+
             // TODO review why this properties are missing
             // edge.horizontal |> { view.yoga.borderHorizontal = CGFloat($0) }
             // edge.vertical   |> { view.yoga.borderVertical = CGFloat($0) }
         }
     }
 
-    fileprivate func apply(aspectRation: AspectRatio, to view: UIView) {
-        view.yoga.aspectRatio = CGFloat(aspectRation.rawValue)
+    fileprivate func apply(aspectRatio maybeAspectRatio: AspectRatio?, to view: UIView) {
+        if let aspectRatio = maybeAspectRatio {
+            view.yoga.aspectRatio = CGFloat(aspectRatio.rawValue)
+        } else {
+            view.yoga.aspectRatio = .nan
+        }
     }
 
     fileprivate func apply(direction: Direction, to view: UIView) {
