@@ -26,8 +26,7 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
             style: style,
             layout: layout
         )
-        let result = button.apply(changeSet: changeSet)
-        layoutEngine.apply(layout: layout, to: button)
+        let result = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
         
         return result
     }
@@ -36,11 +35,14 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
 
 extension UIButton {
     
-    internal func apply<MessageType>(changeSet: ButtonChangeSet<MessageType>) -> Render<MessageType> {
+    internal func apply<MessageType>(
+        changeSet: ButtonChangeSet<MessageType>,
+        layoutEngine: LayoutEngine) -> Render<MessageType> {
         
         apply(changeSet: changeSet.properties)
         apply(changeSet: changeSet.baseStyleSheet)
         apply(changeSet: changeSet.buttonStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
         return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }

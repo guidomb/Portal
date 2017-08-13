@@ -13,6 +13,12 @@ import Nimble
 class ButtonRendererSpec: QuickSpec {
     override func spec() {
         
+        var layoutEngine: LayoutEngine!
+        
+        beforeEach {
+            layoutEngine = YogaLayoutEngine()
+        }
+        
         describe(".apply(changeSet: ButtonChangeSet) -> Result") {
             
             var changeSet: ButtonChangeSet<String>!
@@ -43,25 +49,25 @@ class ButtonRendererSpec: QuickSpec {
                 
                 it("applies 'text' property changes") {
                     let button = UIButton()
-                    _ = button.apply(changeSet: changeSet)
+                    _ = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(button.currentTitle).to(equal("Hello World"))
                 }
                 
                 it("applies 'isActive' property changes") {
                     let button = UIButton()
-                    _ = button.apply(changeSet: changeSet)
+                    _ = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(button.isSelected).to(beTrue())
                 }
                 
                 it("applies 'icon' property changes") {
                     let button = UIButton()
-                    _ = button.apply(changeSet: changeSet)
+                    _ = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(button.currentImage).to(equal(buttonIcon.asUIImage))
                 }
                 
                 it("applies 'onTap' property changes") { waitUntil { done in
                     let button = UIButton()
-                    let result = button.apply(changeSet: changeSet)
+                    let result = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     result.mailbox?.subscribe { message in
                         expect(message).to(equal("Tapped!"))
@@ -77,24 +83,24 @@ class ButtonRendererSpec: QuickSpec {
                     
                     beforeEach {
                         configuredButton = UIButton()
-                        _ = configuredButton.apply(changeSet: changeSet)
+                        _ = configuredButton.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     }
                     
                     it("removes the button's title") {
                         let newChangeSet = ButtonChangeSet<String>(properties: [.text(.none)])
-                        _ = configuredButton.apply(changeSet: newChangeSet)
+                        _ = configuredButton.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         expect(configuredButton.currentTitle).to(beNil())
                     }
                     
                     it("removes the button's icon") {
                         let newChangeSet = ButtonChangeSet<String>(properties: [.icon(.none)])
-                        _ = configuredButton.apply(changeSet: newChangeSet)
+                        _ = configuredButton.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         expect(configuredButton.currentImage).to(beNil())
                     }
                     
                     it("removes the button's on tap handler") {
                         let newChangeSet = ButtonChangeSet<String>(properties: [.onTap(.none)])
-                        let result = configuredButton.apply(changeSet: newChangeSet)
+                        let result = configuredButton.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
                         result.mailbox?.subscribe { _ in fail("On tap handler was not removed") }
                         
@@ -109,12 +115,12 @@ class ButtonRendererSpec: QuickSpec {
                     
                     beforeEach {
                         configuredButton = UIButton()
-                        _ = configuredButton.apply(changeSet: changeSet)
+                        _ = configuredButton.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     }
                     
                     it("replaces the previous on tap handler") {
                         let newChangeSet = ButtonChangeSet<String>(properties: [.onTap("NewMessage!")])
-                        let result = configuredButton.apply(changeSet: newChangeSet)
+                        let result = configuredButton.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
                         // We need reference semantics to avoid copies inside mailbox's subscribe
                         // closure in order to assert that the expected messages were received.
@@ -135,13 +141,13 @@ class ButtonRendererSpec: QuickSpec {
                 
                 it("applies 'textColor' property changes") {
                     let button = UIButton()
-                    _ = button.apply(changeSet: changeSet)
+                    _ = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(button.titleLabel?.textColor).to(equal(.red))
                 }
                 
                 it("applies 'textFont' and 'textSize' property changes") {
                     let button = UIButton()
-                    _ = button.apply(changeSet: changeSet)
+                    _ = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(button.titleLabel?.font).to(equal(UIFont(name: "Helvetica", size: 12)))
                 }
                 

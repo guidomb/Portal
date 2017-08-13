@@ -104,21 +104,25 @@ internal struct ButtonChangeSet<MessageType> {
         return ButtonChangeSet(
             properties: properties.fullChangeSet,
             baseStyleSheet: style.base.fullChangeSet,
-            buttonStyleSheet: style.component.fullChangeSet
+            buttonStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
         )
     }
     
     let properties: [ButtonProperties<MessageType>.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
     let buttonStyleSheet: [ButtonStyleSheet.Property]
+    let layout: [Layout.Property]
     
     init(
         properties: [ButtonProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],
-        buttonStyleSheet: [ButtonStyleSheet.Property] = []) {
+        buttonStyleSheet: [ButtonStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
         self.properties = properties
         self.baseStyleSheet = baseStyleSheet
         self.buttonStyleSheet = buttonStyleSheet
+        self.layout = layout
     }
     
 }
