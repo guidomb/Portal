@@ -1,9 +1,8 @@
-// swiftlint:disable identifier_name
-// swiftlint:disable trailing_comma
 {% for type in types.implementing.AutoPropertyDiffable %}
-extension {{ type.name }} {
+// MARK: - {{ type.name }} AutoPropertyDiffable
+{% if type.accessLevel == "public" %}public {% endif %}extension {{ type.name }} {
 
-    enum Property {
+    {% if type.accessLevel == "public" %}public {% endif %}enum Property {
 
         {% for instanceVariable in type.instanceVariables|publicGet %}
         {% if instanceVariable.type.based.AutoPropertyDiffable %}
@@ -15,7 +14,7 @@ extension {{ type.name }} {
 
     }
 
-    var fullChangeSet: [{{ type.name }}.Property] {
+    {% if type.accessLevel == "public" %}public {% endif %}var fullChangeSet: [{{ type.name }}.Property] {
         return [
         {% for instanceVariable in type.instanceVariables|publicGet %}
         {% if instanceVariable.type.based.AutoPropertyDiffable %}
@@ -27,7 +26,7 @@ extension {{ type.name }} {
         ]
     }
 
-    internal func changeSet(for {{ type.name|lowerFirst }}: {{ type.name }}) -> [{{ type.name }}.Property] {
+    {% if type.accessLevel == "public" %}public {% endif %}func changeSet(for {{ type.name|lowerFirst }}: {{ type.name }}) -> [{{ type.name }}.Property] {
         var changeSet: [{{ type.name }}.Property] = []
         {% for instanceVariable in type.instanceVariables|publicGet %}
         {% if instanceVariable.annotations.skipDiff %}
@@ -61,6 +60,5 @@ extension {{ type.name }} {
     }
 
 }
+
 {% endfor %}
-// swiftlint:enable identifier_name
-// swiftlint:enable trailing_comma
