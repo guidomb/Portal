@@ -19,7 +19,7 @@ class ButtonRendererSpec: QuickSpec {
             layoutEngine = YogaLayoutEngine()
         }
         
-        describe(".apply(changeSet: ButtonChangeSet) -> Result") {
+        describe(".apply(changeSet: ButtonChangeSet, layoutEngine: LayoutEngine) -> Result") {
             
             var changeSet: ButtonChangeSet<String>!
             var buttonIcon: Image!
