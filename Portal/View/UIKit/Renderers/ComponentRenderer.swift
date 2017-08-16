@@ -104,6 +104,10 @@ internal struct ComponentRenderer<
                 layout: layout
             ).render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
             
+        case .toggle(let properties, let style, let layout):
+            return ToggleRenderer(properties: properties, style: style, layout: layout)
+                .render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
+            
         case .custom(let customComponent, let style, let layout):
             let customComponentContainerView = UIView()
             layoutEngine.apply(layout: layout, to: customComponentContainerView)

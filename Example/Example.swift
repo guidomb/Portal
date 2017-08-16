@@ -20,6 +20,7 @@ enum Message {
     case ping(Date)
     case pong(String)
     case stateLoaded(State?)
+    case toggle(Bool)
     
 }
 
