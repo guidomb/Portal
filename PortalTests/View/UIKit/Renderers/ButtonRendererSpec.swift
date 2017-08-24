@@ -25,19 +25,21 @@ class ButtonRendererSpec: QuickSpec {
             var buttonIcon: Image!
             
             beforeEach {
-                
                 buttonIcon = Image.loadImage(named: "search.png", from: Bundle(for: ButtonRendererSpec.self))
-                let buttonProperties: ButtonProperties<String> = properties() {
+                
+                let buttonProperties: ButtonProperties<String> = properties {
                     $0.text = "Hello World"
                     $0.isActive = true
                     $0.icon = buttonIcon
                     $0.onTap = "Tapped!"
                 }
-                let buttonStyle = buttonStyleSheet () { base, button in
+                
+                let buttonStyle = buttonStyleSheet { base, button in
                     button.textColor = .red
                     button.textFont = Font(name: "Helvetica")
                     button.textSize = 12
                 }
+                
                 changeSet = ButtonChangeSet.fullChangeSet(
                     properties: buttonProperties,
                     style: buttonStyle,
