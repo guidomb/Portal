@@ -135,10 +135,10 @@ internal struct TextFieldChangeSet<MessageType> {
     let layout: [Layout.Property]
     
     init(
-        properties: [TextFieldProperties<MessageType>.Property],
-        baseStyleSheet: [BaseStyleSheet.Property],
-        textFieldStyleSheet: [TextFieldStyleSheet.Property],
-        layout: [Layout.Property]) {
+        properties: [TextFieldProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        textFieldStyleSheet: [TextFieldStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
         self.properties = properties
         self.baseStyleSheet = baseStyleSheet
         self.textFieldStyleSheet = textFieldStyleSheet

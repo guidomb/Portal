@@ -62,7 +62,7 @@ fileprivate extension UITextField {
     }
     
     fileprivate func apply<MessageType>(events: TextFieldEvents<MessageType>) {
-        for (event, maybeEvent) in getMessagesByEvent(events: events) {
+        for (event, maybeEvent) in events.getMessagesByEvent() {
             if let message = maybeEvent {
                 _ = self.on(event: event, dispatch: message)
             } else {
@@ -92,11 +92,15 @@ fileprivate extension UITextField {
         }
     }
     
-    fileprivate func getMessagesByEvent<MessageType>(events: TextFieldEvents<MessageType>) -> [(UIControlEvents, MessageType?)] {
+}
+
+extension TextFieldEvents {
+    
+    fileprivate func getMessagesByEvent() -> [(UIControlEvents, MessageType?)] {
         return [
-            (.editingDidBegin, events.onEditingBegin),
-            (.editingChanged, events.onEditingChanged),
-            (.editingDidEnd, events.onEditingEnd)
+            (.editingDidBegin, onEditingBegin),
+            (.editingChanged, onEditingChanged),
+            (.editingDidEnd, onEditingEnd)
         ]
     }
     
