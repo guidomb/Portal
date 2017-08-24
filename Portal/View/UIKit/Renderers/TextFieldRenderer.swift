@@ -38,13 +38,10 @@ extension UITextField: MessageHandler {
         apply(changeSet: changeSet.textFieldStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        return Render(view: self, mailbox: getMailbox(mailboxKey: &mailboxAssociationKey), executeAfterLayout: .none)
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
     
 }
-
-fileprivate var messageDispatcherAssociationKey = 0
-fileprivate var mailboxAssociationKey = 1
 
 fileprivate extension UITextField {
     
@@ -67,13 +64,9 @@ fileprivate extension UITextField {
     fileprivate func apply<MessageType>(events: TextFieldEvents<MessageType>) {
         for (event, maybeEvent) in getMessagesByEvent(events: events) {
             if let message = maybeEvent {
-                _ = self.on(
-                    event: event, dispatch: message,
-                    dispatcherKey: &messageDispatcherAssociationKey, mailboxKey: &mailboxAssociationKey)
+                _ = self.on(event: event, dispatch: message)
             } else {
-                _ = self.unregisterDispatcher(
-                    for: event,
-                    dispatcherKey: &messageDispatcherAssociationKey) as MessageDispatcher<MessageType>?
+                _ = self.unregisterDispatcher(for: event) as MessageDispatcher<MessageType>?
             }
         }
     }

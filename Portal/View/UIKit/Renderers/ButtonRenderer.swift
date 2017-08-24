@@ -44,13 +44,10 @@ extension UIButton: MessageHandler {
         apply(changeSet: changeSet.buttonStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        return Render(view: self, mailbox: getMailbox(mailboxKey: &mailboxAssociationKey), executeAfterLayout: .none)
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
     
 }
-
-fileprivate var messageDispatcherAssociationKey = 0
-fileprivate var mailboxAssociationKey = 1
 
 fileprivate extension UIButton {
     
@@ -70,13 +67,9 @@ fileprivate extension UIButton {
                 
             case .onTap(let onTap):
                 if let message = onTap {
-                    _ = self.on(
-                        event: .touchUpInside, dispatch: message,
-                        dispatcherKey: &messageDispatcherAssociationKey, mailboxKey: &mailboxAssociationKey)
+                    _ = self.on(event: .touchUpInside, dispatch: message)
                 } else {
-                    _ = self.unregisterDispatcher(
-                        for: .touchUpInside,
-                        dispatcherKey: &messageDispatcherAssociationKey) as MessageDispatcher<MessageType>?
+                    _ = self.unregisterDispatcher(for: .touchUpInside) as MessageDispatcher<MessageType>?
                 }
             }
         }
@@ -96,7 +89,6 @@ fileprivate extension UIButton {
             case .textFont(let font):
                 let fontSize = self.titleLabel?.font.pointSize ?? CGFloat(defaultButtonFontSize)
                 self.titleLabel?.font = font.uiFont(withSize: fontSize)
-                
             }
         }
     }

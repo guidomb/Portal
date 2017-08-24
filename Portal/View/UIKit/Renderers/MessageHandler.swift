@@ -6,30 +6,26 @@
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
+fileprivate var messageDispatcherAssociationKey = 0
+fileprivate var mailboxAssociationKey = 1
+
 protocol MessageHandler where Self : UIControl {
     
-    func getMailbox<MessageType>(mailboxKey mailboxAssociationKey: inout Int) -> Mailbox<MessageType>
+    func getMailbox<MessageType>() -> Mailbox<MessageType>
     
-    func on<MessageType>(event: UIControlEvents,
-                         dispatch message: MessageType,
-                         dispatcherKey messageDispatcherAssociationKey: inout Int,
-                         mailboxKey mailboxAssociationKey: inout Int) -> Mailbox<MessageType>
+    func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType>
     
-    func getDispatcher<MessageType>(for event: UIControlEvents,
-                                    dispatcherKey messageDispatcherAssociationKey: inout Int) -> MessageDispatcher<MessageType>?
+    func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
     
-    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>,
-                               for event: UIControlEvents,
-                               dispatcherKey messageDispatcherAssociationKey: inout Int)
+    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents)
     
-    func unregisterDispatcher<MessageType>(for event: UIControlEvents,
-                                           dispatcherKey messageDispatcherAssociationKey: inout Int) -> MessageDispatcher<MessageType>?
+    func unregisterDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
     
 }
 
 extension MessageHandler {
     
-    func getMailbox<MessageType>(mailboxKey mailboxAssociationKey: inout Int) -> Mailbox<MessageType> {
+    func getMailbox<MessageType>() -> Mailbox<MessageType> {
         let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)
         let mailbox: Mailbox<MessageType>
         if associatedObject == nil {
@@ -42,44 +38,33 @@ extension MessageHandler {
         return mailbox
     }
     
-    func on<MessageType>(event: UIControlEvents,
-                         dispatch message: MessageType,
-                         dispatcherKey messageDispatcherAssociationKey: inout Int,
-                         mailboxKey mailboxAssociationKey: inout Int) -> Mailbox<MessageType> {
-        
-        if let oldDispatcher = getDispatcher(for: event, dispatcherKey: &messageDispatcherAssociationKey) as MessageDispatcher<MessageType>? {
+    func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType> {
+        if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
             self.removeTarget(oldDispatcher, action: oldDispatcher.selector, for: event)
         }
         
-        let mailbox: Mailbox<MessageType> = getMailbox(mailboxKey: &mailboxAssociationKey)
+        let mailbox: Mailbox<MessageType> = getMailbox()
         let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-        self.register(dispatcher: dispatcher, for: event, dispatcherKey: &messageDispatcherAssociationKey)
+        self.register(dispatcher: dispatcher, for: event)
         self.addTarget(dispatcher, action: dispatcher.selector, for: event)
         
         return mailbox
     }
     
-    func getDispatcher<MessageType>(for event: UIControlEvents,
-                                    dispatcherKey messageDispatcherAssociationKey: inout Int) -> MessageDispatcher<MessageType>? {
-        
+    func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
         let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] ?? [:]
         return dispatchers[event.rawValue]
     }
     
-    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>,
-                               for event: UIControlEvents,
-                               dispatcherKey messageDispatcherAssociationKey: inout Int) {
-        
+    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents) {
         var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] ?? [:]
         dispatchers[event.rawValue] = dispatcher
         objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
-    func unregisterDispatcher<MessageType>(for event: UIControlEvents,
-                                           dispatcherKey messageDispatcherAssociationKey: inout Int) -> MessageDispatcher<MessageType>? {
-        
+    func unregisterDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
         guard var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] else { return .none }
         let dispatcher = dispatchers.removeValue(forKey: event.rawValue)
