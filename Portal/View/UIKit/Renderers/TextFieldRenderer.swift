@@ -38,7 +38,7 @@ extension UITextField: MessageHandler {
         apply(changeSet: changeSet.textFieldStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+        return Render(view: self, mailbox: getMailbox(mailboxKey: &mailboxAssociationKey), executeAfterLayout: .none)
     }
     
 }
@@ -98,29 +98,6 @@ fileprivate extension UITextField {
                 fontName |> { self.font = UIFont(name: $0, size: CGFloat(textSize)) }
             }
         }
-    }
-    
-    // TODO: Delete
-    fileprivate func apply(style: TextFieldStyleSheet) {
-        let size = CGFloat(style.textSize)
-        style.textFont.uiFont(withSize: size)     |> { self.font = $0 }
-        style.textColor                           |> { self.textColor = $0.asUIColor }
-        style.textAligment                        |> { self.textAlignment = $0.asNSTextAligment }
-    }
-    
-    fileprivate func getMailbox<MessageType>() -> Mailbox<MessageType> {
-        let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)
-        let mailbox: Mailbox<MessageType>
-        if associatedObject == nil {
-            mailbox = Mailbox()
-            objc_setAssociatedObject(self, &mailboxAssociationKey, mailbox,
-                                     .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        } else {
-            assert(associatedObject is Mailbox<MessageType>,
-                   "Associated Mailbox's message type does not match '\(MessageType.self)'")
-            mailbox = associatedObject as! Mailbox<MessageType> // swiftlint:disable:this force_cast
-        }
-        return mailbox
     }
     
 }
