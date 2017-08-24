@@ -36,6 +36,7 @@ public struct TextFieldProperties<MessageType>: AutoPropertyDiffable {
 }
 
 public struct TextFieldEvents<MessageType> {
+    
     public var onEditingBegin: MessageType?
     public var onEditingChanged: MessageType?
     public var onEditingEnd: MessageType?
@@ -55,14 +56,6 @@ public struct TextFieldEvents<MessageType> {
             onEditingChanged: onEditingChanged.map(transform),
             onEditingEnd: onEditingEnd.map(transform)
         )
-    }
-    
-    public func toArray() -> [(UIControlEvents, MessageType?)] {
-        return [
-            (.editingDidBegin, onEditingBegin),
-            (.editingChanged, onEditingChanged),
-            (.editingDidEnd, onEditingEnd)
-        ]
     }
     
 }

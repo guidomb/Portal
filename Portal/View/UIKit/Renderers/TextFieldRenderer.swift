@@ -65,7 +65,7 @@ fileprivate extension UITextField {
     }
     
     fileprivate func apply<MessageType>(events: TextFieldEvents<MessageType>) {
-        for maybeEvent in events.toArray() {
+        for maybeEvent in getMessagesByEvent(events: events) {
             let event = maybeEvent.0
             if let message = maybeEvent.1 {
                 _ = self.on(
@@ -100,19 +100,12 @@ fileprivate extension UITextField {
         }
     }
     
-}
-
-extension UITextField {
-    
-    fileprivate func dispatch<MessageType>(
-        message: MessageType,
-        for event: UIControlEvents,
-        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
-        
-        let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-        self.register(dispatcher: dispatcher)
-        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
-        return dispatcher.mailbox
+    fileprivate func getMessagesByEvent<MessageType>(events: TextFieldEvents<MessageType>) -> [(UIControlEvents, MessageType?)] {
+        return [
+            (.editingDidBegin, events.onEditingBegin),
+            (.editingChanged, events.onEditingChanged),
+            (.editingDidEnd, events.onEditingEnd)
+        ]
     }
     
 }
