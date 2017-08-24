@@ -65,9 +65,8 @@ fileprivate extension UITextField {
     }
     
     fileprivate func apply<MessageType>(events: TextFieldEvents<MessageType>) {
-        for maybeEvent in getMessagesByEvent(events: events) {
-            let event = maybeEvent.0
-            if let message = maybeEvent.1 {
+        for (event, maybeEvent) in getMessagesByEvent(events: events) {
+            if let message = maybeEvent {
                 _ = self.on(
                     event: event, dispatch: message,
                     dispatcherKey: &messageDispatcherAssociationKey, mailboxKey: &mailboxAssociationKey)
