@@ -19,7 +19,7 @@ class TextFieldRenderSpec: QuickSpec {
             layoutEngine = YogaLayoutEngine()
         }
         
-        describe(".apply(changeSet: ButtonChangeSet) -> Result") {
+        describe(".apply(changeSet: TextFieldChangeSet) -> Result") {
             
             var changeSet: TextFieldChangeSet<String>!
             
@@ -49,7 +49,7 @@ class TextFieldRenderSpec: QuickSpec {
                     layout: layout())
             }
             
-            context("when the change set contains button property changes") {
+            context("when the change set contains textField property changes") {
                 
                 it("applies 'text' property changes") {
                     let textField = UITextField()
