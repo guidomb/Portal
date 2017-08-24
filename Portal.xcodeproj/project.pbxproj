@@ -317,14 +317,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		46952C311F4DB07F0075D536 /* Utils */ = {
-			isa = PBXGroup;
-			children = (
-				46952C321F4DB0C00075D536 /* MessageHandler.swift */,
-			);
-			path = Utils;
-			sourceTree = "<group>";
-		};
 		9D0F33331E78F81800C65BED = {
 			isa = PBXGroup;
 			children = (
@@ -518,7 +510,7 @@
 		9D8C84701ECA3B750034C6BC /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
-				46952C311F4DB07F0075D536 /* Utils */,
+				46952C321F4DB0C00075D536 /* MessageHandler.swift */,
 				9D8C84711ECA3B750034C6BC /* ButtonRenderer.swift */,
 				9D8C84721ECA3B750034C6BC /* CarouselRenderer.swift */,
 				9D8C84731ECA3B750034C6BC /* CollectionRenderer.swift */,
