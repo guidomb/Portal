@@ -33,7 +33,7 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
 }
 
-extension UIButton {
+extension UIButton: MessageHandler {
     
     internal func apply<MessageType>(
         changeSet: ButtonChangeSet<MessageType>,
@@ -49,14 +49,9 @@ extension UIButton {
     
 }
 
-fileprivate var messageDispatcherAssociationKey = 0
-fileprivate var mailboxAssociationKey = 1
-
 fileprivate extension UIButton {
     
-    fileprivate func apply<MessageType>(
-        changeSet: [ButtonProperties<MessageType>.Property]) {
-        
+    fileprivate func apply<MessageType>(changeSet: [ButtonProperties<MessageType>.Property]) {
         for property in changeSet {
             switch property {
                 
@@ -94,66 +89,8 @@ fileprivate extension UIButton {
             case .textFont(let font):
                 let fontSize = self.titleLabel?.font.pointSize ?? CGFloat(defaultButtonFontSize)
                 self.titleLabel?.font = font.uiFont(withSize: fontSize)
-                
             }
         }
-    }
-    
-    fileprivate func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType> {
-        
-        if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
-            self.removeTarget(oldDispatcher, action: oldDispatcher.selector, for: event)
-        }
-        
-        let mailbox: Mailbox<MessageType> = getMailbox()
-        let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-        self.register(dispatcher: dispatcher, for: event)
-        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
-        
-        return mailbox
-    }
-    
-    fileprivate func register<MessageType>(
-        dispatcher: MessageDispatcher<MessageType>,
-        for event: UIControlEvents) {
-        
-        var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
-            as? [UInt : MessageDispatcher<MessageType>] ?? [:]
-        dispatchers[event.rawValue] = dispatcher
-        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
-                                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-    }
-    
-    fileprivate func unregisterDispatcher<MessageType>(
-        for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
-        
-        guard var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
-            as? [UInt : MessageDispatcher<MessageType>] else { return .none }
-        let dispatcher = dispatchers.removeValue(forKey: event.rawValue)
-        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
-                                 .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        return dispatcher
-    }
-    
-    fileprivate func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
-        let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
-            as? [UInt : MessageDispatcher<MessageType>] ?? [:]
-        return dispatchers[event.rawValue]
-    }
-    
-    fileprivate func getMailbox<MessageType>() -> Mailbox<MessageType> {
-        let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)
-        let mailbox: Mailbox<MessageType>
-        if associatedObject == nil {
-            mailbox = Mailbox()
-            objc_setAssociatedObject(self, &mailboxAssociationKey, mailbox,
-                                     .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        } else {
-            assert(associatedObject is Mailbox<MessageType>,
-                   "Associated Mailbox's message type does not match '\(MessageType.self)'")
-            mailbox = associatedObject as! Mailbox<MessageType> // swiftlint:disable:this force_cast
-        }
-        return mailbox
     }
     
 }

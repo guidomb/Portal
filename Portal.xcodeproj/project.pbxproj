@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		46485DA01F4F0C9E0033C204 /* TextFieldRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */; };
+		46952C331F4DB0C00075D536 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46952C321F4DB0C00075D536 /* MessageHandler.swift */; };
 		9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
 		9D0F334E1E78F81800C65BED /* Portal.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0F33401E78F81800C65BED /* Portal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D0F33621E78F97800C65BED /* PortalUIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33611E78F97800C65BED /* PortalUIApplication.swift */; };
@@ -169,6 +171,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldRenderSpec.swift; sourceTree = "<group>"; };
+		46952C321F4DB0C00075D536 /* MessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHandler.swift; sourceTree = "<group>"; };
 		9D0F333D1E78F81800C65BED /* Portal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Portal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D0F33401E78F81800C65BED /* Portal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portal.h; sourceTree = "<group>"; };
 		9D0F33411E78F81800C65BED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -508,6 +512,7 @@
 		9D8C84701ECA3B750034C6BC /* Renderers */ = {
 			isa = PBXGroup;
 			children = (
+				46952C321F4DB0C00075D536 /* MessageHandler.swift */,
 				9D8C84711ECA3B750034C6BC /* ButtonRenderer.swift */,
 				9D8C84721ECA3B750034C6BC /* CarouselRenderer.swift */,
 				9D8C84731ECA3B750034C6BC /* CollectionRenderer.swift */,
@@ -601,6 +606,7 @@
 			isa = PBXGroup;
 			children = (
 				9DD2FEDA1F361F78007D3606 /* ButtonRendererSpec.swift */,
+				46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */,
 			);
 			name = Renderers;
 			sourceTree = "<group>";
@@ -849,6 +855,7 @@
 				D82F84EB1F152881007A4016 /* Shadow.swift in Sources */,
 				9DD2FED51F353D85007D3606 /* AutoEquatable.generated.swift in Sources */,
 				D802989E1F1EA74200436C6C /* TextView.swift in Sources */,
+				46952C331F4DB0C00075D536 /* MessageHandler.swift in Sources */,
 				9D8C851B1ECA3C990034C6BC /* YGLayout.m in Sources */,
 				9D8C84B71ECA3B750034C6BC /* UIViewExtensions.swift in Sources */,
 				9D8C84A31ECA3B750034C6BC /* PortalViewController.swift in Sources */,
@@ -897,6 +904,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46485DA01F4F0C9E0033C204 /* TextFieldRenderSpec.swift in Sources */,
 				9DD2FEDB1F361F78007D3606 /* ButtonRendererSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

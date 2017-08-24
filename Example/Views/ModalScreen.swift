@@ -24,6 +24,17 @@ enum ModalScreen {
             component: container(
                 children: [
                     label(text: "Modal screen"),
+                    textField(
+                        properties: properties {
+                            $0.text = "Example"
+                            $0.placeholder = "Insert text..."
+                        },
+                        style: textFieldStyleSheet { base, textField in
+                            base.backgroundColor = .white
+                            textField.textSize = 20
+                            textField.textColor = .blue
+                        }
+                    ),
                     button(
                         text: "Close and present detail",
                         onTap: .dismissNavigator(thenSend: .navigate(to: .detail)),

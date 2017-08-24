@@ -8,10 +8,11 @@
 
 import Foundation
 
-public struct TextFieldProperties<MessageType> {
+public struct TextFieldProperties<MessageType>: AutoPropertyDiffable {
     
     public var text: String?
     public var placeholder: String?
+    // sourcery: skipDiff
     public var onEvents: TextFieldEvents<MessageType>
     
     fileprivate init(
@@ -82,7 +83,7 @@ public func properties<MessageType>(
 
 // MARK: - Style sheet
 
-public struct TextFieldStyleSheet {
+public struct TextFieldStyleSheet: AutoPropertyDiffable {
     
     static let `default` = StyleSheet<TextFieldStyleSheet>(component: TextFieldStyleSheet())
     
@@ -110,4 +111,38 @@ public func textFieldStyleSheet(
     var component = TextFieldStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - Change set
+
+internal struct TextFieldChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: TextFieldProperties<MessageType>,
+        styleSheet: StyleSheet<TextFieldStyleSheet>,
+        layout: Layout) -> TextFieldChangeSet<MessageType> {
+        return TextFieldChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: styleSheet.base.fullChangeSet,
+            textFieldStyleSheet: styleSheet.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [TextFieldProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let textFieldStyleSheet: [TextFieldStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        properties: [TextFieldProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        textFieldStyleSheet: [TextFieldStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.textFieldStyleSheet = textFieldStyleSheet
+        self.layout = layout
+    }
+    
 }

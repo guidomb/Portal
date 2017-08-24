@@ -69,7 +69,7 @@ internal extension UIView {
 }
 
 fileprivate var managedByPortalAssociationKey = 0
-fileprivate var messageDispatcherAssociationKey = 0
+fileprivate var messageDispatcherAssociationKey = 1
 
 fileprivate enum AnimationKey: String {
     
