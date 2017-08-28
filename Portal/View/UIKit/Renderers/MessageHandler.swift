@@ -9,13 +9,11 @@
 fileprivate var messageDispatcherAssociationKey = 0
 fileprivate var mailboxAssociationKey = 1
 
-protocol MessageHandler where Self : UIControl {
-    
-    func getMailbox<MessageType>() -> Mailbox<MessageType>
-    
-    func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType>
+protocol MessageHandler: MailBoxHandler where Self : UIControl {
     
     func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
+    
+    func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType>
     
     func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents)
     
@@ -23,20 +21,13 @@ protocol MessageHandler where Self : UIControl {
     
 }
 
-extension MessageHandler {
+protocol MailBoxHandler where Self: UIView {
     
-    func getMailbox<MessageType>() -> Mailbox<MessageType> {
-        let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)
-        let mailbox: Mailbox<MessageType>
-        if associatedObject == nil {
-            mailbox = Mailbox()
-            objc_setAssociatedObject(self, &mailboxAssociationKey, mailbox, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        } else {
-            assert(associatedObject is Mailbox<MessageType>, "Associated Mailbox's message type does not match '\(MessageType.self)'")
-            mailbox = associatedObject as! Mailbox<MessageType> // swiftlint:disable:this force_cast
-        }
-        return mailbox
-    }
+    func getMailbox<MessageType>() -> Mailbox<MessageType>
+    
+}
+
+extension MessageHandler {
     
     func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType> {
         if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
@@ -70,6 +61,23 @@ extension MessageHandler {
         let dispatcher = dispatchers.removeValue(forKey: event.rawValue)
         objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return dispatcher
+    }
+    
+}
+
+extension MailBoxHandler {
+    
+    func getMailbox<MessageType>() -> Mailbox<MessageType> {
+        let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)
+        let mailbox: Mailbox<MessageType>
+        if associatedObject == nil {
+            mailbox = Mailbox()
+            objc_setAssociatedObject(self, &mailboxAssociationKey, mailbox, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        } else {
+            assert(associatedObject is Mailbox<MessageType>, "Associated Mailbox's message type does not match '\(MessageType.self)'")
+            mailbox = associatedObject as! Mailbox<MessageType> // swiftlint:disable:this force_cast
+        }
+        return mailbox
     }
     
 }
