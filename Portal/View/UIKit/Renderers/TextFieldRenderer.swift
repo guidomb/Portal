@@ -46,8 +46,8 @@ extension UITextField: MessageHandler {
 fileprivate extension UITextField {
     
     fileprivate func apply<MessageType>(changeSet: [TextFieldProperties<MessageType>.Property]) {
-        for propertie in changeSet {
-            switch propertie {
+        for property in changeSet {
+            switch property {
                 
             case .text(let text):
                 self.text = text
@@ -72,8 +72,8 @@ fileprivate extension UITextField {
     }
     
     fileprivate func apply(changeSet: [TextFieldStyleSheet.Property]) {
-        for propertie in changeSet {
-            switch propertie {
+        for property in changeSet {
+            switch property {
                 
             case .textAligment(let aligment):
                 self.textAlignment = aligment.asNSTextAligment
