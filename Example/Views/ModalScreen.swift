@@ -23,7 +23,28 @@ enum ModalScreen {
             root: .stack(ExampleApplication.navigationBar(title: "Modal")),
             component: container(
                 children: [
-                    label(text: "Modal screen"),
+                    label(
+                        properties: properties(
+                            text: "Modal screen before layout",
+                            textAfterLayout: "Modal screen after layout"
+                        ),
+                        style: labelStyleSheet { base, label in
+                            base.backgroundColor = .clear
+                            label.textSize = 20
+                            label.textColor = .black
+                        }
+                    ),
+                    textField(
+                        properties: properties {
+                            $0.text = "Example"
+                            $0.placeholder = "Insert text..."
+                        },
+                        style: textFieldStyleSheet { base, textField in
+                            base.backgroundColor = .white
+                            textField.textSize = 20
+                            textField.textColor = .blue
+                        }
+                    ),
                     button(
                         text: "Close and present detail",
                         onTap: .dismissNavigator(thenSend: .navigate(to: .detail)),
@@ -34,7 +55,17 @@ enum ModalScreen {
                         onTap: .dismissNavigator(thenSend: .none),
                         style: modalButtonStyleSheet
                     ),
-                    label(text: "Counter \(counter)"),
+                    label(
+                        properties: properties(
+                            text: "Modal screen before layout",
+                            textAfterLayout: "Counter \(counter)"
+                        ),
+                        style: labelStyleSheet { base, label in
+                            base.backgroundColor = .clear
+                            label.textSize = 20
+                            label.textColor = .black
+                        }
+                    ),
                     button(
                         text: "Increment!",
                         onTap: .sendMessage(.increment),

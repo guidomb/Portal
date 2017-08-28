@@ -58,7 +58,7 @@ public struct CustomComponent {
 public indirect enum Component<MessageType> {
 
     case button(ButtonProperties<MessageType>, StyleSheet<ButtonStyleSheet>, Layout)
-    case label(LabelProperties, StyleSheet<LabelStyleSheet>, Layout)
+    case label(LabelProperties<MessageType>, StyleSheet<LabelStyleSheet>, Layout)
     case mapView(MapProperties, StyleSheet<EmptyStyleSheet>, Layout)
     case imageView(Image, StyleSheet<EmptyStyleSheet>, Layout)
     case container([Component<MessageType>], StyleSheet<EmptyStyleSheet>, Layout)
@@ -137,7 +137,7 @@ extension Component {
             return .button(properties.map(transform), style, layout)
 
         case .label(let properties, let style, let layout):
-            return .label(properties, style, layout)
+            return .label(properties.map(transform), style, layout)
 
         case .textField(let properties, let style, let layout):
             return .textField(properties.map(transform), style, layout)
