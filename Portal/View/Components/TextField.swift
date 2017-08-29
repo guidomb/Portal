@@ -18,7 +18,7 @@ public struct TextFieldProperties<MessageType>: AutoPropertyDiffable {
     fileprivate init(
         text: String? = .none,
         placeholder: String? = .none,
-        onEvents: TextFieldEvents<MessageType> = TextFieldEvents<MessageType>() ) {
+        onEvents: TextFieldEvents<MessageType> = TextFieldEvents<MessageType>()) {
         self.text = text
         self.placeholder = placeholder
         self.onEvents = onEvents
@@ -119,12 +119,12 @@ internal struct TextFieldChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: TextFieldProperties<MessageType>,
-        styleSheet: StyleSheet<TextFieldStyleSheet>,
+        style: StyleSheet<TextFieldStyleSheet>,
         layout: Layout) -> TextFieldChangeSet<MessageType> {
         return TextFieldChangeSet(
             properties: properties.fullChangeSet,
-            baseStyleSheet: styleSheet.base.fullChangeSet,
-            textFieldStyleSheet: styleSheet.component.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            textFieldStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }

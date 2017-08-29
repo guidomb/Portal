@@ -31,7 +31,7 @@ public func textView<MessageType>(
 
 // MARK: - Style sheet
 
-public struct TextViewStyleSheet {
+public struct TextViewStyleSheet: AutoPropertyDiffable {
     
     static let `default` = StyleSheet<TextViewStyleSheet>(component: TextViewStyleSheet())
     
@@ -59,4 +59,38 @@ public func textViewStyleSheet(
     var component = TextViewStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - Change set
+
+internal struct TextViewChangeSet {
+    
+    static func fullChangeSet(
+        textType: TextType,
+        style: StyleSheet<TextViewStyleSheet>,
+        layout: Layout) -> TextViewChangeSet {
+        return TextViewChangeSet(
+            textType: textType,
+            baseStyle: style.base.fullChangeSet,
+            textViewStyle: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let textType: TextType
+    let textViewStyle: [TextViewStyleSheet.Property]
+    let baseStyle: [BaseStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        textType: TextType,
+        baseStyle: [BaseStyleSheet.Property] = [],
+        textViewStyle: [TextViewStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.textType = textType
+        self.textViewStyle = textViewStyle
+        self.baseStyle = baseStyle
+        self.layout = layout
+    }
+    
 }

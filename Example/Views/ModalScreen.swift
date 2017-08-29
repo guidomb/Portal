@@ -35,6 +35,15 @@ enum ModalScreen {
                             textField.textColor = .blue
                         }
                     ),
+                    textView(
+                        text: "This is a text view!",
+                        style: textViewStyleSheet { base, textView in
+                            base.backgroundColor = .white
+                            textView.textColor = .red
+                            textView.textAligment = .center
+                            textView.textFont = Font(name: "Helvetica")
+                            textView.textSize = 18
+                        }),
                     button(
                         text: "Close and present detail",
                         onTap: .dismissNavigator(thenSend: .navigate(to: .detail)),

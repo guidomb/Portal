@@ -20,7 +20,7 @@ internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer 
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let textField = UITextField()
-        let changeSet = TextFieldChangeSet.fullChangeSet(properties: properties, styleSheet: style, layout: layout)
+        let changeSet = TextFieldChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
         
         return textField.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }
