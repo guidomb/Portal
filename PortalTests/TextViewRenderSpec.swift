@@ -65,6 +65,8 @@ class TextViewRenderSpec: QuickSpec {
                     expect(textView.attributedText.string).to(equal("This is a textView!"))
                 }
                 
+                
+                // TODO: Check NSAttributedString's attributes
             }
             
             context("when the change set contains textView stylesheet changes") {
