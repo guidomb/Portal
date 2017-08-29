@@ -18,23 +18,49 @@ internal struct MapViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     let layout: Layout
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let mapView = PortalMapView(placemarks: properties.placemarks)
+        let mapView = PortalMapView()
+        let changeSet = MapViewChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
         
-        mapView.isZoomEnabled = properties.isZoomEnabled
-        if let center = properties.center {
-            let span = MKCoordinateSpanMake(properties.zoomLevel, properties.zoomLevel)
-            let region = MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: center.latitude, longitude: center.longitude),
-                span: span
-            )
-            mapView.setRegion(region, animated: true)
+        return mapView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+    }
+    
+}
+
+extension PortalMapView: MessageForwarder {
+    
+    func apply<MessageType>(changeSet: MapViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(changeSet: changeSet.properties)
+        apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+        
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+    }
+    
+}
+
+fileprivate extension PortalMapView {
+    
+    fileprivate func apply(changeSet: [MapProperties.Property]) {
+        for property in changeSet {
+            
+            switch property {
+                
+            case .center(let coordinates):
+               self.mapCenter = coordinates
+            
+            case .isScrollEnabled(let isScrollEnabled):
+                self.isScrollEnabled = isScrollEnabled
+            
+            case .isZoomEnabled(let isZoomEnabled):
+                self.isZoomEnabled = isZoomEnabled
+                
+            case .placemarks(let placemarks):
+                self.placemarks = placemarks
+                
+            case .zoomLevel(let zoomLevel):
+                self.zoomLevel = zoomLevel
+            }
         }
-        mapView.isScrollEnabled = properties.isScrollEnabled
-        
-        mapView.apply(style: style.base)
-        layoutEngine.apply(layout: layout, to: mapView)
-        
-        return Render(view: mapView)
     }
     
 }
