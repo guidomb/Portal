@@ -77,13 +77,13 @@ internal struct TextViewChangeSet {
         )
     }
     
-    let textType: TextType
+    let textType: TextType?
     let textViewStyle: [TextViewStyleSheet.Property]
     let baseStyle: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
     
     init(
-        textType: TextType,
+        textType: TextType? = .none,
         baseStyle: [BaseStyleSheet.Property] = [],
         textViewStyle: [TextViewStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
