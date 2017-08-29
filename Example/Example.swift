@@ -37,6 +37,7 @@ enum Route: Portal.Route {
     case modal
     case detail
     case landscape
+    case collection
     
     var previous: Route? {
         switch self {
@@ -47,6 +48,8 @@ enum Route: Portal.Route {
         case .modal:
             return .root
         case .landscape:
+            return .root
+        case .collection:
             return .root
         }
     }
@@ -61,6 +64,7 @@ enum State {
     case detailedScreen(counter: UInt)
     case modalScreen(counter: UInt)
     case landscapeScreen(text: String, counter: UInt)
+    case collection
     
 }
 
@@ -106,6 +110,9 @@ final class ExampleApplication: Portal.Application {
             print("PONG -> \(text)")
             return (.started(date: date, showAlert: true), .none)
             
+        case (.started, .routeChanged(.collection)):
+            return (.collection, .none)
+            
         // MARK:- Replaced content state transitions
             
         case (.replacedContent, .goToRoot):
@@ -146,6 +153,11 @@ final class ExampleApplication: Portal.Application {
             
         case (.landscapeScreen(let text, let count), .increment):
             return (.landscapeScreen(text: text, counter: count + 1), .none)
+        
+        // MARK:- Collection screen state transitions
+            
+        case (.collection, .routeChanged(.root)):
+            return (.started(date: .none, showAlert: false), .none)
             
         // MARK:- Miscelaneus state transitions
             
@@ -180,6 +192,9 @@ final class ExampleApplication: Portal.Application {
             
         case .landscapeScreen(let text, let count):
             return LandscapeScreen.view(text: text, count: count)
+        
+        case .collection:
+            return CollectionScreen.view()
             
         default:
             return DefaultScreen.view()
