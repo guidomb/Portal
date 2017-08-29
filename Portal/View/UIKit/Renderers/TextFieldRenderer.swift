@@ -27,7 +27,7 @@ internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer 
     
 }
 
-extension UITextField: MessageHandler {
+extension UITextField: MessageProducer {
     
     internal func apply<MessageType>(
         changeSet: TextFieldChangeSet<MessageType>,
