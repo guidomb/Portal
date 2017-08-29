@@ -39,6 +39,7 @@ public struct TextViewStyleSheet: AutoPropertyDiffable {
     public var textFont: Font
     public var textSize: UInt
     public var textAligment: TextAligment
+    
     public init(
         textColor: Color = .black,
         textFont: Font = defaultFont,

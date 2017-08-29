@@ -17,12 +17,33 @@ internal struct ImageViewRenderer<MessageType, RouteType: Route>: UIKitRenderer 
     let layout: Layout
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let imageView = UIImageView(image: image.asUIImage)
+        let imageView = UIImageView()
+
+        let changeSet = ImageViewChangeSet.fullChangeSet(image: image, style: style, layout: layout)
         
-        imageView.apply(style: style.base)
-        layoutEngine.apply(layout: layout, to: imageView)
+        return imageView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+    }
+    
+}
+
+extension UIImageView: MessageForwarder {
+    
+    func apply<MessageType>(changeSet: ImageViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(image: changeSet.image)
+        apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        return Render(view: imageView)
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+    }
+    
+}
+
+fileprivate extension UIImageView {
+    
+    fileprivate func apply(image: PropertyChange<Image?>) {
+        if case .change(let value) = image {
+            self.image = value?.asUIImage
+        }
     }
     
 }
