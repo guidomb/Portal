@@ -33,7 +33,7 @@ internal struct ButtonRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
 }
 
-extension UIButton: MessageHandler {
+extension UIButton: MessageProducer {
     
     internal func apply<MessageType>(
         changeSet: ButtonChangeSet<MessageType>,
