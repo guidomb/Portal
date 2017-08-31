@@ -8,6 +8,8 @@
 
 import UIKit
 
+public let defaultTextViewFontSize = UInt(UIFont.systemFontSize)
+
 internal struct TextViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     typealias ActionType = Action<RouteType, MessageType>
@@ -18,37 +20,60 @@ internal struct TextViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let textView = UITextView()
+        let changeSet = TextViewChangeSet.fullChangeSet(textType: textType, style: style, layout: layout)
         
-        textView.apply(style: style.component)
-        textView.isEditable = false
-        textView.isUserInteractionEnabled = true
-        textView.isScrollEnabled = false
-        
-        switch textType {
-            
-        case .regular(let text):
-            textView.text = text
-            
-        case .attributed(let attributedText):
-            textView.attributedText = attributedText
-            
-        }
-        
-        textView.apply(style: style.base)
-        layoutEngine.apply(layout: layout, to: textView)
-        
-        return Render(view: textView)
+        return textView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }
     
 }
 
-extension UITextView {
+extension UITextView: MessageForwarder {
     
-    fileprivate func apply(style: TextViewStyleSheet) {
-        let size = CGFloat(style.textSize)
-        style.textFont.uiFont(withSize: size)     |> { self.font = $0 }
-        style.textColor                           |> { self.textColor = $0.asUIColor }
-        style.textAligment                        |> { self.textAlignment = $0.asNSTextAligment }
+    func apply<MessageType>(changeSet: TextViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(changeSet: changeSet.baseStyle)
+        apply(changeSet: changeSet.textViewStyle)
+        apply(textType: changeSet.textType)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+        
+        return Render(view: self, mailbox: .none, executeAfterLayout: .none)
+    }
+    
+}
+
+fileprivate extension UITextView {
+    
+    fileprivate func apply(changeSet: [TextViewStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .textColor(let color):
+                self.textColor = color.asUIColor
+                
+            case .textAligment(let aligment):
+                self.textAlignment = aligment.asNSTextAligment
+                
+            case .textSize(let textSize):
+                let fontName = self.font?.fontName
+                fontName |> { self.font = UIFont(name: $0, size: CGFloat(textSize)) }
+                
+            case .textFont(let font):
+                let fontSize = self.font?.pointSize ?? CGFloat(defaultTextViewFontSize)
+                self.font = font.uiFont(withSize: fontSize)
+            }
+        }
+    }
+    
+    fileprivate func apply(textType: PropertyChange<TextType>) {
+        if case .change(to: let value) = textType {
+            switch value {
+                
+            case .regular(let text):
+                self.text = text
+                
+            case .attributed(let attributedText):
+                self.attributedText = attributedText
+            }
+        }
     }
     
 }

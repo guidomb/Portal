@@ -65,6 +65,14 @@ enum MainScreen {
                             button.textColor = .white
                         }
                     ),
+                    button(
+                        text: "Present examples",
+                        onTap: .navigate(to: .examples),
+                        style: buttonStyleSheet { base, button in
+                            base.backgroundColor = .blue
+                            button.textColor = .white
+                        }
+                    ),
                     touchable(
                         gesture: .tap(message: .navigate(to: .modal)),
                         child: container(

@@ -12,6 +12,10 @@ public struct Font: AutoEquatable {
     
     let name: String
     
+    public init(name: String) {
+        self.name = name
+    }
+    
 }
 
 public struct TabBar<MessageType> {

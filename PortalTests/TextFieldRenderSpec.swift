@@ -45,7 +45,7 @@ class TextFieldRenderSpec: QuickSpec {
                 
                 changeSet = TextFieldChangeSet.fullChangeSet(
                     properties: textFieldProperties,
-                    styleSheet: textFieldStyle,
+                    style: textFieldStyle,
                     layout: layout())
             }
             

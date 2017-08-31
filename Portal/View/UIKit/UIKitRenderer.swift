@@ -134,7 +134,6 @@ internal struct Render<MessageType> {
 }
 
 internal protocol UIKitRenderer {
-
     associatedtype MessageType
     associatedtype RouteType: Route
 

@@ -8,7 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		46485DA01F4F0C9E0033C204 /* TextFieldRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */; };
+		46485DA61F5458920033C204 /* TextViewRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485DA51F5458920033C204 /* TextViewRenderSpec.swift */; };
 		46485DA81F55D09E0033C204 /* MessageProducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485DA71F55D09E0033C204 /* MessageProducer.swift */; };
+		464955671F560A960079ABD8 /* CollectionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955651F560A520079ABD8 /* CollectionScreen.swift */; };
+		469C4B571F582B4000C6D468 /* ExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469C4B561F582B4000C6D468 /* ExamplesView.swift */; };
+		46A95EE01F58348A0051C302 /* TextFieldScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */; };
+		46A95EE21F5835480051C302 /* TextViewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EE11F5835470051C302 /* TextViewScreen.swift */; };
+		464955641F55FAD50079ABD8 /* PropertyChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955631F55FAD50079ABD8 /* PropertyChange.swift */; };
 		9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
 		9D0F334E1E78F81800C65BED /* Portal.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0F33401E78F81800C65BED /* Portal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D0F33621E78F97800C65BED /* PortalUIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33611E78F97800C65BED /* PortalUIApplication.swift */; };
@@ -172,7 +178,13 @@
 
 /* Begin PBXFileReference section */
 		46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldRenderSpec.swift; sourceTree = "<group>"; };
+		46485DA51F5458920033C204 /* TextViewRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRenderSpec.swift; sourceTree = "<group>"; };
 		46485DA71F55D09E0033C204 /* MessageProducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageProducer.swift; sourceTree = "<group>"; };
+		464955651F560A520079ABD8 /* CollectionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionScreen.swift; sourceTree = "<group>"; };
+		469C4B561F582B4000C6D468 /* ExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplesView.swift; sourceTree = "<group>"; };
+		46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldScreen.swift; sourceTree = "<group>"; };
+		46A95EE11F5835470051C302 /* TextViewScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewScreen.swift; sourceTree = "<group>"; };
+		464955631F55FAD50079ABD8 /* PropertyChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyChange.swift; sourceTree = "<group>"; };
 		9D0F333D1E78F81800C65BED /* Portal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Portal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D0F33401E78F81800C65BED /* Portal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portal.h; sourceTree = "<group>"; };
 		9D0F33411E78F81800C65BED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -319,6 +331,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		46A95EDE1F5834730051C302 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				464955651F560A520079ABD8 /* CollectionScreen.swift */,
+				46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */,
+				46A95EE11F5835470051C302 /* TextViewScreen.swift */,
+			);
+			path = Examples;
+			sourceTree = "<group>";
+		};
 		9D0F33331E78F81800C65BED = {
 			isa = PBXGroup;
 			children = (
@@ -396,6 +418,7 @@
 		9D3A6E141EECB95200DCFA2D /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				46A95EDE1F5834730051C302 /* Examples */,
 				9D3A6E231EECC98600DCFA2D /* CustomComponent */,
 				9D3A6E211EECBE3D00DCFA2D /* MainScreen.swift */,
 				9D3A6E171EECBA3F00DCFA2D /* Shared.swift */,
@@ -403,6 +426,7 @@
 				9D3A6E1B1EECBBC000DCFA2D /* LandscapeScreen.swift */,
 				9D3A6E1D1EECBC4900DCFA2D /* DetailScreen.swift */,
 				9D3A6E1F1EECBCF000DCFA2D /* DefaultScreen.swift */,
+				469C4B561F582B4000C6D468 /* ExamplesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -465,6 +489,7 @@
 				D82F84EA1F152881007A4016 /* Shadow.swift */,
 				9D8C84661ECA3B750034C6BC /* UIKit */,
 				9D8C84851ECA3B750034C6BC /* ZipList.swift */,
+				464955631F55FAD50079ABD8 /* PropertyChange.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -607,6 +632,7 @@
 			children = (
 				9DD2FEDA1F361F78007D3606 /* ButtonRendererSpec.swift */,
 				46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */,
+				46485DA51F5458920033C204 /* TextViewRenderSpec.swift */,
 			);
 			name = Renderers;
 			sourceTree = "<group>";
@@ -886,6 +912,7 @@
 				9D8C849F1ECA3B750034C6BC /* PortalMapView.swift in Sources */,
 				9DBA4A071EA81CBE000DE6B7 /* TimeLogger.swift in Sources */,
 				9DBE01D61E80EB4F005FF907 /* Middleware.swift in Sources */,
+				464955641F55FAD50079ABD8 /* PropertyChange.swift in Sources */,
 				9D8C84A71ECA3B750034C6BC /* ComponentRenderer.swift in Sources */,
 				9D8C84911ECA3B750034C6BC /* Table.swift in Sources */,
 				9D0F33641E78F9BB00C65BED /* Application.swift in Sources */,
@@ -906,6 +933,7 @@
 			files = (
 				46485DA01F4F0C9E0033C204 /* TextFieldRenderSpec.swift in Sources */,
 				9DD2FEDB1F361F78007D3606 /* ButtonRendererSpec.swift in Sources */,
+				46485DA61F5458920033C204 /* TextViewRenderSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -927,15 +955,19 @@
 				9D3A6E271EECC9BF00DCFA2D /* CustomController.swift in Sources */,
 				9D3A6E1A1EECBB1F00DCFA2D /* ModalScreen.swift in Sources */,
 				9D3A6E181EECBA3F00DCFA2D /* Shared.swift in Sources */,
+				464955671F560A960079ABD8 /* CollectionScreen.swift in Sources */,
 				9D3A6E221EECBE6000DCFA2D /* MainScreen.swift in Sources */,
 				9D3A6E131EECB8FE00DCFA2D /* Effects.swift in Sources */,
 				9D3A6E1C1EECBBC000DCFA2D /* LandscapeScreen.swift in Sources */,
 				9D8C844E1EC655600034C6BC /* CustomView.swift in Sources */,
 				9D78241D1E92BA47004455B1 /* Example.swift in Sources */,
+				46A95EE01F58348A0051C302 /* TextFieldScreen.swift in Sources */,
 				9D3A6E201EECBCF000DCFA2D /* DefaultScreen.swift in Sources */,
 				9D3A6E251EECC9A500DCFA2D /* CustomComponentRenderer.swift in Sources */,
 				9D78241B1E92BA01004455B1 /* main.swift in Sources */,
 				9D3A6E1E1EECBC4900DCFA2D /* DetailScreen.swift in Sources */,
+				469C4B571F582B4000C6D468 /* ExamplesView.swift in Sources */,
+				46A95EE21F5835480051C302 /* TextViewScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
