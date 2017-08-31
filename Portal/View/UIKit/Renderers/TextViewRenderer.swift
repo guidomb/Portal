@@ -63,16 +63,16 @@ fileprivate extension UITextView {
         }
     }
     
-    fileprivate func apply(textType: SingleProperty<TextType>?) {
-        guard let textType = textType else { return }
-        
-        switch textType.value {
-            
-        case .regular(let text):
-            self.text = text
-            
-        case .attributed(let attributedText):
-            self.attributedText = attributedText
+    fileprivate func apply(textType: PropertyChange<TextType>) {
+        if case .change(to: let value) = textType {
+            switch value {
+                
+            case .regular(let text):
+                self.text = text
+                
+            case .attributed(let attributedText):
+                self.attributedText = attributedText
+            }
         }
     }
     

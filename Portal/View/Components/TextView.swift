@@ -70,20 +70,20 @@ internal struct TextViewChangeSet {
         style: StyleSheet<TextViewStyleSheet>,
         layout: Layout) -> TextViewChangeSet {
         return TextViewChangeSet(
-            textType: SingleProperty<TextType>(value: textType),
+            textType: .change(to: textType),
             baseStyle: style.base.fullChangeSet,
             textViewStyle: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }
     
-    let textType: SingleProperty<TextType>?
+    let textType: PropertyChange<TextType>
     let textViewStyle: [TextViewStyleSheet.Property]
     let baseStyle: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
     
     init(
-        textType: SingleProperty<TextType>? = .none,
+        textType: PropertyChange<TextType> = .noChange,
         baseStyle: [BaseStyleSheet.Property] = [],
         textViewStyle: [TextViewStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
