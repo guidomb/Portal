@@ -42,7 +42,6 @@ fileprivate extension PortalMapView {
     
     fileprivate func apply(changeSet: [MapProperties.Property]) {
         for property in changeSet {
-            
             switch property {
                 
             case .center(let coordinates):
@@ -55,7 +54,7 @@ fileprivate extension PortalMapView {
                 self.isZoomEnabled = isZoomEnabled
                 
             case .placemarks(let placemarks):
-                self.placemarks = placemarks
+                setPlacemarks(placemarks)
                 
             case .zoomLevel(let zoomLevel):
                 self.zoomLevel = zoomLevel

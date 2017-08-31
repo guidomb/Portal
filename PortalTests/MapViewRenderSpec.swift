@@ -43,7 +43,15 @@ class MapViewRenderSpec: QuickSpec {
                 it("applies 'placemarks' property changes") {
                     let map = PortalMapView()
                     let _: Render<String> = map.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    expect(map.placemarks).to(equal(placemarks))
+                    let mapPlacemarks = map.annotations.map {
+                        MapPlacemark(
+                            coordinates: Coordinates(
+                                latitude: $0.coordinate.latitude,
+                                longitude: $0.coordinate.longitude
+                            )
+                        )
+                    }
+                    expect(mapPlacemarks).to(equal(placemarks))
                 }
                 
                 it("applies 'center' property changes") {

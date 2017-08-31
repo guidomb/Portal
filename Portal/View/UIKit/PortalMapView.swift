@@ -13,16 +13,6 @@ fileprivate let mapViewAnnotationIdentifier = "PortalMapViewAnnotation"
 
 internal final class PortalMapView: MKMapView {
     
-    internal var placemarks: [MapPlacemark] = [] {
-        didSet {
-            for placemark in placemarks {
-                let annotation = MapPlacemarkAnnotation(placemark: placemark)
-                self.addAnnotation(annotation)
-                self._placemarks[annotation] = placemark
-            }
-        }
-    }
-    
     internal var zoomLevel: Double = 1.0 {
         didSet {
             setCenter()
@@ -44,6 +34,14 @@ internal final class PortalMapView: MKMapView {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    internal func setPlacemarks(_ placemarks: [MapPlacemark]) {
+        for placemark in placemarks {
+            let annotation = MapPlacemarkAnnotation(placemark: placemark)
+            self.addAnnotation(annotation)
+            self._placemarks[annotation] = placemark
+        }
     }
     
 }
