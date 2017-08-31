@@ -18,7 +18,8 @@ enum ExamplesScreen {
             collection(),
             textField(),
             textView(),
-            image()
+            image(),
+            map()
         ]
         
         return View(
@@ -55,6 +56,10 @@ fileprivate extension ExamplesScreen {
     
     fileprivate static func image() -> TableItemProperties<Action> {
         return defaultCell(text: "Image", route: .imageExample)
+    }
+    
+    fileprivate static func map() -> TableItemProperties<Action> {
+        return defaultCell(text: "Map", route: .mapExample)
     }
     
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {
