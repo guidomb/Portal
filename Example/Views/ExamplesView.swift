@@ -77,7 +77,7 @@ fileprivate extension ExamplesScreen {
                             layout: layout {
                                 $0.flex = flex { $0.grow = .one }
                                 $0.height = Dimension(value: 50)
-                                $0.alignment = Alignment(items: .center)
+                                $0.alignment = alignment { $0.items = .center }
                                 $0.justifyContent = .center
                                 $0.margin = .by(edge: Edge(bottom: 5))
                             }
