@@ -37,7 +37,10 @@ enum Route: Portal.Route {
     case modal
     case detail
     case landscape
-    case collection
+    case examples
+    case collectionExample
+    case textViewExample
+    case textFieldExample
     
     var previous: Route? {
         switch self {
@@ -49,8 +52,14 @@ enum Route: Portal.Route {
             return .root
         case .landscape:
             return .root
-        case .collection:
+        case .examples:
             return .root
+        case .collectionExample:
+            return .examples
+        case .textViewExample:
+            return .examples
+        case .textFieldExample:
+            return .examples
         }
     }
     
@@ -64,7 +73,10 @@ enum State {
     case detailedScreen(counter: UInt)
     case modalScreen(counter: UInt)
     case landscapeScreen(text: String, counter: UInt)
-    case collection
+    case examples
+    case collectionExample
+    case textViewExample
+    case textFieldExample
     
 }
 
@@ -110,8 +122,8 @@ final class ExampleApplication: Portal.Application {
             print("PONG -> \(text)")
             return (.started(date: date, showAlert: true), .none)
             
-        case (.started, .routeChanged(.collection)):
-            return (.collection, .none)
+        case (.started, .routeChanged(.examples)):
+            return (.examples, .none)
             
         // MARK:- Replaced content state transitions
             
@@ -154,10 +166,34 @@ final class ExampleApplication: Portal.Application {
         case (.landscapeScreen(let text, let count), .increment):
             return (.landscapeScreen(text: text, counter: count + 1), .none)
         
-        // MARK:- Collection screen state transitions
-            
-        case (.collection, .routeChanged(.root)):
+        // MARK:- Examples screen state transitions
+        
+        case (.examples, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
+            
+        case (.examples, .routeChanged(.collectionExample)):
+            return (.collectionExample, .none)
+        
+        case (.examples, .routeChanged(.textViewExample)):
+            return (.textViewExample, .none)
+            
+        case (.examples, .routeChanged(.textFieldExample)):
+            return (.textFieldExample, .none)
+            
+        // MARK:- Collection example state transitions
+            
+        case (.collectionExample, .routeChanged(.examples)):
+            return (.examples, .none)
+            
+        // MARK:- TextView example state transitions
+        
+        case (.textViewExample, .routeChanged(.examples)):
+            return (.examples, .none)
+        
+        // MARK:- TextField example state transitions
+            
+        case (.textFieldExample, .routeChanged(.examples)):
+            return (.examples, .none)
             
         // MARK:- Miscelaneus state transitions
             
@@ -193,8 +229,17 @@ final class ExampleApplication: Portal.Application {
         case .landscapeScreen(let text, let count):
             return LandscapeScreen.view(text: text, count: count)
         
-        case .collection:
+        case .examples:
+            return ExamplesScreen.view()
+        
+        case .collectionExample:
             return CollectionScreen.view()
+        
+        case .textFieldExample:
+            return TextFieldScreen.view()
+            
+        case .textViewExample:
+            return TextViewScreen.view()
             
         default:
             return DefaultScreen.view()

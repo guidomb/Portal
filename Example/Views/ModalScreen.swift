@@ -24,26 +24,6 @@ enum ModalScreen {
             component: container(
                 children: [
                     label(text: "Modal screen"),
-                    textField(
-                        properties: properties {
-                            $0.text = "Example"
-                            $0.placeholder = "Insert text..."
-                        },
-                        style: textFieldStyleSheet { base, textField in
-                            base.backgroundColor = .white
-                            textField.textSize = 20
-                            textField.textColor = .blue
-                        }
-                    ),
-                    textView(
-                        text: "This is a text view!",
-                        style: textViewStyleSheet { base, textView in
-                            base.backgroundColor = .white
-                            textView.textColor = .red
-                            textView.textAligment = .center
-                            textView.textFont = Font(name: "Helvetica")
-                            textView.textSize = 18
-                        }),
                     button(
                         text: "Close and present detail",
                         onTap: .dismissNavigator(thenSend: .navigate(to: .detail)),
@@ -68,7 +48,7 @@ enum ModalScreen {
                             button.textColor = .white
                         }
                     ),
-                    ],
+                ],
                 style: styleSheet() {
                     $0.backgroundColor = .red
                 },

@@ -66,8 +66,8 @@ enum MainScreen {
                         }
                     ),
                     button(
-                        text: "Present collection",
-                        onTap: .navigate(to: .collection),
+                        text: "Present examples",
+                        onTap: .navigate(to: .examples),
                         style: buttonStyleSheet { base, button in
                             base.backgroundColor = .blue
                             button.textColor = .white
