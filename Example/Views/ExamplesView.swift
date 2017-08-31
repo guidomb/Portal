@@ -17,7 +17,8 @@ enum ExamplesScreen {
         let items: [TableItemProperties<Action>] = [
             collection(),
             textField(),
-            textView()
+            textView(),
+            image()
         ]
         
         return View(
@@ -41,73 +42,29 @@ enum ExamplesScreen {
 fileprivate extension ExamplesScreen {
     
     fileprivate static func collection() -> TableItemProperties<Action> {
-        return tableItem(height: 50, onTap: .navigate(to: .collectionExample), selectionStyle: .none) { index in
-            TableItemRender(
-                component: container(
-                    children: [
-                        container(
-                            children: [
-                                label(text: "Collection")
-                            ],
-                            style: styleSheet {
-                                $0.backgroundColor = .blue
-                            },
-                            layout: layout {
-                                $0.flex = flex { $0.grow = .one }
-                                $0.height = Dimension(value: 50)
-                                $0.alignment = Alignment(items: .center)
-                                $0.justifyContent = .center
-                                $0.margin = .by(edge: Edge(bottom: 5))
-                            }
-                        )
-                    ],
-                    style: styleSheet {
-                        $0.backgroundColor = .green
-                    }
-                ),
-                typeIdentifier: "CollectionCell")
-        }
+        return defaultCell(text: "Collection", route: .collectionExample)
     }
     
     fileprivate static func textView() -> TableItemProperties<Action> {
-        return tableItem(height: 50, onTap: .navigate(to: .textViewExample), selectionStyle: .none) { index in
-            TableItemRender(
-                component:
-                container(
-                    children: [
-                        container(
-                            children: [
-                                label(text: "Text View")
-                            ],
-                            style: styleSheet {
-                                $0.backgroundColor = .blue
-                            },
-                            layout: layout {
-                                $0.flex = flex { $0.grow = .one }
-                                $0.height = Dimension(value: 50)
-                                $0.alignment = Alignment(items: .center)
-                                $0.justifyContent = .center
-                                $0.margin = .by(edge: Edge(bottom: 5))
-                            }
-                        )
-                    ],
-                    style: styleSheet {
-                        $0.backgroundColor = .green
-                    }
-                ),
-                typeIdentifier: "TextView"
-            )
-        }
+        return defaultCell(text: "Text View", route: .textViewExample)
     }
     
     fileprivate static func textField() -> TableItemProperties<Action> {
-        return tableItem(height: 50, onTap: .navigate(to: .textFieldExample), selectionStyle: .none) { index in
+        return defaultCell(text: "Text Field", route: .textFieldExample)
+    }
+    
+    fileprivate static func image() -> TableItemProperties<Action> {
+        return defaultCell(text: "Image", route: .imageExample)
+    }
+    
+    fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {
+        return tableItem(height: 50, onTap: .navigate(to: route), selectionStyle: .none) { index in
             TableItemRender(
                 component: container (
                     children: [
                         container(
                             children: [
-                                label(text: "Text Field")
+                                label(text: text)
                             ],
                             style: styleSheet {
                                 $0.backgroundColor = .blue
@@ -125,7 +82,8 @@ fileprivate extension ExamplesScreen {
                         $0.backgroundColor = .green
                     }
                 ),
-                typeIdentifier: "TextField")
+                typeIdentifier: text
+            )
         }
     }
     
