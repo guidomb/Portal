@@ -20,37 +20,64 @@ internal struct ProgressRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     let layout: Layout
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let progressBar = UIProgressView(progressViewStyle: .default)
-        progressBar.progress = progress.progress
+        let progressBar = UIProgressView()
+        let changeSet = ProgressChangeSet.fullChageSet(progressCounter: progress, style: style, layout: layout)
         
-        progressBar.apply(style: style.base)
-        progressBar.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: progressBar)
-        
-        return Render(view: progressBar)
+        return progressBar.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }
     
 }
 
-extension UIProgressView {
+extension UIProgressView: MessageForwarder {
     
-    fileprivate func apply(style: ProgressStyleSheet) {
-        switch style.progressStyle {
-            
-        case .color(let color):
-            progressTintColor = color.asUIColor
-            
-        case .image(let image):
-            progressImage = image.asUIImage
-        }
+    func apply<MessageType>(changeSet: ProgressChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(changeSet: changeSet.progressCounter)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.progressStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        switch style.trackStyle {
-            
-        case .color(let color):
-            trackTintColor = color.asUIColor
-            
-        case .image(let image):
-            trackImage = image.asUIImage
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+    }
+    
+}
+
+fileprivate extension UIProgressView {
+
+    fileprivate func apply(changeSet: [ProgressCounter.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .progress(let progress):
+                self.progress = progress
+            }
+        }
+    }
+    
+    fileprivate func apply(changeSet: [ProgressStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .progressStyle(let progressStyle):
+                switch progressStyle {
+                    
+                case .color(let color):
+                    progressTintColor = color.asUIColor
+                    
+                case .image(let image):
+                    progressImage = image.asUIImage
+                }
+
+            case .trackStyle(let trackStyle):
+                switch trackStyle {
+                    
+                case .color(let color):
+                    trackTintColor = color.asUIColor
+                    
+                case .image(let image):
+                    trackImage = image.asUIImage
+                }
+
+            }
         }
     }
     
