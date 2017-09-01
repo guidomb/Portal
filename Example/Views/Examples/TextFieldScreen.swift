@@ -16,7 +16,7 @@ enum TextFieldScreen {
     static func view() -> View {
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Collection")),
+            root: .stack(ExampleApplication.navigationBar(title: "Text Field")),
             component: container(
                 children: [
                     textField(

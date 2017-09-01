@@ -13,20 +13,35 @@ fileprivate let mapViewAnnotationIdentifier = "PortalMapViewAnnotation"
 
 internal final class PortalMapView: MKMapView {
     
-    fileprivate var placemarks: [MapPlacemarkAnnotation : MapPlacemark] = [:]
-    
-    init(placemarks: [MapPlacemark]) {
-        super.init(frame: CGRect.zero)
-        for placemark in placemarks {
-            let annotation = MapPlacemarkAnnotation(placemark: placemark)
-            self.addAnnotation(annotation)
-            self.placemarks[annotation] = placemark
+    internal var zoomLevel: Double = 1.0 {
+        didSet {
+            setCenter()
         }
+    }
+    
+    internal var mapCenter: Coordinates? = .none {
+        didSet {
+            setCenter()
+        }
+    }
+    
+    fileprivate var _placemarks: [MapPlacemarkAnnotation : MapPlacemark] = [:]
+    
+    init() {
+        super.init(frame: CGRect.zero)
         self.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    internal func setPlacemarks(_ placemarks: [MapPlacemark]) {
+        for placemark in placemarks {
+            let annotation = MapPlacemarkAnnotation(placemark: placemark)
+            self.addAnnotation(annotation)
+            self._placemarks[annotation] = placemark
+        }
     }
     
 }
@@ -47,10 +62,10 @@ extension PortalMapView: MKMapViewDelegate {
     
 }
 
-extension PortalMapView {
+fileprivate extension PortalMapView {
     
     fileprivate func placemark(for annotation: MapPlacemarkAnnotation) -> MapPlacemark? {
-        return placemarks[annotation]
+        return _placemarks[annotation]
     }
     
     fileprivate func dequeueReusableAnnotationView(for annotation: MapPlacemarkAnnotation) -> MKAnnotationView {
@@ -58,6 +73,17 @@ extension PortalMapView {
             return annotationView
         } else {
             return MKAnnotationView(annotation: annotation, reuseIdentifier: mapViewAnnotationIdentifier)
+        }
+    }
+    
+    fileprivate func setCenter() {
+        if let center = mapCenter {
+            let span = MKCoordinateSpanMake(zoomLevel, zoomLevel)
+            let region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: center.latitude, longitude: center.longitude),
+                span: span
+            )
+            setRegion(region, animated: true)
         }
     }
     

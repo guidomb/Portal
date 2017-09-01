@@ -18,7 +18,8 @@ enum ExamplesScreen {
             collection(),
             textField(),
             textView(),
-            image()
+            image(),
+            map()
         ]
         
         return View(
@@ -57,6 +58,10 @@ fileprivate extension ExamplesScreen {
         return defaultCell(text: "Image", route: .imageExample)
     }
     
+    fileprivate static func map() -> TableItemProperties<Action> {
+        return defaultCell(text: "Map", route: .mapExample)
+    }
+    
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {
         return tableItem(height: 50, onTap: .navigate(to: route), selectionStyle: .none) { index in
             TableItemRender(
@@ -72,7 +77,7 @@ fileprivate extension ExamplesScreen {
                             layout: layout {
                                 $0.flex = flex { $0.grow = .one }
                                 $0.height = Dimension(value: 50)
-                                $0.alignment = Alignment(items: .center)
+                                $0.alignment = alignment { $0.items = .center }
                                 $0.justifyContent = .center
                                 $0.margin = .by(edge: Edge(bottom: 5))
                             }

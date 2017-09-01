@@ -16,7 +16,7 @@ enum ImageScreen {
     static func view() -> View {
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Collection")),
+            root: .stack(ExampleApplication.navigationBar(title: "Image")),
             component: container(
                 children: [
                     imageView(
