@@ -10,14 +10,17 @@ public struct ProgressCounter: AutoPropertyDiffable {
     
     internal static let initial = ProgressCounter()
     
-    private var partial: UInt
-    private let total: UInt
+    // sourcery: ignoreInChangeSet
+    public var partial: UInt
+    // sourcery: ignoreInChangeSet
+    public let total: UInt
     
     public var progress: Float {
         return Float(partial) / Float(total)
     }
     
-    private var remaining: UInt {
+    // sourcery: ignoreInChangeSet
+    public var remaining: UInt {
         return total - partial
     }
     

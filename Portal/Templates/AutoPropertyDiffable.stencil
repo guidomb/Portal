@@ -5,10 +5,12 @@
     {% if type.accessLevel == "public" %}public {% endif %}enum Property {
 
         {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if not instanceVariable.annotations.ignoreInChangeSet %}
         {% if instanceVariable.type.based.AutoPropertyDiffable %}
-        case {{ instanceVariable.name }}([{{ instanceVariable.type.name }}.Property]{% if instanceVariable.isOptional %}?{% endif %})
+          case {{ instanceVariable.name }}([{{ instanceVariable.type.name }}.Property]{% if instanceVariable.isOptional %}?{% endif %})
         {% else %}
-        case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
+          case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
+        {% endif %}
         {% endif %}
         {% endfor %}
 
@@ -17,10 +19,12 @@
     {% if type.accessLevel == "public" %}public {% endif %}var fullChangeSet: [{{ type.name }}.Property] {
         return [
         {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if not instanceVariable.annotations.ignoreInChangeSet %}
         {% if instanceVariable.type.based.AutoPropertyDiffable %}
             .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}{% if instanceVariable.isOptional %}?{% endif %}.fullChangeSet),
         {% else %}
             .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}),
+        {% endif %}
         {% endif %}
         {% endfor %}
         ]
@@ -29,6 +33,7 @@
     {% if type.accessLevel == "public" %}public {% endif %}func changeSet(for {{ type.name|lowerFirst }}: {{ type.name }}) -> [{{ type.name }}.Property] {
         var changeSet: [{{ type.name }}.Property] = []
         {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if not instanceVariable.annotations.ignoreInChangeSet %}
         {% if instanceVariable.annotations.skipDiff %}
           {% if instanceVariable.type.based.AutoPropertyDiffable %}
         changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}.fullChangeSet))
@@ -54,6 +59,7 @@
             changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
         }
           {% endif %}
+        {% endif%}
         {% endif%}
         {% endfor %}
         return changeSet
