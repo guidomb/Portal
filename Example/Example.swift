@@ -20,6 +20,7 @@ enum Message {
     case ping(Date)
     case pong(String)
     case stateLoaded(State?)
+    case segmentSelected(UInt)
     
 }
 
@@ -44,6 +45,7 @@ enum Route: Portal.Route {
     case imageExample
     case mapExample
     case progressExample
+    case segmentedExample
     
     var previous: Route? {
         switch self {
@@ -69,6 +71,8 @@ enum Route: Portal.Route {
             return .examples
         case .progressExample:
             return .examples
+        case .segmentedExample:
+            return .examples
         }
     }
     
@@ -89,6 +93,7 @@ enum State {
     case imageExample
     case mapExample
     case progressExample
+    case segmentedExample(selected: UInt)
     
 }
 
@@ -200,6 +205,9 @@ final class ExampleApplication: Portal.Application {
         
         case (.examples, .routeChanged(.progressExample)):
             return (.progressExample, .none)
+
+        case (.examples, .routeChanged(.segmentedExample)):
+            return (.segmentedExample(selected: 3), .none)
             
         // MARK:- Collection example state transitions
             
@@ -229,6 +237,14 @@ final class ExampleApplication: Portal.Application {
         // MARK:- Progress example state transitions
             
         case (.progressExample, .routeChanged(.examples)):
+            return (.examples, .none)
+        
+        // MARK:- Segment example state transitions
+            
+        case (.segmentedExample, .segmentSelected(let index)):
+            return (.segmentedExample(selected: index), .none)
+            
+        case (.segmentedExample, .routeChanged(.examples)):
             return (.examples, .none)
             
         // MARK:- Miscelaneus state transitions
@@ -285,6 +301,9 @@ final class ExampleApplication: Portal.Application {
             
         case .progressExample:
             return ProgressScreen.view()
+            
+        case .segmentedExample(let index):
+            return SegmentedScreen.view(selected: index)
             
         default:
             return DefaultScreen.view()

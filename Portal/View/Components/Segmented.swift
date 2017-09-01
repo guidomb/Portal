@@ -63,7 +63,7 @@ public func segment<MessageType>(
 
 // MARK: - Style sheet
 
-public struct SegmentedStyleSheet {
+public struct SegmentedStyleSheet: AutoPropertyDiffable {
     
     public static let `default` = StyleSheet<SegmentedStyleSheet>(component: SegmentedStyleSheet())
     
@@ -91,4 +91,38 @@ public func segmentedStyleSheet(
     var custom = SegmentedStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: - ChangeSet
+
+internal struct SegmentedChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        segments: ZipList<SegmentProperties<MessageType>>,
+        style: StyleSheet<SegmentedStyleSheet>,
+        layout: Layout) -> SegmentedChangeSet<MessageType> {
+        return SegmentedChangeSet(
+            segments: .change(to: segments),
+            baseStyle: style.base.fullChangeSet,
+            segmentedStyle: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let segments: PropertyChange<ZipList<SegmentProperties<MessageType>>>
+    let baseStyle: [BaseStyleSheet.Property]
+    let segmentedStyle: [SegmentedStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        segments: PropertyChange<ZipList<SegmentProperties<MessageType>>> = .noChange,
+        baseStyle: [BaseStyleSheet.Property] = [],
+        segmentedStyle: [SegmentedStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.segments = segments
+        self.baseStyle = baseStyle
+        self.segmentedStyle = segmentedStyle
+        self.layout = layout
+    }
+    
 }

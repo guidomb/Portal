@@ -8,6 +8,8 @@
 
 import UIKit
 
+public let defaultSegmentedFontSize = UInt(UIFont.systemFontSize)
+
 internal struct SegmentedRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     typealias ActionType = Action<RouteType, MessageType>
@@ -17,38 +19,25 @@ internal struct SegmentedRenderer<MessageType, RouteType: Route>: UIKitRenderer 
     let layout: Layout
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let segmentedControl = UISegmentedControl(items: [])
+        let segmentedControl = UISegmentedControl()
+        let changeSet = SegmentedChangeSet.fullChangeSet(segments: segments, style: style, layout: layout)
         
-        for (index, segment) in segments.enumerated() {
-            switch segment.content {
-            case .image(let image):
-                segmentedControl.insertSegment(with: image.asUIImage, at: index, animated: false)
-            case .title(let text):
-                segmentedControl.insertSegment(withTitle: text, at: index, animated: false)
-            }
-            segmentedControl.setEnabled(segment.isEnabled, forSegmentAt: index)
-        }
-        segmentedControl.selectedSegmentIndex = Int(segments.centerIndex)
-        
-        segmentedControl.apply(style: style.base)
-        segmentedControl.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: segmentedControl)
-        
-        segmentedControl.unregisterDispatchers()
-        segmentedControl.removeTarget(.none, action: .none, for: .valueChanged)
-        let mailbox = segmentedControl.bindMessageDispatcher { mailbox in
-            _ = segmentedControl.dispatch(
-                messages: segments.map { $0.onTap },
-                for: .valueChanged, with: mailbox
-            )
-        }
-        
-        return Render(view: segmentedControl, mailbox: mailbox)
+        return segmentedControl.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }
     
 }
-
-extension UISegmentedControl {
+    
+extension UISegmentedControl: MessageProducer {
+    
+    func apply<MessageType>(changeSet: SegmentedChangeSet<MessageType>,
+                            layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(changeSet: changeSet.segments)
+        apply(changeSet: changeSet.baseStyle)
+        apply(changeSet: changeSet.segmentedStyle)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+        
+        return Render<MessageType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+    }
     
     fileprivate func dispatch<MessageType>(
         messages: [MessageType?],
@@ -60,6 +49,7 @@ extension UISegmentedControl {
             let index = segmentedControl.selectedSegmentIndex
             return index < messages.count ? messages[index] : .none
         }
+        
         self.register(dispatcher: dispatcher)
         self.addTarget(dispatcher, action: dispatcher.selector, for: event)
         return dispatcher.mailbox
@@ -67,15 +57,66 @@ extension UISegmentedControl {
     
 }
 
-extension UISegmentedControl {
+fileprivate extension UISegmentedControl {
+
+    fileprivate func apply<MessageType>(changeSet: PropertyChange<ZipList<SegmentProperties<MessageType>>>) {
+        guard case .change(let segments) = changeSet else { return }
+        
+        for (index, segment) in segments.enumerated() {
+            switch segment.content {
+                
+            case .image(let image):
+                insertSegment(with: image.asUIImage, at: index, animated: false)
+                
+            case .title(let text):
+                insertSegment(withTitle: text, at: index, animated: false)
+            }
+            
+            setEnabled(segment.isEnabled, forSegmentAt: index)
+        }
+        
+        let messages = segments.map { $0.onTap }
+        let _: Mailbox<MessageType> = self.on(event: UIControlEvents.valueChanged) { sender in
+            guard let segmentedControl = sender as? UISegmentedControl else { return .none }
+            let index = segmentedControl.selectedSegmentIndex
+            return index < messages.count ? messages[index] : .none
+        }
+        
+        selectedSegmentIndex = Int(segments.centerIndex)
+    }
     
-    fileprivate func apply(style: SegmentedStyleSheet) {
-        self.tintColor = style.borderColor.asUIColor
+    fileprivate func apply(changeSet: [SegmentedStyleSheet.Property]) {
+        var fontName: String? = .none
+        var fontSize: CGFloat? = .none
+        var textColor: UIColor? = .none
+        
+        for property in changeSet {
+            switch property {
+                
+            case .borderColor(let borderColor):
+                tintColor = borderColor.asUIColor
+                
+            case .textColor(let color):
+                textColor = color.asUIColor
+                
+            case .textFont(let font):
+                fontName = font.name
+                
+            case .textSize(let size):
+                fontSize = CGFloat(size)
+            }
+        }
+        
+        setFont(name: fontName, size: fontSize, color: textColor)
+    }
+    
+    fileprivate func setFont(name: String?, size: CGFloat?, color: UIColor?) {
         var dictionary = [String: Any]()
-        let font = UIFont(name: style.textFont.name, size: CGFloat(style.textSize)) ?? .none
-        dictionary[NSForegroundColorAttributeName] = style.textColor.asUIColor
-        font.apply { dictionary[NSFontAttributeName] = $0 }
-        self.setTitleTextAttributes(dictionary, for: .normal)
+        let font = UIFont(name: name ?? UIFont.systemFont(ofSize: 15).fontName,
+                          size: size ?? CGFloat(defaultSegmentedFontSize))
+        color |> { dictionary[NSForegroundColorAttributeName] = $0 }
+        font |> { dictionary[NSFontAttributeName] = $0 }
+        setTitleTextAttributes(dictionary, for: .normal)
     }
     
 }
