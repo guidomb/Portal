@@ -282,7 +282,7 @@ public func dimension(configure: (inout Dimension) -> Void = { _ in }) -> Dimens
     return object
 }
 
-public func aligment(configure: (inout Alignment) -> Void = { _ in }) -> Alignment {
+public func alignment(configure: (inout Alignment) -> Void = { _ in }) -> Alignment {
     var object = Alignment()
     configure(&object)
     return object

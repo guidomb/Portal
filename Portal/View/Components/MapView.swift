@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Coordinates {
+public struct Coordinates: AutoEquatable {
     
     public var latitude: Double
     public var longitude: Double
@@ -20,7 +20,7 @@ public struct Coordinates {
     
 }
 
-public struct MapPlacemark {
+public struct MapPlacemark: AutoEquatable {
     
     public let coordinates: Coordinates
     public let icon: Image?
@@ -32,7 +32,7 @@ public struct MapPlacemark {
     
 }
 
-public struct MapProperties {
+public struct MapProperties: AutoPropertyDiffable {
     
     public var placemarks: [MapPlacemark]
     public var center: Coordinates?
@@ -73,4 +73,34 @@ public func properties(configure: (inout MapProperties) -> Void) -> MapPropertie
     var properties = MapProperties()
     configure(&properties)
     return properties
+}
+
+// MARK: - ChangeSet
+
+internal struct MapViewChangeSet {
+    
+    static func fullChangeSet(
+        properties: MapProperties,
+        style: StyleSheet<EmptyStyleSheet>,
+        layout: Layout) -> MapViewChangeSet {
+        return MapViewChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [MapProperties.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        properties: [MapProperties.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.layout = layout
+    }
+    
 }

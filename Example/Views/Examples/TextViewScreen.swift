@@ -16,7 +16,7 @@ enum TextViewScreen {
     static func view() -> View {
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Collection")),
+            root: .stack(ExampleApplication.navigationBar(title: "Text View")),
             component: container(
                 children: [
                     textView(

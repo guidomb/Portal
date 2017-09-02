@@ -1,5 +1,5 @@
 //
-//  TextFieldExample.swift
+//  ImageScreen.swift
 //  PortalExample
 //
 //  Created by Argentino Ducret on 8/31/17.
@@ -8,7 +8,7 @@
 
 import Portal
 
-enum TextFieldScreen {
+enum ImageScreen {
     
     typealias Action = Portal.Action<Route, Message>
     typealias View = Portal.View<Route, Message, Navigator>
@@ -16,18 +16,14 @@ enum TextFieldScreen {
     static func view() -> View {
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Text Field")),
+            root: .stack(ExampleApplication.navigationBar(title: "Image")),
             component: container(
                 children: [
-                    textField(
-                        properties: properties {
-                            $0.text = "Example"
-                            $0.placeholder = "Insert text..."
-                        },
-                        style: textFieldStyleSheet { base, textField in
-                            base.backgroundColor = .white
-                            textField.textSize = 20
-                            textField.textColor = .blue
+                    imageView(
+                        image: Image.loadImage(named: "test")!,
+                        layout: layout {
+                            $0.height = Dimension(value: 50)
+                            $0.width = Dimension(value: 50)
                         }
                     )
                 ],
@@ -42,3 +38,4 @@ enum TextFieldScreen {
     }
     
 }
+
