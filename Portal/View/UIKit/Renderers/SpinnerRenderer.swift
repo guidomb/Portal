@@ -17,26 +17,49 @@ internal struct SpinnerRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     let layout: Layout
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-        
+        let spinner = UIActivityIndicatorView()
         spinner.hidesWhenStopped = false
-        if isActive {
-            spinner.startAnimating()
-        }
         
-        spinner.apply(style: style.base)
-        spinner.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: spinner)
+        let changeSet = SpinnerChangeSet.fullChangeSet(isActive: isActive, style: style, layout: layout)
         
-        return Render(view: spinner)
+        return spinner.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }
     
 }
 
-extension UIActivityIndicatorView {
+extension UIActivityIndicatorView: MessageForwarder {
+
+    func apply<MessageType>(changeSet: SpinnerChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(isActive: changeSet.isActive)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.spinnerStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+        
+        return Render<MessageType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+    }
     
-    fileprivate func apply(style: SpinnerStyleSheet) {
-        self.color = style.color.asUIColor
+}
+
+fileprivate extension UIActivityIndicatorView {
+    
+    fileprivate func apply(isActive: PropertyChange<Bool>) {
+        guard case .change(let isActive) = isActive else { return }
+        
+        if isActive {
+            startAnimating()
+        } else {
+            stopAnimating()
+        }
+    }
+    
+    fileprivate func apply(changeSet: [SpinnerStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .color(let color):
+                self.color = color.asUIColor
+            }
+        }
     }
     
 }

@@ -21,7 +21,8 @@ enum ExamplesScreen {
             image(),
             map(),
             progress(),
-            segment()
+            segment(),
+            spinner()
         ]
         
         return View(
@@ -70,6 +71,10 @@ fileprivate extension ExamplesScreen {
     
     fileprivate static func segment() -> TableItemProperties<Action> {
         return defaultCell(text: "Segment", route: .segmentedExample)
+    }
+    
+    fileprivate static func spinner() -> TableItemProperties<Action> {
+        return defaultCell(text: "Spinner", route: .spinnerExample)
     }
     
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {
