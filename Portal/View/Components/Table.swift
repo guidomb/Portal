@@ -17,8 +17,9 @@ public enum TableItemSelectionStyle {
     
 }
 
-public struct TableProperties<MessageType> {
+public struct TableProperties<MessageType>: AutoPropertyDiffable {
     
+    // sourcery: skipDiff
     public var items: [TableItemProperties<MessageType>]
     public var showsVerticalScrollIndicator: Bool
     public var showsHorizontalScrollIndicator: Bool
@@ -130,7 +131,7 @@ public func properties<MessageType>(
 
 // MARK: - Style sheet
 
-public struct TableStyleSheet {
+public struct TableStyleSheet: AutoPropertyDiffable {
     
     public static let `default` = StyleSheet<TableStyleSheet>(component: TableStyleSheet())
     
@@ -148,4 +149,38 @@ public func tableStyleSheet(
     var component = TableStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - ChangeSet
+
+internal struct TableChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: TableProperties<MessageType>,
+        style: StyleSheet<TableStyleSheet>,
+        layout: Layout) -> TableChangeSet<MessageType> {
+        return TableChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            tableStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [TableProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let tableStyleSheet: [TableStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        properties: [TableProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        tableStyleSheet: [TableStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.tableStyleSheet = tableStyleSheet
+        self.layout = layout
+    }
+    
 }

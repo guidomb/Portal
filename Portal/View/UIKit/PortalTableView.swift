@@ -25,21 +25,18 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     
     fileprivate let rendererFactory: CustomComponentRendererFactory
     fileprivate let layoutEngine: LayoutEngine
-    fileprivate let items: [TableItemProperties<ActionType>]
+    fileprivate var items: [TableItemProperties<ActionType>] = []
     
     // Used to cache cell actual height after rendering table
     // item component. Caching cell height is usefull when
     // cells have dynamic height.
-    fileprivate var cellHeights: [CGFloat?]
+    fileprivate var cellHeights: [CGFloat?] = []
     
     public init(
-        items: [TableItemProperties<ActionType>],
         layoutEngine: LayoutEngine,
         rendererFactory: @escaping CustomComponentRendererFactory) {
         self.rendererFactory = rendererFactory
-        self.items = items
         self.layoutEngine = layoutEngine
-        self.cellHeights = Array(repeating: .none, count: items.count)
         
         super.init(frame: .zero, style: .plain)
         
@@ -49,6 +46,11 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    internal func setItems(items: [TableItemProperties<ActionType>]) {
+        self.items = items
+        self.cellHeights = Array(repeating: .none, count: items.count)
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

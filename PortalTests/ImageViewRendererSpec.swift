@@ -10,7 +10,7 @@ import Quick
 import Nimble
 @testable import Portal
 
-class ImageViewRenderSpec: QuickSpec {
+class ImageViewRendererSpec: QuickSpec {
     override func spec() {
 
         var layoutEngine: LayoutEngine!
@@ -25,7 +25,7 @@ class ImageViewRenderSpec: QuickSpec {
             var image: Image!
             
             beforeEach {
-                image = Image.loadImage(named: "search.png", from: Bundle(for: ImageViewRenderSpec.self))!
+                image = Image.loadImage(named: "search.png", from: Bundle(for: ImageViewRendererSpec.self))!
                 changeSet = ImageViewChangeSet.fullChangeSet(image: image, style: styleSheet(), layout: layout())
             }
             

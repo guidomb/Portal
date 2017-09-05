@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		46485DA01F4F0C9E0033C204 /* TextFieldRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */; };
-		46485DA61F5458920033C204 /* TextViewRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485DA51F5458920033C204 /* TextViewRenderSpec.swift */; };
+		46485DA01F4F0C9E0033C204 /* TextFieldRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485D9F1F4F0C9E0033C204 /* TextFieldRendererSpec.swift */; };
+		46485DA61F5458920033C204 /* TextViewRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485DA51F5458920033C204 /* TextViewRendererSpec.swift */; };
 		46485DA81F55D09E0033C204 /* MessageProducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46485DA71F55D09E0033C204 /* MessageProducer.swift */; };
-		464955621F55E8B20079ABD8 /* ImageViewRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955611F55E8B20079ABD8 /* ImageViewRenderSpec.swift */; };
+		464955621F55E8B20079ABD8 /* ImageViewRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955611F55E8B20079ABD8 /* ImageViewRendererSpec.swift */; };
 		464955641F55FAD50079ABD8 /* PropertyChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955631F55FAD50079ABD8 /* PropertyChange.swift */; };
 		464955671F560A960079ABD8 /* CollectionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955651F560A520079ABD8 /* CollectionScreen.swift */; };
-		469C4B551F56212D00C6D468 /* MapViewRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469C4B541F56212D00C6D468 /* MapViewRenderSpec.swift */; };
+		469C4B551F56212D00C6D468 /* MapViewRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469C4B541F56212D00C6D468 /* MapViewRendererSpec.swift */; };
 		469C4B571F582B4000C6D468 /* ExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469C4B561F582B4000C6D468 /* ExamplesView.swift */; };
 		46A95EE01F58348A0051C302 /* TextFieldScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */; };
 		46A95EE21F5835480051C302 /* TextViewScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EE11F5835470051C302 /* TextViewScreen.swift */; };
@@ -25,6 +25,9 @@
 		46FAB5591F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FAB5581F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift */; };
 		46E6702E1F5EF61D004F54C8 /* SpinnerScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E6702D1F5EF61C004F54C8 /* SpinnerScreen.swift */; };
 		46E670301F5EF7B8004F54C8 /* SpinnerRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46E6702F1F5EF7B8004F54C8 /* SpinnerRenderSpec.swift */; };
+		46FAB55B1F5F477E0094DEA3 /* TableRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FAB55A1F5F477E0094DEA3 /* TableRendererSpec.swift */; };
+		46FAB55E1F5F4EDD0094DEA3 /* MockContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FAB55D1F5F4EDD0094DEA3 /* MockContainerController.swift */; };
+		46FAB5601F5F4F8D0094DEA3 /* MockRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FAB55F1F5F4F8D0094DEA3 /* MockRoute.swift */; };
 		9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
 		9D0F334E1E78F81800C65BED /* Portal.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0F33401E78F81800C65BED /* Portal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D0F33621E78F97800C65BED /* PortalUIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33611E78F97800C65BED /* PortalUIApplication.swift */; };
@@ -187,13 +190,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		46485D9F1F4F0C9E0033C204 /* TextFieldRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldRenderSpec.swift; sourceTree = "<group>"; };
-		46485DA51F5458920033C204 /* TextViewRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRenderSpec.swift; sourceTree = "<group>"; };
+		46485D9F1F4F0C9E0033C204 /* TextFieldRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldRendererSpec.swift; sourceTree = "<group>"; };
+		46485DA51F5458920033C204 /* TextViewRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRendererSpec.swift; sourceTree = "<group>"; };
 		46485DA71F55D09E0033C204 /* MessageProducer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageProducer.swift; sourceTree = "<group>"; };
-		464955611F55E8B20079ABD8 /* ImageViewRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewRenderSpec.swift; sourceTree = "<group>"; };
+		464955611F55E8B20079ABD8 /* ImageViewRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewRendererSpec.swift; sourceTree = "<group>"; };
 		464955631F55FAD50079ABD8 /* PropertyChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyChange.swift; sourceTree = "<group>"; };
 		464955651F560A520079ABD8 /* CollectionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionScreen.swift; sourceTree = "<group>"; };
-		469C4B541F56212D00C6D468 /* MapViewRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRenderSpec.swift; sourceTree = "<group>"; };
+		469C4B541F56212D00C6D468 /* MapViewRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRendererSpec.swift; sourceTree = "<group>"; };
 		469C4B561F582B4000C6D468 /* ExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplesView.swift; sourceTree = "<group>"; };
 		46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldScreen.swift; sourceTree = "<group>"; };
 		46A95EE11F5835470051C302 /* TextViewScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewScreen.swift; sourceTree = "<group>"; };
@@ -205,6 +208,9 @@
 		46FAB5581F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedRendererSpec.swift; sourceTree = "<group>"; };
 		46E6702D1F5EF61C004F54C8 /* SpinnerScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerScreen.swift; sourceTree = "<group>"; };
 		46E6702F1F5EF7B8004F54C8 /* SpinnerRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerRenderSpec.swift; sourceTree = "<group>"; };
+		46FAB55A1F5F477E0094DEA3 /* TableRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableRendererSpec.swift; sourceTree = "<group>"; };
+		46FAB55D1F5F4EDD0094DEA3 /* MockContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockContainerController.swift; sourceTree = "<group>"; };
+		46FAB55F1F5F4F8D0094DEA3 /* MockRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRoute.swift; sourceTree = "<group>"; };
 		9D0F333D1E78F81800C65BED /* Portal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Portal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D0F33401E78F81800C65BED /* Portal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portal.h; sourceTree = "<group>"; };
 		9D0F33411E78F81800C65BED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -366,6 +372,15 @@
 			path = Examples;
 			sourceTree = "<group>";
 		};
+		46FAB55C1F5F4ECC0094DEA3 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				46FAB55D1F5F4EDD0094DEA3 /* MockContainerController.swift */,
+				46FAB55F1F5F4F8D0094DEA3 /* MockRoute.swift */,
+			);
+			name = Mocks;
+			sourceTree = "<group>";
+		};
 		9D0F33331E78F81800C65BED = {
 			isa = PBXGroup;
 			children = (
@@ -413,6 +428,7 @@
 		9D0F334A1E78F81800C65BED /* PortalTests */ = {
 			isa = PBXGroup;
 			children = (
+				46FAB55C1F5F4ECC0094DEA3 /* Mocks */,
 				9D51994A1F3656ED0011E2F2 /* Resources */,
 				9DD2FED71F361F39007D3606 /* View */,
 				9D0F334D1E78F81800C65BED /* Info.plist */,
@@ -663,6 +679,7 @@
 				46A95EE91F59ECA90051C302 /* PorgressRenderSpec.swift */,
 				46FAB5581F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift */,
 				46E6702F1F5EF7B8004F54C8 /* SpinnerRenderSpec.swift */,
+				46FAB55A1F5F477E0094DEA3 /* TableRendererSpec.swift */,
 			);
 			name = Renderers;
 			sourceTree = "<group>";
@@ -969,6 +986,9 @@
 				464955621F55E8B20079ABD8 /* ImageViewRenderSpec.swift in Sources */,
 				46FAB5591F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift in Sources */,
 				46A95EEA1F59ECA90051C302 /* PorgressRenderSpec.swift in Sources */,
+				46FAB5601F5F4F8D0094DEA3 /* MockRoute.swift in Sources */,
+				46FAB55B1F5F477E0094DEA3 /* TableRendererSpec.swift in Sources */,
+				46FAB55E1F5F4EDD0094DEA3 /* MockContainerController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
