@@ -31,6 +31,10 @@ internal struct TableRenderer<
             rendererFactory: rendererFactory
         )
         
+        properties.refresh |> {
+            table.configRefresh(properties: $0, tintColor: style.component.refreshTintColor)
+        }
+        
         table.isDebugModeEnabled = isDebugModeEnabled
         table.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator
         table.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator

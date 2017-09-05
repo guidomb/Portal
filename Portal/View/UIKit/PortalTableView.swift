@@ -23,6 +23,7 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
     
+    fileprivate var refreshable: RefreshController<ActionType>? = .none
     fileprivate let rendererFactory: CustomComponentRendererFactory
     fileprivate let layoutEngine: LayoutEngine
     fileprivate let items: [TableItemProperties<ActionType>]
@@ -100,6 +101,15 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = items[indexPath.row]
         item.onTap |> { mailbox.dispatch(message: $0) }
+    }
+    
+    public func configRefresh(properties: RefreshProperties<ActionType>, tintColor: Color) {
+        refreshable = RefreshController(
+            properties: properties,
+            scroll: self,
+            tintColor: tintColor) { [unowned self] message in
+                self.mailbox.dispatch(message: message)
+        }
     }
     
 }

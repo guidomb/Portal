@@ -23,6 +23,8 @@ public class PortalCollectionView<
     public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
     
+    public var refreshMessage: ActionType? = .none
+    
     let layoutEngine: LayoutEngine
     let items: [CollectionItemProperties<ActionType>]
     let rendererFactory: CustomComponentRendererFactory
@@ -74,6 +76,17 @@ public class PortalCollectionView<
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[indexPath.row]
         item.onTap |> { mailbox.dispatch(message: $0) }
+    }
+    
+    public dynamic func refreshControlAction() {
+        refreshMessage |> { mailbox.dispatch(message: $0) }
+    }
+    
+    func beginRefreshing() {
+        if let refreshControl = refreshControl {
+            contentOffset = CGPoint(x:0, y:-refreshControl.frame.size.height)
+            refreshControl.beginRefreshing()
+        }
     }
     
 }

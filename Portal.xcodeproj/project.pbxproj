@@ -104,6 +104,7 @@
 		D802989E1F1EA74200436C6C /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802989D1F1EA74200436C6C /* TextView.swift */; };
 		D80298A01F1EAA9D00436C6C /* TextViewRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */; };
 		D82F84EB1F152881007A4016 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F84EA1F152881007A4016 /* Shadow.swift */; };
+		D836EE3E1F5EDB5C0078BE98 /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D836EE3D1F5EDB5C0078BE98 /* RefreshControl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -249,6 +250,7 @@
 		D802989D1F1EA74200436C6C /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRenderer.swift; sourceTree = "<group>"; };
 		D82F84EA1F152881007A4016 /* Shadow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
+		D836EE3D1F5EDB5C0078BE98 /* RefreshControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -424,8 +426,9 @@
 				9D8C84631ECA3B750034C6BC /* Portal.swift */,
 				9D8C84651ECA3B750034C6BC /* StyleSheet.swift */,
 				D82F84EA1F152881007A4016 /* Shadow.swift */,
-				9D8C84661ECA3B750034C6BC /* UIKit */,
+				D836EE3D1F5EDB5C0078BE98 /* RefreshControl.swift */,
 				9D8C84851ECA3B750034C6BC /* ZipList.swift */,
+				9D8C84661ECA3B750034C6BC /* UIKit */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -807,6 +810,7 @@
 				9D8C849A1ECA3B750034C6BC /* StyleSheet.swift in Sources */,
 				9D8C849F1ECA3B750034C6BC /* PortalMapView.swift in Sources */,
 				9DBA4A071EA81CBE000DE6B7 /* TimeLogger.swift in Sources */,
+				D836EE3E1F5EDB5C0078BE98 /* RefreshControl.swift in Sources */,
 				9DBE01D61E80EB4F005FF907 /* Middleware.swift in Sources */,
 				9D8C84A71ECA3B750034C6BC /* ComponentRenderer.swift in Sources */,
 				9D8C84911ECA3B750034C6BC /* Table.swift in Sources */,
