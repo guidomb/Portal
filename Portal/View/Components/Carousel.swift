@@ -35,6 +35,7 @@ public struct CarouselProperties<MessageType> {
     public var showsScrollIndicator: Bool
     public var isSnapToCellEnabled: Bool
     public var onSelectionChange: (ZipListShiftOperation) -> MessageType?
+    public var refresh: RefreshProperties<MessageType>?
     
     // Layout properties
     public var itemsWidth: UInt
@@ -47,6 +48,7 @@ public struct CarouselProperties<MessageType> {
         items: ZipList<CarouselItemProperties<MessageType>>?,
         showsScrollIndicator: Bool = false,
         isSnapToCellEnabled: Bool = false,
+        refresh: RefreshProperties<MessageType>? = .none,
         itemsWidth: UInt,
         itemsHeight: UInt,
         minimumInteritemSpacing: UInt = 0,
@@ -57,6 +59,7 @@ public struct CarouselProperties<MessageType> {
         self.items = items
         self.showsScrollIndicator = showsScrollIndicator
         self.isSnapToCellEnabled = isSnapToCellEnabled
+        self.refresh = refresh
         self.itemsWidth = itemsWidth
         self.itemsHeight = itemsHeight
         self.minimumLineSpacing = minimumLineSpacing
@@ -71,6 +74,7 @@ public struct CarouselProperties<MessageType> {
             items: self.items.map { $0.map { $0.map(transform) } },
             showsScrollIndicator: self.showsScrollIndicator,
             isSnapToCellEnabled: self.isSnapToCellEnabled,
+            refresh: self.refresh.map { $0.map(transform) },
             itemsWidth: self.itemsWidth,
             itemsHeight: self.itemsHeight,
             minimumInteritemSpacing: self.minimumInteritemSpacing,
@@ -117,7 +121,7 @@ extension CarouselItemProperties {
 
 public func carousel<MessageType>(
     properties: CarouselProperties<MessageType>,
-    style: StyleSheet<EmptyStyleSheet> = EmptyStyleSheet.default,
+    style: StyleSheet<CollectionStyleSheet> = CollectionStyleSheet.default,
     layout: Layout = layout()) -> Component<MessageType> {
     return .carousel(properties, style, layout)
 }

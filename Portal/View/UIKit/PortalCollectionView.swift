@@ -29,6 +29,8 @@ public class PortalCollectionView<
     let items: [CollectionItemProperties<ActionType>]
     let rendererFactory: CustomComponentRendererFactory
     
+    fileprivate var refreshable: RefreshController<ActionType>? = .none
+    
     public init(
         items: [CollectionItemProperties<ActionType>],
         layoutEngine: LayoutEngine,
@@ -78,14 +80,12 @@ public class PortalCollectionView<
         item.onTap |> { mailbox.dispatch(message: $0) }
     }
     
-    public dynamic func refreshControlAction() {
-        refreshMessage |> { mailbox.dispatch(message: $0) }
-    }
-    
-    func beginRefreshing() {
-        if let refreshControl = refreshControl {
-            contentOffset = CGPoint(x:0, y:-refreshControl.frame.size.height)
-            refreshControl.beginRefreshing()
+    public func configRefresh(properties: RefreshProperties<ActionType>, tintColor: Color) {
+        refreshable = RefreshController(
+            properties: properties,
+            scroll: self,
+            tintColor: tintColor) { [unowned self] message in
+                self.mailbox.dispatch(message: message)
         }
     }
     

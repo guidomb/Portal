@@ -20,7 +20,7 @@ internal struct CarouselRenderer<
     typealias ActionType = Action<RouteType, MessageType>
     
     let properties: CarouselProperties<ActionType>
-    let style: StyleSheet<EmptyStyleSheet>
+    let style: StyleSheet<CollectionStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     
@@ -32,6 +32,10 @@ internal struct CarouselRenderer<
             rendererFactory: rendererFactory,
             onSelectionChange: properties.onSelectionChange
         )
+        
+        properties.refresh |> {
+            carouselView.configRefresh(properties: $0, tintColor: style.component.refreshTintColor)
+        }
         
         carouselView.isDebugModeEnabled = isDebugModeEnabled
         carouselView.isSnapToCellEnabled = properties.isSnapToCellEnabled
