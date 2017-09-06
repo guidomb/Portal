@@ -31,7 +31,7 @@ internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer 
         textField.removeTarget(.none, action: .none, for: .editingChanged)
         textField.removeTarget(.none, action: .none, for: .editingDidEnd)
         if properties.shouldReturn {
-            textField.delegate = TextFieldDelegate()
+            textField.delegate = TextFieldDelegate.shared
         }
 
         let dispatcher: (Mailbox<ActionType>) -> Void = { mailbox in
@@ -48,7 +48,7 @@ internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer 
 }
 
 fileprivate class TextFieldDelegate: NSObject, UITextFieldDelegate {
-    
+    static let shared = TextFieldDelegate()
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
         return true
