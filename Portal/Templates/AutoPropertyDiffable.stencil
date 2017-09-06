@@ -7,9 +7,9 @@
         {% for instanceVariable in type.instanceVariables|publicGet %}
         {% if not instanceVariable.annotations.ignoreInChangeSet %}
         {% if instanceVariable.type.based.AutoPropertyDiffable %}
-          case {{ instanceVariable.name }}([{{ instanceVariable.type.name }}.Property]{% if instanceVariable.isOptional %}?{% endif %})
+        case {{ instanceVariable.name }}([{{ instanceVariable.type.name }}.Property]{% if instanceVariable.isOptional %}?{% endif %})
         {% else %}
-          case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
+        case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
         {% endif %}
         {% endif %}
         {% endfor %}
