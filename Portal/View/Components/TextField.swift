@@ -35,20 +35,20 @@ public struct TextFieldProperties<MessageType> {
             text: self.text,
             placeholder: self.placeholder,
             isSecureTextEntry: isSecureTextEntry,
-            onEvents:  { return self.onEvents($0).map(transform) }
+            onEvents: { return self.onEvents($0).map(transform) }
         )
     }
     
 }
 
 public enum TextFieldEvents {
+    
     case onEditingBegin(text: String)
     case onEditingChanged(text: String)
     case onEditingEnd(text: String)
     
     static func fromUI(_ event: UIControlEvents, text: String) -> TextFieldEvents? {
-        
-        switch(event) {
+        switch event {
             
         case .editingDidBegin:
             return .onEditingBegin(text: text)
@@ -58,9 +58,7 @@ public enum TextFieldEvents {
             return .onEditingEnd(text: text)
         default:
             return .none
-            
         }
-        
     }
     
 }

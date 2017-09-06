@@ -53,6 +53,7 @@ fileprivate class TextFieldDelegate: NSObject, UITextFieldDelegate {
         textField.endEditing(true)
         return true
     }
+    
 }
 
 extension UITextField {
