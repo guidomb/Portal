@@ -13,6 +13,7 @@
 		464955621F55E8B20079ABD8 /* ImageViewRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955611F55E8B20079ABD8 /* ImageViewRendererSpec.swift */; };
 		464955641F55FAD50079ABD8 /* PropertyChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955631F55FAD50079ABD8 /* PropertyChange.swift */; };
 		464955671F560A960079ABD8 /* CollectionScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464955651F560A520079ABD8 /* CollectionScreen.swift */; };
+		4684AEF31F607A5500D29431 /* TableScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4684AEF11F60799F00D29431 /* TableScreen.swift */; };
 		469C4B551F56212D00C6D468 /* MapViewRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469C4B541F56212D00C6D468 /* MapViewRendererSpec.swift */; };
 		469C4B571F582B4000C6D468 /* ExamplesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 469C4B561F582B4000C6D468 /* ExamplesView.swift */; };
 		46A95EE01F58348A0051C302 /* TextFieldScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */; };
@@ -196,6 +197,7 @@
 		464955611F55E8B20079ABD8 /* ImageViewRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewRendererSpec.swift; sourceTree = "<group>"; };
 		464955631F55FAD50079ABD8 /* PropertyChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyChange.swift; sourceTree = "<group>"; };
 		464955651F560A520079ABD8 /* CollectionScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionScreen.swift; sourceTree = "<group>"; };
+		4684AEF11F60799F00D29431 /* TableScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableScreen.swift; sourceTree = "<group>"; };
 		469C4B541F56212D00C6D468 /* MapViewRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewRendererSpec.swift; sourceTree = "<group>"; };
 		469C4B561F582B4000C6D468 /* ExamplesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExamplesView.swift; sourceTree = "<group>"; };
 		46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldScreen.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 				46A95EE71F5869070051C302 /* ProgressScreen.swift */,
 				46A95EEB1F5A05FE0051C302 /* SegmentedScreen.swift */,
 				46E6702D1F5EF61C004F54C8 /* SpinnerScreen.swift */,
+				4684AEF11F60799F00D29431 /* TableScreen.swift */,
 			);
 			path = Examples;
 			sourceTree = "<group>";
@@ -1010,6 +1013,7 @@
 				9D3A6E271EECC9BF00DCFA2D /* CustomController.swift in Sources */,
 				9D3A6E1A1EECBB1F00DCFA2D /* ModalScreen.swift in Sources */,
 				46A95EE81F5869070051C302 /* ProgressScreen.swift in Sources */,
+				4684AEF31F607A5500D29431 /* TableScreen.swift in Sources */,
 				9D3A6E181EECBA3F00DCFA2D /* Shared.swift in Sources */,
 				46A95EEC1F5A05FE0051C302 /* SegmentedScreen.swift in Sources */,
 				464955671F560A960079ABD8 /* CollectionScreen.swift in Sources */,

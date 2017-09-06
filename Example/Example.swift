@@ -21,7 +21,7 @@ enum Message {
     case pong(String)
     case stateLoaded(State?)
     case segmentSelected(UInt)
-    
+    case changeColor
 }
 
 enum Navigator: Equatable {
@@ -47,6 +47,7 @@ enum Route: Portal.Route {
     case progressExample
     case segmentedExample
     case spinnerExample
+    case tableExample
     
     var previous: Route? {
         switch self {
@@ -76,6 +77,8 @@ enum Route: Portal.Route {
             return .examples
         case .spinnerExample:
             return .examples
+        case .tableExample:
+            return .examples
         }
     }
     
@@ -98,6 +101,7 @@ enum State {
     case progressExample
     case segmentedExample(selected: UInt)
     case spinnerExample
+    case tableExample(color: Color)
     
 }
 
@@ -215,6 +219,9 @@ final class ExampleApplication: Portal.Application {
             
         case (.examples, .routeChanged(.spinnerExample)):
             return (.spinnerExample, .none)
+       
+        case (.examples, .routeChanged(.tableExample)):
+            return (.tableExample(color: .green), .none)
             
         // MARK:- Collection example state transitions
             
@@ -240,12 +247,12 @@ final class ExampleApplication: Portal.Application {
             
         case (.mapExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+            
         // MARK:- Progress example state transitions
             
         case (.progressExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+            
         // MARK:- Segment example state transitions
             
         case (.segmentedExample, .segmentSelected(let index)):
@@ -257,6 +264,17 @@ final class ExampleApplication: Portal.Application {
         // MARK:- Spinner example state transitions
             
         case (.spinnerExample, .routeChanged(.examples)):
+            return (.examples, .none)
+            
+        // MARK:- Table example state transitions
+            
+        case (.tableExample(.green), .changeColor):
+            return (.tableExample(color: .red), .none)
+            
+        case (.tableExample(.red), .changeColor):
+            return (.tableExample(color: .green), .none)
+            
+        case (.tableExample, .routeChanged(.examples)):
             return (.examples, .none)
             
         // MARK:- Miscelaneus state transitions
@@ -319,10 +337,12 @@ final class ExampleApplication: Portal.Application {
             
         case .segmentedExample(let index):
             return SegmentedScreen.view(selected: index)
+
+        case .tableExample(let color):
+            return TableScreen.view(color: color)
             
         default:
             return DefaultScreen.view()
-            
         }
     }
     
