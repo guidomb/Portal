@@ -13,42 +13,12 @@ enum SegmentedScreen {
     typealias Action = Portal.Action<Route, Message>
     typealias View = Portal.View<Route, Message, Navigator>
     
-    static func view(selected: UInt) -> View {
-        let elements = (0...5).map {
-            segment(title: "\($0)", onTap: Action.sendMessage(.segmentSelected($0)), isEnabled: true)
-        }
-        
-        var left: [SegmentProperties<Action>] = []
-        var center: SegmentProperties<Action>!
-        var right: [SegmentProperties<Action>] = []
-        for i in 0..<elements.count {
-            if i == selected {
-                center = elements[i]
-            } else if i < selected {
-                left.append(elements[i])
-            } else {
-                right.append(elements[i])
-            }
-        }
-        
-        let segments = ZipList(left: left, center: center!, right: right)
-    
+    static func view(selected index: UInt) -> View {
         return View(
             navigator: .main,
             root: .stack(ExampleApplication.navigationBar(title: "Segmented")),
             component: container(
-                children: [
-                    segmented(
-                        segments: segments,
-                        style: segmentedStyleSheet { base, segmented in
-                            base.backgroundColor = .white
-                            segmented.textFont = Font(name: "Helvetica")
-                            segmented.textSize = 20
-                            segmented.textColor = .red
-                            segmented.borderColor = .green
-                        }
-                    )
-                ],
+                children: [createSegmentedComponent(selected: index)],
                 style: styleSheet {
                     $0.backgroundColor = .black
                 },
@@ -56,6 +26,28 @@ enum SegmentedScreen {
                     $0.flex = flex() { $0.grow = .one }
                 }
             )
+        )
+    }
+    
+}
+
+fileprivate extension SegmentedScreen {
+    
+    static func createSegmentedComponent(selected index: UInt) -> Component<Action> {
+        let elements = (0...5).map {
+            segment(title: "\($0)", onTap: Action.sendMessage(.segmentSelected($0)), isEnabled: true)
+        }
+        guard let segments = ZipList<SegmentProperties<Action>>(of: elements, selected: index) else { return container() }
+        
+        return segmented(
+            segments: segments,
+            style: segmentedStyleSheet { base, segmented in
+                base.backgroundColor = .white
+                segmented.textFont = Font(name: "Helvetica")
+                segmented.textSize = 20
+                segmented.textColor = .red
+                segmented.borderColor = .green
+            }
         )
     }
     
