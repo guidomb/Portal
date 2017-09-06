@@ -16,7 +16,7 @@ enum SpinnerScreen {
     static func view() -> View {
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Image")),
+            root: .stack(ExampleApplication.navigationBar(title: "Spinner")),
             component: container(
                 children: [
                     createSpinner(isActive: true),
