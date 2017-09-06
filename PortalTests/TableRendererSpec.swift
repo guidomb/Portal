@@ -19,9 +19,13 @@ class TableRendererSpec: QuickSpec {
     override func spec() {
         
         var layoutEngine: LayoutEngine!
+        var table: PortalTable!
         
         beforeEach {
             layoutEngine = YogaLayoutEngine()
+            table = PortalTableView(layoutEngine: layoutEngine) {
+                VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
+            }
         }
         
         describe(".apply(changeSet: TableChangeSet) -> Result") {
@@ -56,25 +60,16 @@ class TableRendererSpec: QuickSpec {
             context("when the change set contains table property changes") {
                 
                 it("applies 'items' property changes") {
-                    let table = PortalTableView(layoutEngine: layoutEngine) {
-                        VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-                    }
                     _ = table.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(table.tableView(table, numberOfRowsInSection: 1)).to(equal(2))
                 }
                 
                 it("applies 'showsVerticalScrollIndicator' property changes") {
-                    let table = PortalTableView(layoutEngine: layoutEngine) {
-                        VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-                    }
                     _ = table.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(table.showsVerticalScrollIndicator).to(beTrue())
                 }
                 
                 it("applies 'showsHorizontalScrollIndicator' property changes") {
-                    let table = PortalTableView(layoutEngine: layoutEngine) {
-                        VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-                    }
                     _ = table.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(table.showsHorizontalScrollIndicator).to(beFalse())
                 }
@@ -104,9 +99,6 @@ class TableRendererSpec: QuickSpec {
             context("when the change set contains table stylesheet changes") {
                 
                 it("applies 'separatorColor' property changes") {
-                    let table = PortalTableView(layoutEngine: layoutEngine) {
-                        VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-                    }
                     _ = table.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     expect(table.separatorColor).to(equal(.red))
