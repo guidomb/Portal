@@ -57,6 +57,7 @@ fileprivate extension PortalTableView {
                 
             case .items(let items):
                 setItems(items: items)
+                reloadData()
             
             case .showsHorizontalScrollIndicator(let enabled):
                 showsHorizontalScrollIndicator = enabled
