@@ -21,6 +21,8 @@
 		46A95EE61F58515D0051C302 /* MapScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EE51F58515D0051C302 /* MapScreen.swift */; };
 		46A95EE81F5869070051C302 /* ProgressScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EE71F5869070051C302 /* ProgressScreen.swift */; };
 		46A95EEA1F59ECA90051C302 /* PorgressRenderSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EE91F59ECA90051C302 /* PorgressRenderSpec.swift */; };
+		46A95EEC1F5A05FE0051C302 /* SegmentedScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A95EEB1F5A05FE0051C302 /* SegmentedScreen.swift */; };
+		46FAB5591F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46FAB5581F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift */; };
 		9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
 		9D0F334E1E78F81800C65BED /* Portal.h in Headers */ = {isa = PBXBuildFile; fileRef = 9D0F33401E78F81800C65BED /* Portal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9D0F33621E78F97800C65BED /* PortalUIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D0F33611E78F97800C65BED /* PortalUIApplication.swift */; };
@@ -197,6 +199,8 @@
 		46A95EE51F58515D0051C302 /* MapScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapScreen.swift; sourceTree = "<group>"; };
 		46A95EE71F5869070051C302 /* ProgressScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressScreen.swift; sourceTree = "<group>"; };
 		46A95EE91F59ECA90051C302 /* PorgressRenderSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PorgressRenderSpec.swift; sourceTree = "<group>"; };
+		46A95EEB1F5A05FE0051C302 /* SegmentedScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedScreen.swift; sourceTree = "<group>"; };
+		46FAB5581F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedRendererSpec.swift; sourceTree = "<group>"; };
 		9D0F333D1E78F81800C65BED /* Portal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Portal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D0F33401E78F81800C65BED /* Portal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Portal.h; sourceTree = "<group>"; };
 		9D0F33411E78F81800C65BED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -352,6 +356,7 @@
 				46A95EE31F584C8C0051C302 /* ImageScreen.swift */,
 				46A95EE51F58515D0051C302 /* MapScreen.swift */,
 				46A95EE71F5869070051C302 /* ProgressScreen.swift */,
+				46A95EEB1F5A05FE0051C302 /* SegmentedScreen.swift */,
 			);
 			path = Examples;
 			sourceTree = "<group>";
@@ -651,6 +656,7 @@
 				464955611F55E8B20079ABD8 /* ImageViewRenderSpec.swift */,
 				469C4B541F56212D00C6D468 /* MapViewRenderSpec.swift */,
 				46A95EE91F59ECA90051C302 /* PorgressRenderSpec.swift */,
+				46FAB5581F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift */,
 			);
 			name = Renderers;
 			sourceTree = "<group>";
@@ -954,6 +960,7 @@
 				469C4B551F56212D00C6D468 /* MapViewRenderSpec.swift in Sources */,
 				46485DA61F5458920033C204 /* TextViewRenderSpec.swift in Sources */,
 				464955621F55E8B20079ABD8 /* ImageViewRenderSpec.swift in Sources */,
+				46FAB5591F5F2BFD0094DEA3 /* SegmentedRendererSpec.swift in Sources */,
 				46A95EEA1F59ECA90051C302 /* PorgressRenderSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -977,6 +984,7 @@
 				9D3A6E1A1EECBB1F00DCFA2D /* ModalScreen.swift in Sources */,
 				46A95EE81F5869070051C302 /* ProgressScreen.swift in Sources */,
 				9D3A6E181EECBA3F00DCFA2D /* Shared.swift in Sources */,
+				46A95EEC1F5A05FE0051C302 /* SegmentedScreen.swift in Sources */,
 				464955671F560A960079ABD8 /* CollectionScreen.swift in Sources */,
 				9D3A6E221EECBE6000DCFA2D /* MainScreen.swift in Sources */,
 				9D3A6E131EECB8FE00DCFA2D /* Effects.swift in Sources */,

@@ -43,5 +43,3 @@ enum ProgressScreen {
     }
     
 }
-
-
