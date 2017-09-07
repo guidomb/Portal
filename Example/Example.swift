@@ -43,6 +43,7 @@ enum Route: Portal.Route {
     case textFieldExample
     case imageExample
     case mapExample
+    case progressExample
     
     var previous: Route? {
         switch self {
@@ -66,6 +67,8 @@ enum Route: Portal.Route {
             return .examples
         case .mapExample:
             return .examples
+        case .progressExample:
+            return .examples
         }
     }
     
@@ -85,6 +88,7 @@ enum State {
     case textFieldExample
     case imageExample
     case mapExample
+    case progressExample
     
 }
 
@@ -193,6 +197,9 @@ final class ExampleApplication: Portal.Application {
         
         case (.examples, .routeChanged(.mapExample)):
             return (.mapExample, .none)
+        
+        case (.examples, .routeChanged(.progressExample)):
+            return (.progressExample, .none)
             
         // MARK:- Collection example state transitions
             
@@ -217,6 +224,11 @@ final class ExampleApplication: Portal.Application {
         // MARK:- Map example state transitions
             
         case (.mapExample, .routeChanged(.examples)):
+            return (.examples, .none)
+        
+        // MARK:- Progress example state transitions
+            
+        case (.progressExample, .routeChanged(.examples)):
             return (.examples, .none)
             
         // MARK:- Miscelaneus state transitions
@@ -270,6 +282,9 @@ final class ExampleApplication: Portal.Application {
             
         case .mapExample:
             return MapScreen.view()
+            
+        case .progressExample:
+            return ProgressScreen.view()
             
         default:
             return DefaultScreen.view()

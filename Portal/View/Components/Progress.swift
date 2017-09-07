@@ -6,15 +6,20 @@
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
-public struct ProgressCounter {
+public struct ProgressCounter: AutoPropertyDiffable {
     
-    public static let initial = ProgressCounter()
+    internal static let initial = ProgressCounter()
     
+    // sourcery: ignoreInChangeSet
     public var partial: UInt
+    // sourcery: ignoreInChangeSet
     public let total: UInt
+    
     public var progress: Float {
         return Float(partial) / Float(total)
     }
+    
+    // sourcery: ignoreInChangeSet
     public var remaining: UInt {
         return total - partial
     }
@@ -46,14 +51,14 @@ public func progress<MessageType>(
 
 // MARK: - Style sheet
 
-public enum ProgressContentType {
+public enum ProgressContentType: AutoEquatable {
     
     case color(Color)
     case image(Image)
     
 }
 
-public struct ProgressStyleSheet {
+public struct ProgressStyleSheet: AutoPropertyDiffable {
     
     public static let defaultStyleSheet = StyleSheet<ProgressStyleSheet>(component: ProgressStyleSheet())
     
@@ -75,4 +80,38 @@ public func progressStyleSheet(
     var custom = ProgressStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: Change Set
+
+internal struct ProgressChangeSet {
+    
+    static func fullChageSet(
+        progressCounter: ProgressCounter,
+        style: StyleSheet<ProgressStyleSheet>,
+        layout: Layout) -> ProgressChangeSet {
+        return ProgressChangeSet(
+            progressCounter: progressCounter.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            progressStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let progressCounter: [ProgressCounter.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let progressStyleSheet: [ProgressStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        progressCounter: [ProgressCounter.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        progressStyleSheet: [ProgressStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.progressCounter = progressCounter
+        self.baseStyleSheet = baseStyleSheet
+        self.progressStyleSheet = progressStyleSheet
+        self.layout = layout
+    }
+    
 }
