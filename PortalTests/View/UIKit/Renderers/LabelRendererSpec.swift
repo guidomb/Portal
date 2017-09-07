@@ -48,12 +48,17 @@ class LabelRendererSpec: QuickSpec {
 
             context("when the change set contains label property changes") {
 
-                it("applies 'text' property changes") {
+                it("applies 'text' property before layout") {
                     let label = UILabel()
                     let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        expect(label.text).to(equal("Hello World"))
-                    }
+                    expect(label.text).to(equal("Hello World before layout"))
+                }
+                
+                it("applies 'textAfterLayout' property after layout") {
+                    let label = UILabel()
+                    let result: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                    result.afterLayout?()
+                    expect(label.text).to(equal("Hello World"))
                 }
 
                 context("when the change set contains label stylesheet changes") {
