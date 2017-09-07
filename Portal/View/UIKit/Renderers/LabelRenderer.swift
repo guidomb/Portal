@@ -8,13 +8,13 @@
 
 import UIKit
 
-public let defaultLabelFontSize = UInt(UIFont.systemFontSize)
+public let defaultLabelFontSize = UInt(UIFont.labelFontSize)
 
 internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     typealias ActionType = Action<RouteType, MessageType>
     
-    let properties: LabelProperties<ActionType>
+    let properties: LabelProperties
     let style: StyleSheet<LabelStyleSheet>
     let layout: Layout
     
@@ -30,7 +30,7 @@ internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
 extension UILabel {
     
     internal func apply<MessageType>(
-        changeSet: LabelChangeSet<MessageType>,
+        changeSet: LabelChangeSet,
         layoutEngine: LayoutEngine) -> Render<MessageType> {
         
         apply(changeSet: changeSet.properties)
@@ -57,7 +57,7 @@ extension UILabel {
 
 fileprivate extension UILabel {
     
-    fileprivate func apply<MessageType>(changeSet: [LabelProperties<MessageType>.Property]) {
+    fileprivate func apply(changeSet: [LabelProperties.Property]) {
         for property in changeSet {
             switch property {
                 
