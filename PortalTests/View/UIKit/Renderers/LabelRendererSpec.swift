@@ -21,11 +21,11 @@ class LabelRendererSpec: QuickSpec {
 
         describe(".apply(changeSet: TextFieldChangeSet) -> Result") {
 
-            var changeSet: LabelChangeSet<String>!
+            var changeSet: LabelChangeSet!
 
             beforeEach {
 
-                let labelProperties: LabelProperties<String> = properties(
+                let labelProperties: LabelProperties = properties(
                     text: "Hello World before layout",
                     textAfterLayout: "Hello World"
                 )
@@ -52,7 +52,7 @@ class LabelRendererSpec: QuickSpec {
 
                 it("applies 'text' property changes") {
                     let label = UILabel()
-                    _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                    let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         expect(label.text).to(equal("Hello World"))
                     }
@@ -62,37 +62,37 @@ class LabelRendererSpec: QuickSpec {
 
                     it("applies 'textColor' property changes") {
                         let label = UILabel()
-                        _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                        let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.textColor).to(equal(.red))
                     }
 
                     it("applies 'aligment' property changes") {
                         let label = UILabel()
-                        _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                        let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.textAlignment).to(equal(NSTextAlignment.center))
                     }
 
                     it("applies 'textFont' and 'textSize' property changes") {
                         let label = UILabel()
-                        _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                        let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.font).to(equal(UIFont(name: "Helvetica", size: 12)))
                     }
 
                     it("applies 'adjustToFitWidth' property changes") {
                         let label = UILabel()
-                        _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                        let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.adjustsFontSizeToFitWidth).to(equal(true))
                     }
                     
                     it("applies 'numberOfLines' property changes") {
                         let label = UILabel()
-                        _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                        let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.numberOfLines).to(equal(0))
                     }
                     
                     it("applies 'minimumScaleFactor' property changes") {
                         let label = UILabel()
-                        _ = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                        let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.minimumScaleFactor).to(equal(1.0))
                     }
                     

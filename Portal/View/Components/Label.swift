@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct LabelProperties<MessageType>: AutoPropertyDiffable {
+public struct LabelProperties: AutoPropertyDiffable {
     
     public let text: String
     public let textAfterLayout: String?
@@ -16,14 +16,6 @@ public struct LabelProperties<MessageType>: AutoPropertyDiffable {
     fileprivate init(text: String, textAfterLayout: String?) {
         self.text = text
         self.textAfterLayout = textAfterLayout
-    }
-    
-    public func map<NewMessageType>(
-        _ transform: (MessageType) -> NewMessageType) -> LabelProperties<NewMessageType> {
-        return LabelProperties<NewMessageType>(
-            text: self.text,
-            textAfterLayout: self.textAfterLayout
-        )
     }
     
 }
@@ -36,15 +28,15 @@ public func label<MessageType>(
 }
 
 public func label<MessageType>(
-    properties: LabelProperties<MessageType> = properties(),
+    properties: LabelProperties = properties(),
     style: StyleSheet<LabelStyleSheet> = LabelStyleSheet.`default`,
     layout: Layout = layout()) -> Component<MessageType> {
     return .label(properties, style, layout)
 }
 
-public func properties<MessageType>(
+public func properties(
     text: String = "",
-    textAfterLayout: String? = .none) -> LabelProperties<MessageType> {
+    textAfterLayout: String? = .none) -> LabelProperties {
     return LabelProperties(text: text, textAfterLayout: textAfterLayout)
 }
 
@@ -91,12 +83,12 @@ public func labelStyleSheet(
 
 // MARK: - Change set
 
-internal struct LabelChangeSet<MessageType> {
+internal struct LabelChangeSet {
     
     static func fullChangeSet(
-        properties: LabelProperties<MessageType>,
+        properties: LabelProperties,
         styleSheet: StyleSheet<LabelStyleSheet>,
-        layout: Layout) -> LabelChangeSet<MessageType> {
+        layout: Layout) -> LabelChangeSet {
         return LabelChangeSet(
             properties: properties.fullChangeSet,
             baseStyleSheet: styleSheet.base.fullChangeSet,
@@ -105,13 +97,13 @@ internal struct LabelChangeSet<MessageType> {
         )
     }
     
-    let properties: [LabelProperties<MessageType>.Property]
+    let properties: [LabelProperties.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
     let labelStyleSheet: [LabelStyleSheet.Property]
     let layout: [Layout.Property]
     
     init(
-        properties: [LabelProperties<MessageType>.Property] = [],
+        properties: [LabelProperties.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],
         labelStyleSheet: [LabelStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
