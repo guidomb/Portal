@@ -24,7 +24,6 @@ class LabelRendererSpec: QuickSpec {
             var changeSet: LabelChangeSet!
 
             beforeEach {
-
                 let labelProperties: LabelProperties = properties(
                     text: "Hello World before layout",
                     textAfterLayout: "Hello World"
@@ -45,7 +44,6 @@ class LabelRendererSpec: QuickSpec {
                     styleSheet: labelStyle,
                     layout: layout()
                 )
-                
             }
 
             context("when the change set contains label property changes") {
