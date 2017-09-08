@@ -48,6 +48,7 @@ enum Route: Portal.Route {
     case segmentedExample
     case spinnerExample
     case tableExample
+    case carouselExample
     
     var previous: Route? {
         switch self {
@@ -79,6 +80,8 @@ enum Route: Portal.Route {
             return .examples
         case .tableExample:
             return .examples
+        case .carouselExample:
+            return .examples
         }
     }
     
@@ -102,6 +105,7 @@ enum State {
     case segmentedExample(selected: UInt)
     case spinnerExample
     case tableExample(color: Color)
+    case carouselExample(color: Color)
     
 }
 
@@ -222,6 +226,9 @@ final class ExampleApplication: Portal.Application {
        
         case (.examples, .routeChanged(.tableExample)):
             return (.tableExample(color: .green), .none)
+        
+        case (.examples, .routeChanged(.carouselExample)):
+            return (.carouselExample(color: .black), .none)
             
         // MARK:- Collection example state transitions
             
@@ -281,6 +288,17 @@ final class ExampleApplication: Portal.Application {
             return (.tableExample(color: .green), .none)
             
         case (.tableExample, .routeChanged(.examples)):
+            return (.examples, .none)
+        
+        // MARK:- Table example state transitions
+            
+        case (.carouselExample(.white), .changeColor):
+            return (.carouselExample(color: .black), .none)
+            
+        case (.carouselExample(.black), .changeColor):
+            return (.carouselExample(color: .white), .none)
+            
+        case (.carouselExample, .routeChanged(.examples)):
             return (.examples, .none)
             
         // MARK:- Miscelaneus state transitions
@@ -346,6 +364,9 @@ final class ExampleApplication: Portal.Application {
 
         case .tableExample(let color):
             return TableScreen.view(color: color)
+        
+        case .carouselExample(let color):
+            return CarouselScreen.view(color: color)
             
         default:
             return DefaultScreen.view()

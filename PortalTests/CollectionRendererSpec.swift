@@ -58,7 +58,7 @@ class CollectionRendererSpec: QuickSpec {
                 
                 it("applies 'items' property changes") {
                     _ = collection.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    expect(collection.collectionView(collection, numberOfItemsInSection: 1)).to(equal(2))
+                    expect(collection.collectionView(collection, numberOfItemsInSection: 0)).to(equal(2))
                 }
                 
                 it("applies 'showsVerticalScrollIndicator' property changes") {
@@ -116,7 +116,7 @@ class CollectionRendererSpec: QuickSpec {
                         let newChangeSet = CollectionChangeSet<ActionType>(properties: [CollectionProperties.Property.items([])])
                         _ = configuredCollection.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
-                        expect(configuredCollection.collectionView(configuredCollection, numberOfItemsInSection: 1)).to(equal(0))
+                        expect(configuredCollection.collectionView(configuredCollection, numberOfItemsInSection: 0)).to(equal(0))
                     }
                     
                 }
