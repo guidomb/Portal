@@ -31,32 +31,21 @@ internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer 
         textField.removeTarget(.none, action: .none, for: .editingChanged)
         textField.removeTarget(.none, action: .none, for: .editingDidEnd)
         if properties.shouldReturn {
-            textField.delegate = TextFieldDelegate.shared
-        }
-
-        let dispatcher: (Mailbox<ActionType>) -> Void = { mailbox in
-            _ = textField.dispatch(onEvent: self.properties.onEvents, for: .editingDidBegin, with: mailbox)
-            _ = textField.dispatch(onEvent: self.properties.onEvents, for: .editingChanged, with: mailbox)
-            _ = textField.dispatch(onEvent: self.properties.onEvents, for: .editingDidEnd, with: mailbox)
+            textField.delegate = textField
         }
         
-        let mailbox = textField.bindMessageDispatcher(binder: dispatcher)
+        let mailbox: Mailbox<Action<RouteType, MessageType>> = textField.bindMessageDispatcher { mailbox in
+            _ = textField.dispatch(onEvents: self.properties.onEvents, for: .editingDidBegin, with: mailbox)
+            _ = textField.dispatch(onEvents: self.properties.onEvents, for: .editingChanged, with: mailbox)
+            _ = textField.dispatch(onEvents: self.properties.onEvents, for: .editingDidEnd, with: mailbox)
+        }
         
         return Render(view: textField, mailbox: mailbox)
     }
     
 }
 
-fileprivate class TextFieldDelegate: NSObject, UITextFieldDelegate {
-    static let shared = TextFieldDelegate()
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.endEditing(true)
-        return true
-    }
-    
-}
-
-extension UITextField {
+extension UITextField: UITextFieldDelegate {
     
     fileprivate func apply(style: TextFieldStyleSheet) {
         let size = CGFloat(style.textSize)
@@ -65,19 +54,23 @@ extension UITextField {
         style.textAligment                        |> { self.textAlignment = $0.asNSTextAligment }
     }
     
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
+    }
+    
 }
 
 extension UITextField {
     
     fileprivate func dispatch<MessageType>(
-        onEvent: @escaping (TextFieldEvents) -> MessageType?,
+        onEvents: TextFieldEvents<MessageType>,
         for event: UIControlEvents,
         with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
         
         let dispatcher = MessageDispatcher(mailbox: mailbox) { sender in
             guard let textField = sender as? UITextField else { return .none }
-            guard let textFieldEvent = TextFieldEvents.fromUI(event, text: textField.text ?? "") else { return .none }
-            return onEvent(textFieldEvent)
+            return fromUI(event, for: onEvents, text: textField.text ?? "")
         }
         
         self.register(dispatcher: dispatcher)
@@ -85,4 +78,22 @@ extension UITextField {
         return dispatcher.mailbox
     }
     
+}
+
+fileprivate func fromUI<MessageType>(
+    _ event: UIControlEvents,
+    for textFieldEvents: TextFieldEvents<MessageType>,
+    text: String ) -> MessageType? {
+    switch event {
+        
+    case .editingDidBegin:
+        return textFieldEvents.onEditingBegin?(text)
+    case .editingChanged:
+        return textFieldEvents.onEditingChanged?(text)
+    case .editingDidEnd:
+        return textFieldEvents.onEditingEnd?(text)
+    default:
+        return .none
+        
+    }
 }

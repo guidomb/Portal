@@ -14,14 +14,14 @@ public struct TextFieldProperties<MessageType> {
     public var placeholder: String?
     public var isSecureTextEntry: Bool
     public var shouldReturn: Bool
-    public var onEvents: (TextFieldEvents) -> MessageType?
+    public var onEvents: TextFieldEvents<MessageType> = TextFieldEvents()
 
     fileprivate init(
         text: String? = .none,
         placeholder: String? = .none,
         isSecureTextEntry: Bool = false,
         shouldReturn: Bool = false,
-        onEvents: @escaping (TextFieldEvents) -> MessageType? = { _ in return .none}) {
+        onEvents: TextFieldEvents<MessageType> = TextFieldEvents<MessageType>() ) {
         self.text = text
         self.placeholder = placeholder
         self.onEvents = onEvents
@@ -35,30 +35,36 @@ public struct TextFieldProperties<MessageType> {
             text: self.text,
             placeholder: self.placeholder,
             isSecureTextEntry: isSecureTextEntry,
-            onEvents: { return self.onEvents($0).map(transform) }
+            onEvents: self.onEvents.map(transform)
         )
     }
     
 }
 
-public enum TextFieldEvents {
+public struct TextFieldEvents<MessageType> {
     
-    case onEditingBegin(text: String)
-    case onEditingChanged(text: String)
-    case onEditingEnd(text: String)
+    public var onEditingBegin: ((String) -> MessageType)?
+    public var onEditingChanged: ((String) -> MessageType)?
+    public var onEditingEnd: ((String) -> MessageType)?
     
-    static func fromUI(_ event: UIControlEvents, text: String) -> TextFieldEvents? {
-        switch event {
-            
-        case .editingDidBegin:
-            return .onEditingBegin(text: text)
-        case .editingChanged:
-            return .onEditingChanged(text: text)
-        case .editingDidEnd:
-            return .onEditingEnd(text: text)
-        default:
-            return .none
-        }
+    fileprivate init(
+        onEditingBegin: ((String) -> MessageType)? = .none,
+        onEditingChanged: ((String) -> MessageType)? = .none,
+        onEditingEnd: ((String) -> MessageType)? = .none
+        ) {
+        self.onEditingBegin = onEditingBegin
+        self.onEditingChanged = onEditingChanged
+        self.onEditingEnd = onEditingEnd
+    
+    }
+    
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType ) -> TextFieldEvents<NewMessageType> {
+        return TextFieldEvents<NewMessageType>(
+            onEditingBegin: self.onEditingBegin.map { event in { transform(event($0)) } },
+            onEditingChanged: self.onEditingChanged.map { event in { transform(event($0)) } },
+            onEditingEnd: self.onEditingEnd.map { event in { transform(event($0)) } }
+        )
     }
     
 }
@@ -75,6 +81,13 @@ public func properties<MessageType>(
     var properties = TextFieldProperties<MessageType>()
     configure(&properties)
     return properties
+}
+
+public func textFieldEvents<MessageType>(
+    configure: (inout TextFieldEvents<MessageType>) -> Void) -> TextFieldEvents<MessageType> {
+    var events = TextFieldEvents<MessageType>()
+    configure(&events)
+    return events
 }
 
 // MARK: - Style sheet
