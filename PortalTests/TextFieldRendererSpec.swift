@@ -1,5 +1,5 @@
 //
-//  TextFieldRenderSpec.swift
+//  TextFieldRendererSpec.swift
 //  PortalTests
 //
 //  Created by Argentino Ducret on 8/24/17.
@@ -10,7 +10,7 @@ import Quick
 import Nimble
 @testable import Portal
 
-class TextFieldRenderSpec: QuickSpec {
+class TextFieldRendererSpec: QuickSpec {
     override func spec() {
         
         var layoutEngine: LayoutEngine!

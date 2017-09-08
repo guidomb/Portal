@@ -1,5 +1,5 @@
 //
-//  MapViewRenderSpec.swift
+//  MapViewRendererSpec.swift
 //  PortalTests
 //
 //  Created by Argentino Ducret on 8/29/17.
@@ -10,7 +10,7 @@ import Quick
 import Nimble
 @testable import Portal
 
-class MapViewRenderSpec: QuickSpec {
+class MapViewRendererSpec: QuickSpec {
     override func spec() {
         
         var layoutEngine: LayoutEngine!

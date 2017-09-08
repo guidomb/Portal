@@ -1,5 +1,5 @@
 //
-//  TextViewRenderSpec.swift
+//  TextViewRendererSpec.swift
 //  PortalTests
 //
 //  Created by Argentino Ducret on 8/28/17.
@@ -10,7 +10,7 @@ import Quick
 import Nimble
 @testable import Portal
 
-class TextViewRenderSpec: QuickSpec {
+class TextViewRendererSpec: QuickSpec {
     override func spec() {
     
         var layoutEngine: LayoutEngine!

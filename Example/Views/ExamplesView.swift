@@ -22,7 +22,8 @@ enum ExamplesScreen {
             map(),
             progress(),
             segment(),
-            spinner()
+            spinner(),
+            tableView()
         ]
         
         return View(
@@ -77,8 +78,12 @@ fileprivate extension ExamplesScreen {
         return defaultCell(text: "Spinner", route: .spinnerExample)
     }
     
+    fileprivate static func tableView() -> TableItemProperties<Action> {
+        return defaultCell(text: "Table", route: .tableExample)
+    }
+    
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {
-        return tableItem(height: 50, onTap: .navigate(to: route), selectionStyle: .none) { index in
+        return tableItem(height: 50, onTap: .navigate(to: route), selectionStyle: .none) { _ in
             TableItemRender(
                 component: container (
                     children: [
