@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class SectionInset {
+public class SectionInset: AutoEquatable {
     public static let zero = SectionInset(top: 0, left: 0, bottom: 0, right: 0)
     
     public var bottom: UInt
@@ -31,15 +31,15 @@ public enum CollectionScrollDirection {
     case vertical
 }
 
-public struct CollectionProperties<MessageType> {
+public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
     
+    // sourcery: skipDiff
     public var items: [CollectionItemProperties<MessageType>]
     public var showsVerticalScrollIndicator: Bool
     public var showsHorizontalScrollIndicator: Bool
     
     // Layout properties
-    public var itemsWidth: UInt
-    public var itemsHeight: UInt
+    public var itemsSize: Size
     public var minimumInteritemSpacing: UInt
     public var minimumLineSpacing: UInt
     public var scrollDirection: CollectionScrollDirection
@@ -49,8 +49,7 @@ public struct CollectionProperties<MessageType> {
         items: [CollectionItemProperties<MessageType>] = [],
         showsVerticalScrollIndicator: Bool = false,
         showsHorizontalScrollIndicator: Bool = false,
-        itemsWidth: UInt,
-        itemsHeight: UInt,
+        itemsSize: Size,
         minimumInteritemSpacing: UInt = 0,
         minimumLineSpacing: UInt = 0,
         scrollDirection: CollectionScrollDirection = .vertical,
@@ -58,8 +57,7 @@ public struct CollectionProperties<MessageType> {
         self.items = items
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
-        self.itemsWidth = itemsWidth
-        self.itemsHeight = itemsHeight
+        self.itemsSize = itemsSize
         self.minimumLineSpacing = minimumLineSpacing
         self.minimumInteritemSpacing = minimumInteritemSpacing
         self.sectionInset = sectionInset
@@ -72,8 +70,7 @@ public struct CollectionProperties<MessageType> {
             items: self.items.map { $0.map(transform) },
             showsVerticalScrollIndicator: self.showsVerticalScrollIndicator,
             showsHorizontalScrollIndicator: self.showsHorizontalScrollIndicator,
-            itemsWidth: self.itemsWidth,
-            itemsHeight: self.itemsHeight,
+            itemsSize: self.itemsSize,
             minimumInteritemSpacing: self.minimumInteritemSpacing,
             minimumLineSpacing: self.minimumLineSpacing,
             scrollDirection: self.scrollDirection,
@@ -132,7 +129,39 @@ public func properties<MessageType>(
     itemsWidth: UInt,
     itemsHeight: UInt,
     configure: (inout CollectionProperties<MessageType>) -> Void) -> CollectionProperties<MessageType> {
-    var properties = CollectionProperties<MessageType>(itemsWidth: itemsWidth, itemsHeight: itemsHeight)
+    var properties = CollectionProperties<MessageType>(
+        itemsSize: Size(width: itemsWidth, height: itemsHeight)
+    )
     configure(&properties)
     return properties
+}
+
+// MARK: - ChangeSet
+
+internal struct CollectionChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: CollectionProperties<MessageType>,
+        style: StyleSheet<EmptyStyleSheet>,
+        layout: Layout) -> CollectionChangeSet<MessageType> {
+        return CollectionChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [CollectionProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        properties: [CollectionProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.layout = layout
+    }
+    
 }

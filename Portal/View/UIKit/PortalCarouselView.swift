@@ -23,23 +23,24 @@ public final class PortalCarouselView<
     fileprivate var lastOffset: CGFloat = 0
     fileprivate var selectedIndex: Int = 0
     
-    public override init(
+    public init(
         items: [CollectionItemProperties<ActionType>],
         layoutEngine: LayoutEngine,
         layout: UICollectionViewLayout,
         rendererFactory: @escaping CustomComponentRendererFactory) {
         onSelectionChange = { _ in .none }
         super.init(
-            items: items,
             layoutEngine: layoutEngine,
-            layout: layout,
             rendererFactory: rendererFactory
         )
+        collectionViewLayout = layout
+        setItems(items: items)
     }
     
     public init(
         items: ZipList<CarouselItemProperties<ActionType>>?,
-        layoutEngine: LayoutEngine, layout: UICollectionViewLayout,
+        layoutEngine: LayoutEngine,
+        layout: UICollectionViewLayout,
         rendererFactory: @escaping CustomComponentRendererFactory,
         onSelectionChange: @escaping (ZipListShiftOperation) -> ActionType?) {
         
@@ -53,15 +54,17 @@ public final class PortalCarouselView<
             selectedIndex = Int(items.centerIndex)
             self.onSelectionChange = onSelectionChange
             super.init(
-                items: items.map(transform),
                 layoutEngine: layoutEngine,
-                layout: layout,
                 rendererFactory: rendererFactory
             )
+            collectionViewLayout = layout
+            setItems(items: items.map(transform))
             scrollToItem(self.selectedIndex, animated: false)
         } else {
             self.onSelectionChange = onSelectionChange
-            super.init(items: [], layoutEngine: layoutEngine, layout: layout, rendererFactory: rendererFactory)
+            super.init(layoutEngine: layoutEngine, rendererFactory: rendererFactory)
+            collectionViewLayout = layout
+            setItems(items: [])
         }
         
     }

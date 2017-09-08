@@ -26,41 +26,81 @@ internal struct CollectionRenderer<
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let collectionView = PortalCollectionView(
-            items: properties.items,
             layoutEngine: layoutEngine,
-            layout: createFlowLayout(),
             rendererFactory: rendererFactory
         )
-        
+
         collectionView.isDebugModeEnabled = isDebugModeEnabled
-        collectionView.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator
-        collectionView.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator
+        let changeSet = CollectionChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
         
-        collectionView.apply(style: style.base)
-        layoutEngine.apply(layout: layout, to: collectionView)
-        
-        return Render(view: collectionView, mailbox: collectionView.mailbox)
+        return collectionView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }
     
-    func createFlowLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: CGFloat(properties.itemsWidth), height: CGFloat(properties.itemsHeight))
-        layout.minimumInteritemSpacing = CGFloat(properties.minimumInteritemSpacing)
-        layout.minimumLineSpacing = CGFloat(properties.minimumLineSpacing)
-        layout.sectionInset = UIEdgeInsets(
-            top: CGFloat(properties.sectionInset.top),
-            left: CGFloat(properties.sectionInset.left),
-            bottom: CGFloat(properties.sectionInset.bottom),
-            right: CGFloat(properties.sectionInset.right)
-        )
+}
+
+extension PortalCollectionView: MessageForwarder {
+    
+    func apply(
+        changeSet: CollectionChangeSet<ActionType>,
+        layoutEngine: LayoutEngine) -> Render<ActionType> {
         
-        switch properties.scrollDirection {
-        case .horizontal:
-            layout.scrollDirection = .horizontal
-        default:
-            layout.scrollDirection = .vertical
-        }
+        apply(changeSet: changeSet.properties)
+        apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        return layout
+        return Render<ActionType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
+    
+}
+
+fileprivate extension PortalCollectionView {
+    
+    fileprivate func apply(changeSet: [CollectionProperties<ActionType>.Property]) {
+        let layout = UICollectionViewFlowLayout()
+
+        for propertiy in changeSet {
+            switch propertiy {
+                
+            case .items(let items):
+                setItems(items: items)
+                reloadData()
+                
+            case .itemsSize(let itemsSize):
+                layout.itemSize = CGSize(width: CGFloat(itemsSize.width), height: CGFloat(itemsSize.height))
+                
+            case .minimumInteritemSpacing(let minimumInteritemSpacing):
+                layout.minimumInteritemSpacing = CGFloat(minimumInteritemSpacing)
+                
+            case .minimumLineSpacing(let minimumLineSpacing):
+                layout.minimumLineSpacing = CGFloat(minimumLineSpacing)
+                
+            case .scrollDirection(let scrollDirection):
+                switch scrollDirection {
+                
+                case .horizontal:
+                    layout.scrollDirection = .horizontal
+                
+                case .vertical:
+                    layout.scrollDirection = .vertical
+                }
+                
+            case .sectionInset(let sectionInset):
+                layout.sectionInset = UIEdgeInsets(
+                    top: CGFloat(sectionInset.top),
+                    left: CGFloat(sectionInset.left),
+                    bottom: CGFloat(sectionInset.bottom),
+                    right: CGFloat(sectionInset.right)
+                )
+                
+            case .showsHorizontalScrollIndicator(let showsHorizontalScrollIndicator):
+                self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
+                
+            case .showsVerticalScrollIndicator(let showsVerticalScrollIndicator):
+                self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
+            }
+        }
+
+        collectionViewLayout = layout
+    }
+    
 }
