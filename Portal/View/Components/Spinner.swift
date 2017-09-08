@@ -13,7 +13,7 @@ public func spinner<MessageType>(
     return .spinner(isActive, style, layout)
 }
 
-public struct SpinnerStyleSheet {
+public struct SpinnerStyleSheet: AutoPropertyDiffable {
     
     public static let defaultStyleSheet = StyleSheet<SpinnerStyleSheet>(component: SpinnerStyleSheet())
     
@@ -32,4 +32,38 @@ public func spinnerStyleSheet(
     var custom = SpinnerStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: - Change Set
+
+internal struct SpinnerChangeSet {
+    
+    static func fullChangeSet(
+        isActive: Bool,
+        style: StyleSheet<SpinnerStyleSheet>,
+        layout: Layout) -> SpinnerChangeSet {
+        return SpinnerChangeSet(
+            isActive: PropertyChange.change(to: isActive),
+            baseStyleSheet: style.base.fullChangeSet,
+            spinnerStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let isActive: PropertyChange<Bool>
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let spinnerStyleSheet: [SpinnerStyleSheet.Property]
+    let layout: [Layout.Property]
+
+    init(
+        isActive: PropertyChange<Bool> = .noChange,
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        spinnerStyleSheet: [SpinnerStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.isActive = isActive
+        self.baseStyleSheet = baseStyleSheet
+        self.spinnerStyleSheet = spinnerStyleSheet
+        self.layout = layout
+    }
+    
 }

@@ -46,6 +46,7 @@ enum Route: Portal.Route {
     case mapExample
     case progressExample
     case segmentedExample
+    case spinnerExample
     
     var previous: Route? {
         switch self {
@@ -73,6 +74,8 @@ enum Route: Portal.Route {
             return .examples
         case .segmentedExample:
             return .examples
+        case .spinnerExample:
+            return .examples
         }
     }
     
@@ -94,6 +97,7 @@ enum State {
     case mapExample
     case progressExample
     case segmentedExample(selected: UInt)
+    case spinnerExample
     
 }
 
@@ -209,6 +213,9 @@ final class ExampleApplication: Portal.Application {
         case (.examples, .routeChanged(.segmentedExample)):
             return (.segmentedExample(selected: 3), .none)
             
+        case (.examples, .routeChanged(.spinnerExample)):
+            return (.spinnerExample, .none)
+            
         // MARK:- Collection example state transitions
             
         case (.collectionExample, .routeChanged(.examples)):
@@ -245,6 +252,11 @@ final class ExampleApplication: Portal.Application {
             return (.segmentedExample(selected: index), .none)
             
         case (.segmentedExample, .routeChanged(.examples)):
+            return (.examples, .none)
+            
+        // MARK:- Spinner example state transitions
+            
+        case (.spinnerExample, .routeChanged(.examples)):
             return (.examples, .none)
             
         // MARK:- Miscelaneus state transitions
@@ -298,6 +310,9 @@ final class ExampleApplication: Portal.Application {
             
         case .mapExample:
             return MapScreen.view()
+        
+        case .spinnerExample:
+            return SpinnerScreen.view()
             
         case .progressExample:
             return ProgressScreen.view()
