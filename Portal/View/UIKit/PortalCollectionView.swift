@@ -24,28 +24,30 @@ public class PortalCollectionView<
     public var isDebugModeEnabled: Bool = false
     
     let layoutEngine: LayoutEngine
-    let items: [CollectionItemProperties<ActionType>]
+    var items: [CollectionItemProperties<ActionType>]
     let rendererFactory: CustomComponentRendererFactory
     
     public init(
-        items: [CollectionItemProperties<ActionType>],
         layoutEngine: LayoutEngine,
-        layout: UICollectionViewLayout,
         rendererFactory: @escaping CustomComponentRendererFactory) {
-        self.items = items
+        self.items = []
         self.layoutEngine = layoutEngine
         self.rendererFactory = rendererFactory
-        super.init(frame: .zero, collectionViewLayout: layout)
+        super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
    
         self.dataSource = self
         self.delegate = self
-        
-        let identifiers = Set(items.map { $0.identifier })
-        identifiers.forEach { register(CellType.self, forCellWithReuseIdentifier: $0) }
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    internal func setItems(items: [CollectionItemProperties<ActionType>]) {
+        self.items = items
+        
+        let identifiers = Set(items.map { $0.identifier })
+        identifiers.forEach { register(CellType.self, forCellWithReuseIdentifier: $0) }
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

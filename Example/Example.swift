@@ -93,7 +93,7 @@ enum State {
     case modalScreen(counter: UInt)
     case landscapeScreen(text: String, counter: UInt)
     case examples
-    case collectionExample
+    case collectionExample(color: Color)
     case textViewExample
     case textFieldExample
     case imageExample
@@ -197,7 +197,7 @@ final class ExampleApplication: Portal.Application {
             return (.started(date: .none, showAlert: false), .none)
             
         case (.examples, .routeChanged(.collectionExample)):
-            return (.collectionExample, .none)
+            return (.collectionExample(color: .black), .none)
         
         case (.examples, .routeChanged(.textViewExample)):
             return (.textViewExample, .none)
@@ -227,6 +227,12 @@ final class ExampleApplication: Portal.Application {
             
         case (.collectionExample, .routeChanged(.examples)):
             return (.examples, .none)
+        
+        case (.collectionExample(.white), .changeColor):
+            return (.collectionExample(color: .black), .none)
+            
+        case (.collectionExample(.black), .changeColor):
+            return (.collectionExample(color: .white), .none)
             
         // MARK:- TextView example state transitions
         
@@ -314,8 +320,8 @@ final class ExampleApplication: Portal.Application {
         case .examples:
             return ExamplesScreen.view()
         
-        case .collectionExample:
-            return CollectionScreen.view()
+        case .collectionExample(let color):
+            return CollectionScreen.view(color: color)
         
         case .textFieldExample:
             return TextFieldScreen.view()

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Size {
+public struct Size: AutoEquatable {
     
     public var width: UInt
     public var height: UInt
