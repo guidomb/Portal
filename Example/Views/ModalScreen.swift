@@ -23,17 +23,7 @@ enum ModalScreen {
             root: .stack(ExampleApplication.navigationBar(title: "Modal")),
             component: container(
                 children: [
-                    label(
-                        properties: properties(
-                            text: "Modal screen before layout",
-                            textAfterLayout: "Modal screen after layout"
-                        ),
-                        style: labelStyleSheet { base, label in
-                            base.backgroundColor = .clear
-                            label.textSize = 20
-                            label.textColor = .black
-                        }
-                    ),
+                    label(text: "Modal screen"),
                     textField(
                         properties: properties {
                             $0.text = "Example"
@@ -55,17 +45,7 @@ enum ModalScreen {
                         onTap: .dismissNavigator(thenSend: .none),
                         style: modalButtonStyleSheet
                     ),
-                    label(
-                        properties: properties(
-                            text: "Modal screen before layout",
-                            textAfterLayout: "Counter \(counter)"
-                        ),
-                        style: labelStyleSheet { base, label in
-                            base.backgroundColor = .clear
-                            label.textSize = 20
-                            label.textColor = .black
-                        }
-                    ),
+                    label(text: "Counter \(counter)"),
                     button(
                         text: "Increment!",
                         onTap: .sendMessage(.increment),
