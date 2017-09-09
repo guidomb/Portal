@@ -104,7 +104,7 @@ fileprivate extension UILabel {
 
 fileprivate extension UILabel {
     
-    fileprivate func maximumFontSize(forText text: String?, textAfterLayout: String?) -> CGFloat? {
+    fileprivate func maximumFontSizeForWidth() -> CGFloat? {
         guard let text = self.text else { return .none }
         return text.maximumFontSize(forWidth: self.frame.width, font: self.font)
     }
