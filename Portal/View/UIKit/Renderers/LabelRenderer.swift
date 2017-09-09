@@ -8,6 +8,8 @@
 
 import UIKit
 
+public let defaultLabelFontSize = UInt(UIFont.labelFontSize)
+
 internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     typealias ActionType = Action<RouteType, MessageType>
@@ -18,39 +20,88 @@ internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let label = UILabel()
-        label.text = properties.text
+        let changeSet = LabelChangeSet.fullChangeSet(properties: properties, styleSheet: style, layout: layout)
         
-        label.apply(style: style.base)
-        label.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: label)
+        return label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+    }
+    
+}
+
+extension UILabel {
+    
+    internal func apply<MessageType>(
+        changeSet: LabelChangeSet,
+        layoutEngine: LayoutEngine) -> Render<MessageType> {
         
-        return Render(view: label) {
-            if let textAfterLayout = self.properties.textAfterLayout, let size = label.maximumFontSizeForWidth() {
-                label.text = textAfterLayout
-                label.font = label.font.withSize(size)
-                label.adjustsFontSizeToFitWidth = false
-                label.minimumScaleFactor = 0.0
+        apply(changeSet: changeSet.properties)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.labelStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+        
+        return Render(view: self, mailbox: .none) {
+            for property in changeSet.properties {
+                guard case .textAfterLayout(.some(let textAfterLayout)) = property else { continue }
+                guard let size = self.maximumFontSizeForWidth() else { continue }
+                
+                self.text = textAfterLayout
+                self.font = self.font.withSize(size)
+                self.adjustsFontSizeToFitWidth = false
+                self.minimumScaleFactor = 0.0
+            }
+        }
+        
+    }
+    
+}
+
+fileprivate extension UILabel {
+    
+    fileprivate func apply(changeSet: [LabelProperties.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .text(let text):
+                self.text = text
+                
+            case .textAfterLayout:
+                continue
+            }
+        }
+    }
+    
+    fileprivate func apply(changeSet: [LabelStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .textAligment(let aligment):
+                self.textAlignment = aligment.asNSTextAligment
+                
+            case .textColor(let color):
+                self.textColor = color.asUIColor
+                
+            case .textFont(let font):
+                let fontSize = self.font?.pointSize ?? CGFloat(defaultLabelFontSize)
+                self.font = font.uiFont(withSize: fontSize)
+                
+            case .textSize(let textSize):
+                let fontName = self.font?.fontName
+                fontName |> { self.font = UIFont(name: $0, size: CGFloat(textSize)) }
+            
+            case .adjustToFitWidth(let adjustToFitWidth):
+                self.adjustsFontSizeToFitWidth = adjustToFitWidth
+                
+            case .numberOfLines(let numberOfLines):
+                self.numberOfLines = Int(numberOfLines)
+                
+            case .minimumScaleFactor(let minimumScaleFactor):
+                self.minimumScaleFactor = CGFloat(minimumScaleFactor)
             }
         }
     }
     
 }
 
-extension UILabel {
-    
-    fileprivate func apply(style: LabelStyleSheet) {
-        let size = CGFloat(style.textSize)
-        style.textFont.uiFont(withSize: size)     |> { self.font = $0 }
-        style.textColor                           |> { self.textColor = $0.asUIColor }
-        self.textAlignment = style.textAligment.asNSTextAligment
-        self.adjustsFontSizeToFitWidth = style.adjustToFitWidth
-        self.numberOfLines = Int(style.numberOfLines)
-        self.minimumScaleFactor = CGFloat(style.minimumScaleFactor)
-    }
-    
-}
-
-extension UILabel {
+fileprivate extension UILabel {
     
     fileprivate func maximumFontSizeForWidth() -> CGFloat? {
         guard let text = self.text else { return .none }

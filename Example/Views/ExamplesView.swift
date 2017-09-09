@@ -16,6 +16,7 @@ enum ExamplesScreen {
     static func view() -> View {
         let items: [TableItemProperties<Action>] = [
             collection(),
+            labelComponent(),
             textField(),
             textView(),
             image(),
@@ -49,6 +50,10 @@ fileprivate extension ExamplesScreen {
     
     fileprivate static func collection() -> TableItemProperties<Action> {
         return defaultCell(text: "Collection", route: .collectionExample)
+    }
+    
+    fileprivate static func labelComponent() -> TableItemProperties<Action> {
+        return defaultCell(text: "Label", route: .labelExample)
     }
     
     fileprivate static func textView() -> TableItemProperties<Action> {

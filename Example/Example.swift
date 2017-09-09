@@ -40,6 +40,7 @@ enum Route: Portal.Route {
     case landscape
     case examples
     case collectionExample
+    case labelExample
     case textViewExample
     case textFieldExample
     case imageExample
@@ -63,6 +64,8 @@ enum Route: Portal.Route {
         case .examples:
             return .root
         case .collectionExample:
+            return .examples
+        case .labelExample:
             return .examples
         case .textViewExample:
             return .examples
@@ -97,6 +100,7 @@ enum State {
     case landscapeScreen(text: String, counter: UInt)
     case examples
     case collectionExample(color: Color)
+    case labelExample
     case textViewExample
     case textFieldExample
     case imageExample
@@ -203,6 +207,9 @@ final class ExampleApplication: Portal.Application {
         case (.examples, .routeChanged(.collectionExample)):
             return (.collectionExample(color: .black), .none)
         
+        case (.examples, .routeChanged(.labelExample)):
+            return (.labelExample, .none)
+            
         case (.examples, .routeChanged(.textViewExample)):
             return (.textViewExample, .none)
             
@@ -241,6 +248,11 @@ final class ExampleApplication: Portal.Application {
         case (.collectionExample(.black), .changeColor):
             return (.collectionExample(color: .white), .none)
             
+        // MARK:- Label example state transitions
+        
+        case (.labelExample, .routeChanged(.examples)):
+            return (.examples, .none)
+        
         // MARK:- TextView example state transitions
         
         case (.textViewExample, .routeChanged(.examples)):
@@ -340,6 +352,9 @@ final class ExampleApplication: Portal.Application {
         
         case .collectionExample(let color):
             return CollectionScreen.view(color: color)
+        
+        case .labelExample:
+            return LabelScreen.view()
         
         case .textFieldExample:
             return TextFieldScreen.view()

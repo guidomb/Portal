@@ -135,6 +135,8 @@
 		D802989E1F1EA74200436C6C /* TextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802989D1F1EA74200436C6C /* TextView.swift */; };
 		D80298A01F1EAA9D00436C6C /* TextViewRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */; };
 		D82F84EB1F152881007A4016 /* Shadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82F84EA1F152881007A4016 /* Shadow.swift */; };
+		E142FD761F61C7BB00F4F783 /* LabelScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13BE8C11F61C68700D806E0 /* LabelScreen.swift */; };
+		E16496A41F5495AD00E10237 /* LabelRendererSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = E16496A31F5495AD00E10237 /* LabelRendererSpec.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -327,6 +329,8 @@
 		D802989D1F1EA74200436C6C /* TextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextView.swift; sourceTree = "<group>"; };
 		D802989F1F1EAA9D00436C6C /* TextViewRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewRenderer.swift; sourceTree = "<group>"; };
 		D82F84EA1F152881007A4016 /* Shadow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shadow.swift; sourceTree = "<group>"; };
+		E13BE8C11F61C68700D806E0 /* LabelScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelScreen.swift; sourceTree = "<group>"; };
+		E16496A31F5495AD00E10237 /* LabelRendererSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LabelRendererSpec.swift; path = View/UIKit/Renderers/LabelRendererSpec.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -369,6 +373,7 @@
 			isa = PBXGroup;
 			children = (
 				464955651F560A520079ABD8 /* CollectionScreen.swift */,
+				E13BE8C11F61C68700D806E0 /* LabelScreen.swift */,
 				46A95EDF1F58348A0051C302 /* TextFieldScreen.swift */,
 				46A95EE11F5835470051C302 /* TextViewScreen.swift */,
 				46A95EE31F584C8C0051C302 /* ImageScreen.swift */,
@@ -692,6 +697,7 @@
 				46FAB55A1F5F477E0094DEA3 /* TableRendererSpec.swift */,
 				4684AEF41F63048B00D29431 /* CollectionRendererSpec.swift */,
 				4684AEF81F63348300D29431 /* CarouselRendererSpec.swift */,
+				E16496A31F5495AD00E10237 /* LabelRendererSpec.swift */,
 			);
 			name = Renderers;
 			sourceTree = "<group>";
@@ -992,6 +998,7 @@
 			files = (
 				46E670301F5EF7B8004F54C8 /* SpinnerRenderSpec.swift in Sources */,
 				46485DA01F4F0C9E0033C204 /* TextFieldRendererSpec.swift in Sources */,
+				E16496A41F5495AD00E10237 /* LabelRendererSpec.swift in Sources */,
 				9DD2FEDB1F361F78007D3606 /* ButtonRendererSpec.swift in Sources */,
 				469C4B551F56212D00C6D468 /* MapViewRendererSpec.swift in Sources */,
 				46485DA61F5458920033C204 /* TextViewRendererSpec.swift in Sources */,
@@ -1044,6 +1051,7 @@
 				469C4B571F582B4000C6D468 /* ExamplesView.swift in Sources */,
 				46E6702E1F5EF61D004F54C8 /* SpinnerScreen.swift in Sources */,
 				46A95EE21F5835480051C302 /* TextViewScreen.swift in Sources */,
+				E142FD761F61C7BB00F4F783 /* LabelScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
