@@ -21,7 +21,9 @@ protocol MessageProducer: MessageForwarder where Self : UIControl {
     
     func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType>
     
-    func on<MessageType>(event: UIControlEvents, sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType>
+    func on<MessageType>(
+        event: UIControlEvents,
+        sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType>
     
     func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents)
     
@@ -62,7 +64,10 @@ extension MessageProducer {
         return mailbox
     }
     
-    func on<MessageType>(event: UIControlEvents, sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType> {
+    func on<MessageType>(
+        event: UIControlEvents,
+        sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType> {
+        
         if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
             self.removeTarget(oldDispatcher, action: oldDispatcher.selector, for: event)
         }

@@ -55,6 +55,7 @@ extension PortalCollectionView: MessageForwarder {
 
 fileprivate extension PortalCollectionView {
     
+    // swiftlint:disable cyclomatic_complexity
     fileprivate func apply(changeSet: [CollectionProperties<ActionType>.Property]) {
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
 
@@ -102,5 +103,6 @@ fileprivate extension PortalCollectionView {
 
         collectionViewLayout = layout
     }
+    // swiftlint:enable cyclomatic_complexity
     
 }

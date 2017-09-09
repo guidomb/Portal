@@ -52,6 +52,7 @@ extension PortalCarouselView {
 
 fileprivate extension PortalCarouselView {
     
+    // swiftlint:disable cyclomatic_complexity
     fileprivate func apply(changeSet: [CarouselProperties<ActionType>.Property]) {
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
         
@@ -98,5 +99,6 @@ fileprivate extension PortalCarouselView {
         collectionViewLayout = layout
         showsVerticalScrollIndicator = false
     }
+    // swiftlint:enable cyclomatic_complexity
     
 }

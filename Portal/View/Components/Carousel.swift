@@ -132,12 +132,15 @@ public func properties<MessageType>(
     itemsHeight: UInt,
     items: ZipList<CarouselItemProperties<MessageType>>?,
     configure: (inout CarouselProperties<MessageType>) -> Void) -> CarouselProperties<MessageType> {
-    var properties = CarouselProperties<MessageType>(items: items, itemsSize: Size(width: itemsWidth, height: itemsHeight))
+    var properties = CarouselProperties<MessageType>(
+        items: items,
+        itemsSize: Size(width: itemsWidth, height: itemsHeight)
+    )
     configure(&properties)
     return properties
 }
 
-// Mark: - ChangeSet
+// MARK: - ChangeSet
 
 internal struct CarouselChangeSet<MessageType> {
     
