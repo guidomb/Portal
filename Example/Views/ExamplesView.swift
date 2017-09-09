@@ -23,7 +23,8 @@ enum ExamplesScreen {
             progress(),
             segment(),
             spinner(),
-            tableView()
+            tableView(),
+            carouselView()
         ]
         
         return View(
@@ -80,6 +81,10 @@ fileprivate extension ExamplesScreen {
     
     fileprivate static func tableView() -> TableItemProperties<Action> {
         return defaultCell(text: "Table", route: .tableExample)
+    }
+    
+    fileprivate static func carouselView() -> TableItemProperties<Action> {
+        return defaultCell(text: "Carousel", route: .carouselExample)
     }
     
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {

@@ -29,16 +29,17 @@ public extension ZipList {
     
 }
 
-public struct CarouselProperties<MessageType> {
+public struct CarouselProperties<MessageType>: AutoPropertyDiffable {
     
+    // sourcery: skipDiff
     public var items: ZipList<CarouselItemProperties<MessageType>>?
     public var showsScrollIndicator: Bool
     public var isSnapToCellEnabled: Bool
+    // sourcery: skipDiff
     public var onSelectionChange: (ZipListShiftOperation) -> MessageType?
     
     // Layout properties
-    public var itemsWidth: UInt
-    public var itemsHeight: UInt
+    public var itemsSize: Size
     public var minimumInteritemSpacing: UInt
     public var minimumLineSpacing: UInt
     public var sectionInset: SectionInset
@@ -47,8 +48,7 @@ public struct CarouselProperties<MessageType> {
         items: ZipList<CarouselItemProperties<MessageType>>?,
         showsScrollIndicator: Bool = false,
         isSnapToCellEnabled: Bool = false,
-        itemsWidth: UInt,
-        itemsHeight: UInt,
+        itemsSize: Size,
         minimumInteritemSpacing: UInt = 0,
         minimumLineSpacing: UInt = 0,
         sectionInset: SectionInset = .zero,
@@ -57,8 +57,7 @@ public struct CarouselProperties<MessageType> {
         self.items = items
         self.showsScrollIndicator = showsScrollIndicator
         self.isSnapToCellEnabled = isSnapToCellEnabled
-        self.itemsWidth = itemsWidth
-        self.itemsHeight = itemsHeight
+        self.itemsSize = itemsSize
         self.minimumLineSpacing = minimumLineSpacing
         self.minimumInteritemSpacing = minimumInteritemSpacing
         self.sectionInset = sectionInset
@@ -71,8 +70,7 @@ public struct CarouselProperties<MessageType> {
             items: self.items.map { $0.map { $0.map(transform) } },
             showsScrollIndicator: self.showsScrollIndicator,
             isSnapToCellEnabled: self.isSnapToCellEnabled,
-            itemsWidth: self.itemsWidth,
-            itemsHeight: self.itemsHeight,
+            itemsSize: self.itemsSize,
             minimumInteritemSpacing: self.minimumInteritemSpacing,
             minimumLineSpacing: self.minimumLineSpacing,
             sectionInset: self.sectionInset,
@@ -134,7 +132,36 @@ public func properties<MessageType>(
     itemsHeight: UInt,
     items: ZipList<CarouselItemProperties<MessageType>>?,
     configure: (inout CarouselProperties<MessageType>) -> Void) -> CarouselProperties<MessageType> {
-    var properties = CarouselProperties<MessageType>(items: items, itemsWidth: itemsWidth, itemsHeight: itemsHeight)
+    var properties = CarouselProperties<MessageType>(items: items, itemsSize: Size(width: itemsWidth, height: itemsHeight))
     configure(&properties)
     return properties
+}
+
+// Mark: - ChangeSet
+
+internal struct CarouselChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: CarouselProperties<MessageType>,
+        style: StyleSheet<EmptyStyleSheet>,
+        layout: Layout) -> CarouselChangeSet<MessageType> {
+        return CarouselChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [CarouselProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    init(
+        properties: [CarouselProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.layout = layout
+    }
 }
