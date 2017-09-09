@@ -56,7 +56,7 @@ extension PortalCollectionView: MessageForwarder {
 fileprivate extension PortalCollectionView {
     
     fileprivate func apply(changeSet: [CollectionProperties<ActionType>.Property]) {
-        let layout = UICollectionViewFlowLayout()
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
 
         for propertiy in changeSet {
             switch propertiy {
