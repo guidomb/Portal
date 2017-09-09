@@ -40,14 +40,13 @@ extension UILabel {
         
         return Render(view: self, mailbox: .none) {
             for property in changeSet.properties {
-                switch property {
+                guard case .textAfterLayout(.some(let textAfterLayout)) = property else { continue }
+                guard let size = self.maximumFontSizeForWidth() else { continue }
                 
-                case .text:
-                    break
-                    
-                case .textAfterLayout(let text):
-                    self.text = text
-                }
+                self.text = textAfterLayout
+                self.font = self.font.withSize(size)
+                self.adjustsFontSizeToFitWidth = false
+                self.minimumScaleFactor = 0.0
             }
         }
         
