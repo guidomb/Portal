@@ -64,7 +64,7 @@ fileprivate extension UILabel {
                 self.text = text
                 
             case .textAfterLayout:
-                break
+                continue
             }
         }
     }
