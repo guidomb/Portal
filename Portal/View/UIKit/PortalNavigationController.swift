@@ -29,8 +29,15 @@ public final class PortalNavigationController<
     
     internal let internalMailbox = Mailbox<InternalActionType>()
     
-    public var topController: ContentControllerType? {
-        return self.topViewController as? ContentControllerType
+    public var topController: ContentControllerType {
+        // This force case is safe because PortalNavigationController
+        // only supports PortalViewController as child controllers.
+        //
+        // If this force cast fails it means that somebody somehow
+        // pushed a view controller that does not inherit from
+        // PortalViewController into the navigation stack.
+        // That is bad!!! Really bad!
+        return self.topViewController as! ContentControllerType // swiftlint:disable:this force_cast
     }
     
     public private(set) var isPopingTopController = false

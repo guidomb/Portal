@@ -5,6 +5,7 @@
 //  Created by Guido Marucci Blas on 3/14/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
+// swiftlint:disable file_length
 
 import UIKit
 
@@ -62,7 +63,21 @@ public final class UIKitApplicationRenderer<
     }
     
     public func render(view: ViewType, completion: @escaping () -> Void) {
-        executeInMainThread(self.forwardee.render(view: view, completion: completion))
+        switch renderingAction(for: view) {
+            
+        case .skipRendering:
+            completion()
+            
+        case .presentAlert(let properties):
+            executeInMainThread(self.forwardee.present(alert: properties, completion: completion))
+            
+        case .executeRendering(let rendering):
+            DispatchQueue.main.async {
+                rendering()
+                completion()
+            }
+            
+        }
     }
     
     public func present(view: ViewType, completion: @escaping () -> Void) {
@@ -85,6 +100,10 @@ public final class UIKitApplicationRenderer<
 
 fileprivate extension UIKitApplicationRenderer {
     
+    fileprivate var visibleController: ComponentController<MessageType, RouteType, CustomComponentRendererType>? {
+        return forwardee.window.visibleController
+    }
+    
     fileprivate func executeInMainThread(_ code: @escaping @autoclosure () -> Void) {
         if Thread.isMainThread {
             code()
@@ -92,7 +111,71 @@ fileprivate extension UIKitApplicationRenderer {
             DispatchQueue.main.async { code() }
         }
     }
+    
+    fileprivate func renderingAction(for view: ViewType) -> ComponentRenderingAction<ActionType> {
+        switch view.content {
+            
+        case .component(let component):
+            if let action = renderingAction(for: component, with: view.root) {
+                return action
+            } else {
+                return .executeRendering({ self.forwardee.setRootController(for: view) })
+            }
+            
+        case .alert(properties: let properties):
+            return .presentAlert(properties: properties)
+            
+        }
+    }
+    
+    fileprivate func renderingAction(
+        for component: Component<ActionType>,
+        with rootComponent: RootComponent<ActionType>) -> ComponentRenderingAction<ActionType>? {
+        
+        switch (visibleController, rootComponent) {
+            
+        case (.some(.single(let controller)), .simple):
+            // It is really important to calculate change set
+            // off the main thread. This could be a computationally
+            // intensive task and we don't want to block the main
+            // thread while doing it.
+            let changeSet = controller.component.changeSet(for: component)
+            return .executeRendering({ controller.render(changeSet: changeSet) })
+            
+        case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
+            guard !navigationController.isPopingTopController else {
+                // We can safely skip rendering this view because the navigation
+                // controller is in the middle of poping the top view controller
+                // and it does not make any sense to update a view that it is
+                // being destroyed.
+                print("Rendering skipped because controller is being poped")
+                return .skipRendering
+            }
+            let topController = navigationController.topController
+            // It is really important to calculate change set
+            // off the main thread. This could be a computationally
+            // intensive task and we don't want to block the main
+            // thread while doing it.
+            let changeSet = topController.component.changeSet(for: component)
+            return .executeRendering({
+                topController.render(changeSet: changeSet)
+                // TODO apply diff to navigation bar
+                navigationController.render(navigationBar: navigationBar, inside: topController.navigationItem)
+            })
+            
+        default:
+            return .none
+        }
+    }
 
+}
+
+fileprivate enum ComponentRenderingAction<MessageType> {
+    
+    case skipRendering
+    case executeRendering(() -> Void)
+    case presentAlert(properties: AlertProperties<MessageType>)
+    
 }
 
 fileprivate enum ComponentController<
@@ -243,43 +326,7 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
     
 }
 
-extension MainThreadUIKitApplicationRenderer: ApplicationRenderer {
-    
-    fileprivate func render(view: ViewType, completion: @escaping () -> Void) {
-        switch view.content {
-            
-        case .component(let component):
-            switch (window.visibleController, view.root) {
-                
-            case (.some(.single(let controller)), .simple):
-                controller.component = component
-                controller.render()
-                
-            case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
-                guard !navigationController.isPopingTopController else {
-                    print("Rendering skipped because controller is being poped")
-                    break
-                }
-                guard let topController = navigationController.topController else {
-                    // TODO better handle this case
-                    break
-                }
-                topController.component = component
-                topController.render()
-                navigationController.render(navigationBar: navigationBar, inside: topController.navigationItem)
-                
-            default:
-                setRootController(for: view)
-            }
-            
-            completion()
-            // TODO Handle case where window.visibleController.orientation != orientation
-            
-        case .alert(properties: let properties):
-            present(alert: properties, completion: completion)
-            
-        }
-    }
+extension MainThreadUIKitApplicationRenderer {
     
     fileprivate func present(view: ViewType, completion: @escaping () -> Void) {
         switch view.content {

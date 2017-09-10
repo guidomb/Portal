@@ -28,6 +28,8 @@ public protocol Renderer {
     
     var isDebugModeEnabled: Bool { get set }
     
+    func apply(changeSet: ComponentChangeSet<MessageType>) -> Mailbox<MessageType>?
+    
     func render(component: Component<MessageType>) -> Mailbox<MessageType>
         
 }

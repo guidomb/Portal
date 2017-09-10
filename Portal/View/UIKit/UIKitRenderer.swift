@@ -112,6 +112,12 @@ public struct UIKitComponentRenderer<
 
         return renderResult.mailbox ?? Mailbox<ActionType>()
     }
+    
+    public func apply(changeSet: ComponentChangeSet<ActionType>) -> Mailbox<ActionType>? {
+        
+        // TODO implement me!
+        return .none
+    }
 
 }
 

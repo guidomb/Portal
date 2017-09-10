@@ -21,7 +21,6 @@ public final class PortalViewController<
 
     internal typealias InternalActionType = InternalAction<RouteType, MessageType>
 
-    public var component: Component<ActionType>
     public let mailbox: Mailbox<ActionType>
     public var orientation: SupportedOrientations = .all
     
@@ -29,6 +28,7 @@ public final class PortalViewController<
     
     fileprivate var disposers: [String : () -> Void] = [:]
     
+    public private(set) var component: Component<ActionType>
     private let createRenderer: RendererFactory
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -81,6 +81,13 @@ public final class PortalViewController<
         let renderer = createRenderer(self)
         let componentMailbox = renderer.render(component: component)
         componentMailbox.forwardMap(to: internalMailbox) { .action($0) }
+    }
+    
+    public func render(changeSet: ComponentChangeSet<ActionType>) {
+        let renderer = createRenderer(self)
+        if let componentMailbox = renderer.apply(changeSet: changeSet) {
+            componentMailbox.forwardMap(to: internalMailbox) { .action($0) }
+        }
     }
     
 }
