@@ -95,7 +95,7 @@ public func segmentedStyleSheet(
 
 // MARK: - ChangeSet
 
-internal struct SegmentedChangeSet<MessageType> {
+public struct SegmentedChangeSet<MessageType> {
     
     static func fullChangeSet(
         segments: ZipList<SegmentProperties<MessageType>>,
@@ -103,25 +103,25 @@ internal struct SegmentedChangeSet<MessageType> {
         layout: Layout) -> SegmentedChangeSet<MessageType> {
         return SegmentedChangeSet(
             segments: .change(to: segments),
-            baseStyle: style.base.fullChangeSet,
-            segmentedStyle: style.component.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            segmentedStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }
     
     let segments: PropertyChange<ZipList<SegmentProperties<MessageType>>>
-    let baseStyle: [BaseStyleSheet.Property]
-    let segmentedStyle: [SegmentedStyleSheet.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let segmentedStyleSheet: [SegmentedStyleSheet.Property]
     let layout: [Layout.Property]
     
     init(
         segments: PropertyChange<ZipList<SegmentProperties<MessageType>>> = .noChange,
-        baseStyle: [BaseStyleSheet.Property] = [],
-        segmentedStyle: [SegmentedStyleSheet.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        segmentedStyleSheet: [SegmentedStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
         self.segments = segments
-        self.baseStyle = baseStyle
-        self.segmentedStyle = segmentedStyle
+        self.baseStyleSheet = baseStyleSheet
+        self.segmentedStyleSheet = segmentedStyleSheet
         self.layout = layout
     }
     

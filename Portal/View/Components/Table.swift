@@ -153,7 +153,7 @@ public func tableStyleSheet(
 
 // MARK: - ChangeSet
 
-internal struct TableChangeSet<MessageType> {
+public struct TableChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: TableProperties<MessageType>,

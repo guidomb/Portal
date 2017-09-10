@@ -115,7 +115,7 @@ public func textFieldStyleSheet(
 
 // MARK: - Change set
 
-internal struct TextFieldChangeSet<MessageType> {
+public struct TextFieldChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: TextFieldProperties<MessageType>,

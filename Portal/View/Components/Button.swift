@@ -95,7 +95,7 @@ public func buttonStyleSheet(
 
 // MARK: - Change set
 
-internal struct ButtonChangeSet<MessageType> {
+public struct ButtonChangeSet<MessageType> {
  
     static func fullChangeSet(
         properties: ButtonProperties<MessageType>,

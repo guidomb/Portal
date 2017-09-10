@@ -36,7 +36,7 @@ public func spinnerStyleSheet(
 
 // MARK: - Change Set
 
-internal struct SpinnerChangeSet {
+public struct SpinnerChangeSet {
     
     static func fullChangeSet(
         isActive: Bool,

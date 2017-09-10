@@ -77,7 +77,7 @@ public func properties(configure: (inout MapProperties) -> Void) -> MapPropertie
 
 // MARK: - ChangeSet
 
-internal struct MapViewChangeSet {
+public struct MapViewChangeSet {
     
     static func fullChangeSet(
         properties: MapProperties,

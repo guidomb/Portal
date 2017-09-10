@@ -83,16 +83,16 @@ public func labelStyleSheet(
 
 // MARK: - Change set
 
-internal struct LabelChangeSet {
+public struct LabelChangeSet {
     
     static func fullChangeSet(
         properties: LabelProperties,
-        styleSheet: StyleSheet<LabelStyleSheet>,
+        style: StyleSheet<LabelStyleSheet>,
         layout: Layout) -> LabelChangeSet {
         return LabelChangeSet(
             properties: properties.fullChangeSet,
-            baseStyleSheet: styleSheet.base.fullChangeSet,
-            labelStyleSheet: styleSheet.component.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            labelStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }

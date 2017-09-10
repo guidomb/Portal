@@ -30,7 +30,7 @@ public func imageView<MessageType>(
 
 // MARK: - ChangeSet
 
-internal struct ImageViewChangeSet {
+public struct ImageViewChangeSet {
     
     static func fullChangeSet(
         image: Image,

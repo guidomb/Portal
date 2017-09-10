@@ -138,7 +138,7 @@ public func properties<MessageType>(
 
 // MARK: - ChangeSet
 
-internal struct CollectionChangeSet<MessageType> {
+public struct CollectionChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: CollectionProperties<MessageType>,

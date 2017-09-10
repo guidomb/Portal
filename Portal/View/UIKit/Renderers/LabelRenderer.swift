@@ -20,7 +20,7 @@ internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
     
     func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
         let label = UILabel()
-        let changeSet = LabelChangeSet.fullChangeSet(properties: properties, styleSheet: style, layout: layout)
+        let changeSet = LabelChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
         
         return label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
     }

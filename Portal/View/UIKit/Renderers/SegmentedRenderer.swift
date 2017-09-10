@@ -32,8 +32,8 @@ extension UISegmentedControl: MessageProducer {
     func apply<MessageType>(changeSet: SegmentedChangeSet<MessageType>,
                             layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(changeSet: changeSet.segments)
-        apply(changeSet: changeSet.baseStyle)
-        apply(changeSet: changeSet.segmentedStyle)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.segmentedStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
         return Render<MessageType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)

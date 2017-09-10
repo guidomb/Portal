@@ -142,7 +142,7 @@ public func properties<MessageType>(
 
 // MARK: - ChangeSet
 
-internal struct CarouselChangeSet<MessageType> {
+public struct CarouselChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: CarouselProperties<MessageType>,
