@@ -31,7 +31,9 @@ public struct ToggleProperties<MessageType> {
 
 public extension ToggleProperties {
     
-    public func map<NewMessageType>(_ transform: @escaping (MessageType) -> NewMessageType) -> ToggleProperties<NewMessageType> {
+    public func map<NewMessageType>(
+        _ transform: @escaping (MessageType) -> NewMessageType
+        ) -> ToggleProperties<NewMessageType> {
         return ToggleProperties<NewMessageType>(
             isOn: self.isOn,
             isActive: self.isActive,
@@ -46,7 +48,7 @@ public func toggle<MessageType>(
         isOn: Bool,
         onSwitch: @escaping (Bool) -> MessageType? = { _ in return .none },
         style: StyleSheet<ToggleStyleSheet> = ToggleStyleSheet.defaultStyleSheet,
-        layout: Layout = layout()) -> Component<MessageType>{
+        layout: Layout = layout()) -> Component<MessageType> {
     return .toggle(ToggleProperties<MessageType>(isOn: isOn, onSwitch: onSwitch), style, layout)
 }
 
@@ -91,4 +93,3 @@ public func toggleStyleSheet(
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
 }
-
