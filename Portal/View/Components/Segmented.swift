@@ -114,6 +114,13 @@ public struct SegmentedChangeSet<MessageType> {
     let segmentedStyleSheet: [SegmentedStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        guard case .noChange = segments else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                segmentedStyleSheet.isEmpty &&
+                layout.isEmpty
+    }
+    
     init(
         segments: PropertyChange<ZipList<SegmentProperties<MessageType>>> = .noChange,
         baseStyleSheet: [BaseStyleSheet.Property] = [],

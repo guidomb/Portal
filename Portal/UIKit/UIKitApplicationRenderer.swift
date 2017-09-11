@@ -298,15 +298,11 @@ fileprivate final class MainThreadUIKitApplicationRenderer<
         for component: Component<ActionType>,
         orientation: SupportedOrientations) -> ControllerType {
         
-        let controller: ControllerType =  ControllerType(component: component) { container in
-            var renderer = ComponentRenderer(
-                containerView: container.containerView,
-                layoutEngine: self.layoutEngine,
-                rendererFactory: { [unowned container] in self.rendererFactory(container) }
-            )
-            renderer.isDebugModeEnabled = self.isDebugModeEnabled
-            return renderer
-        }
+        let controller: ControllerType =  ControllerType(
+            component: component,
+            layoutEngine: self.layoutEngine,
+            customComponentRendererFactory: self.rendererFactory
+        )
         controller.orientation = orientation
         
         return controller

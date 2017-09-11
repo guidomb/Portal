@@ -102,6 +102,13 @@ public struct LabelChangeSet {
     let labelStyleSheet: [LabelStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                labelStyleSheet.isEmpty     &&
+                layout.isEmpty
+    }
+    
     init(
         properties: [LabelProperties.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],

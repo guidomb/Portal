@@ -8,69 +8,6 @@
 
 import UIKit
 
-public protocol ContainerController: class {
-
-    var containerView: UIView { get }
-
-    func attachChildController(_ controller: UIViewController)
-
-    func registerDisposer(for identifier: String, disposer: @escaping () -> Void)
-
-}
-
-extension ContainerController where Self: UIViewController {
-
-    public var containerView: UIView {
-        return self.view
-    }
-
-    public func attachChildController(_ controller: UIViewController) {
-        guard controller.parent == self else { return }
-
-        controller.willMove(toParentViewController: self)
-        self.addChildViewController(controller)
-        controller.didMove(toParentViewController: self)
-    }
-
-}
-
-public struct CustomComponentDescription {
-
-    public let identifier: String
-    public let information: [String : Any]
-    public let style: StyleSheet<EmptyStyleSheet>
-    public let layout: Layout
-
-}
-
-public protocol UIKitCustomComponentRenderer {
-
-    associatedtype MessageType
-    associatedtype RouteType: Route
-
-    init(container: ContainerController)
-
-    func renderComponent(
-        _ componentDescription: CustomComponentDescription,
-        inside view: UIView,
-        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void)
-
-}
-
-public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitCustomComponentRenderer {
-
-    public init(container: ContainerController) {
-
-    }
-
-    public func renderComponent(
-        _ componentDescription: CustomComponentDescription,
-        inside view: UIView,
-        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void) {
-
-    }
-}
-
 public struct UIKitComponentRenderer<
     MessageType,
     RouteType,
@@ -81,44 +18,182 @@ public struct UIKitComponentRenderer<
 
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
     public typealias ActionType = Action<RouteType, MessageType>
+    
+    typealias TableView = PortalTableView<MessageType, RouteType, CustomComponentRendererType>
+    typealias CollectionView = PortalCollectionView<MessageType, RouteType, CustomComponentRendererType>
+    typealias CarouselView = PortalCarouselView<MessageType, RouteType, CustomComponentRendererType>
 
-    public var isDebugModeEnabled: Bool = false
+    public var isDebugModeEnabled = true
+    public var debugConfiguration = RendererDebugConfiguration()
 
-    internal let layoutEngine: LayoutEngine
-    internal let rendererFactory: CustomComponentRendererFactory
-
-    private let containerView: UIView
-
+    fileprivate let layoutEngine: LayoutEngine
+    fileprivate let rendererFactory: CustomComponentRendererFactory
+    
     public init(
-        containerView: UIView,
         layoutEngine: LayoutEngine = YogaLayoutEngine(),
         rendererFactory: @escaping CustomComponentRendererFactory) {
-        self.containerView = containerView
         self.rendererFactory = rendererFactory
         self.layoutEngine = layoutEngine
     }
 
-    public func render(component: Component<ActionType>) -> Mailbox<ActionType> {
-        containerView.subviews.forEach { $0.removeFromSuperview() }
-        let renderer = ComponentRenderer(component: component, rendererFactory: rendererFactory)
-        let renderResult = renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
-        renderResult.view.managedByPortal = true
-        layoutEngine.layout(view: renderResult.view, inside: containerView)
-        renderResult.afterLayout?()
-
-        if isDebugModeEnabled {
-            renderResult.view.safeTraverse { $0.addDebugFrame() }
-        }
-
-        return renderResult.mailbox ?? Mailbox<ActionType>()
+    public func render(component: Component<ActionType>, into containerView: UIView) -> Mailbox<ActionType> {
+        apply(changeSet: component.fullChangeSet, to: containerView)
+        return containerView.getMailbox()
     }
     
-    public func apply(changeSet: ComponentChangeSet<ActionType>) -> Mailbox<ActionType>? {
+    public func apply(changeSet: ComponentChangeSet<ActionType>, to containerView: UIView) {
+        let view = containerView.subviews.first ?? UIView.with(parent: containerView)
+        let renderResult = render(changeSet: changeSet, into: view)
+        layoutEngine.executeLayout(for: containerView)
+        renderResult.afterLayout?()
         
-        // TODO implement me!
-        return .none
+        if isShowViewFrame {
+            renderResult.view.safeTraverse { $0.addDebugFrame() }
+        }
     }
+    
+}
 
+extension UIKitComponentRenderer {
+    
+    var isShowViewChangeAnimation: Bool {
+        return isDebugModeEnabled &&  debugConfiguration.showViewChangeAnimation
+    }
+    
+    var isShowViewFrame: Bool {
+        return isDebugModeEnabled &&  debugConfiguration.showViewFrame
+    }
+    
+    // swiftlint:disable cyclomatic_complexity function_body_length
+    fileprivate func render(changeSet: ComponentChangeSet<ActionType>, into view: UIView?) -> Render<ActionType> {
+        switch changeSet {
+            
+        case .button(let buttonChangeSet):
+            let button = castOrRelease(view: view, to: UIButton.self)
+            return button.apply(changeSet: buttonChangeSet, layoutEngine: layoutEngine)
+            
+        case .label(let labelChangeSet):
+            let label = castOrRelease(view: view, to: UILabel.self)
+            return label.apply(changeSet: labelChangeSet, layoutEngine: layoutEngine)
+            
+        case .mapView(let mapViewChangeSet):
+            let mapView = castOrRelease(view: view, to: PortalMapView.self)
+            return mapView.apply(changeSet: mapViewChangeSet, layoutEngine: layoutEngine)
+            
+        case .imageView(let imageViewChangeSet):
+            let imageView = castOrRelease(view: view, to: UIImageView.self)
+            return imageView.apply(changeSet: imageViewChangeSet, layoutEngine: layoutEngine)
+            
+        case .container(let containerChangeSet):
+            let containerView = view ?? UIView()
+            containerView.managedByPortal = true
+            return apply(changeSet: containerChangeSet, to: containerView)
+            
+        case .table(let tableChangeSet):
+            let table = castOrRelease(view: view, to: TableView.self)
+            return table.apply(changeSet: tableChangeSet, layoutEngine: layoutEngine)
+            
+        case .collection(let collectionChangeSet):
+            let collection = castOrRelease(view: view, to: CollectionView.self)
+            return collection.apply(changeSet: collectionChangeSet, layoutEngine: layoutEngine)
+            
+        case .carousel(let carouselChangeSet):
+            let carousel = castOrRelease(view: view, to: CarouselView.self)
+            return carousel.apply(changeSet: carouselChangeSet, layoutEngine: layoutEngine)
+            
+        case .touchable(let touchableChangeSet):
+            let result = render(changeSet: touchableChangeSet.child, into: view)
+            // TODO apply gesture recognizer to result?.view
+            return result
+            
+        case .segmented(let segmentedChangeSet):
+            let segmented = castOrRelease(view: view, to: UISegmentedControl.self)
+            return segmented.apply(changeSet: segmentedChangeSet, layoutEngine: layoutEngine)
+            
+        case .progress(let progressChangeSet):
+            let progress = castOrRelease(view: view, to: UIProgressView.self)
+            return progress.apply(changeSet: progressChangeSet, layoutEngine: layoutEngine)
+            
+        case .textField(let textFieldChangeSet):
+            let textField = castOrRelease(view: view, to: UITextField.self)
+            return textField.apply(changeSet: textFieldChangeSet, layoutEngine: layoutEngine)
+            
+        case .custom(let customComponentChangeSet):
+            let containerView = view ?? UIView()
+            containerView.managedByPortal = true
+            layoutEngine.apply(changeSet: customComponentChangeSet.layout, to: containerView)
+            containerView.apply(changeSet: customComponentChangeSet.baseStyleSheet)
+            let mailbox: Mailbox<ActionType> = containerView.getMailbox()
+            return Render(view: containerView, mailbox: mailbox) {
+                let renderer = self.rendererFactory()
+                renderer.apply(changeSet: customComponentChangeSet, inside: containerView, dispatcher: mailbox.dispatch)
+            }
+            
+        case .spinner(let spinnerChangeSet):
+            let spinner = castOrRelease(view: view, to: UIActivityIndicatorView.self)
+            return spinner.apply(changeSet: spinnerChangeSet, layoutEngine: layoutEngine)
+            
+        case .textView(let textViewChangeSet):
+            let textView = castOrRelease(view: view, to: UITextView.self)
+            return textView.apply(changeSet: textViewChangeSet, layoutEngine: layoutEngine)
+            
+        }
+    }
+    // swiftlint:enable cyclomatic_complexity function_body_length
+    
+    fileprivate func apply(changeSet: ContainerChangeSet<ActionType>, to view: UIView) -> Render<ActionType> {
+        var afterLayoutTasks = [AfterLayoutTask]()
+        afterLayoutTasks.reserveCapacity(changeSet.childrenCount)
+        let reuseSubviews = view.subviews.count == changeSet.childrenCount
+        let subviews: [UIView?]
+        
+        if reuseSubviews {
+            subviews = view.subviews
+        } else {
+            view.subviews.forEach { $0.removeFromSuperview() }
+            subviews = Array(repeating: .none, count: changeSet.childrenCount)
+        }
+        
+        let mailbox: Mailbox<ActionType> = view.getMailbox()
+        for (subview, childChangeSet) in zip(subviews, changeSet.children) {
+            let result = render(changeSet: childChangeSet, into: subview)
+            
+            if !reuseSubviews || result.view !== subview {
+                result.view.managedByPortal = true
+                // TODO This should not be added it should replace the current
+                // view if needed
+                view.addSubview(result.view)
+                result.mailbox?.forward(to: mailbox)
+            }
+            
+            if isShowViewChangeAnimation && !changeSet.isEmpty {
+                result.view.addChangeDebugAnimation()
+            }
+
+            result.afterLayout |> { afterLayoutTasks.append($0) }
+        }
+        
+        view.apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: view)
+        
+        return Render(view: view, mailbox: mailbox) {
+            afterLayoutTasks.forEach { $0() }
+        }
+    }
+    
+    fileprivate func castOrRelease<SpecificView: UIView>(
+        view: UIView?,
+        to viewType: SpecificView.Type) -> SpecificView {
+        
+        if view != nil && view is SpecificView {
+            return view as! SpecificView //swiftlint:disable:this force_cast
+        } else {
+            view?.removeFromSuperview()
+            let newView = SpecificView()
+            return newView
+        }
+    }
+    
 }
 
 internal typealias AfterLayoutTask = () -> Void

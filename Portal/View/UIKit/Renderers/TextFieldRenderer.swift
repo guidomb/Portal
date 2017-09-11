@@ -10,23 +10,6 @@ import UIKit
 
 public let defaultTextFieldFontSize = UInt(UIFont.systemFontSize)
 
-internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: TextFieldProperties<ActionType>
-    let style: StyleSheet<TextFieldStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let textField = UITextField()
-        let changeSet = TextFieldChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
-        
-        return textField.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
 extension UITextField: MessageProducer {
     
     internal func apply<MessageType>(

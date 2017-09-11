@@ -134,6 +134,13 @@ public struct TextFieldChangeSet<MessageType> {
     let textFieldStyleSheet: [TextFieldStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                textFieldStyleSheet.isEmpty &&
+                layout.isEmpty
+    }
+    
     init(
         properties: [TextFieldProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],

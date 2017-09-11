@@ -9,24 +9,7 @@
 import UIKit
 import MapKit
 
-internal struct MapViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: MapProperties
-    let style: StyleSheet<EmptyStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let mapView = PortalMapView()
-        let changeSet = MapViewChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
-        
-        return mapView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
-extension PortalMapView: MessageForwarder {
+extension PortalMapView {
     
     func apply<MessageType>(changeSet: MapViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(changeSet: changeSet.properties)

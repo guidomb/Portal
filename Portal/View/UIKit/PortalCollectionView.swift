@@ -16,23 +16,18 @@ public class PortalCollectionView<
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
-    public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
     public typealias ActionType = Action<RouteType, MessageType>
-    public typealias CellType = PortalCollectionViewCell<MessageType, RouteType, CustomComponentRendererType>
+    public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     
     public let mailbox = Mailbox<ActionType>()
-    public var isDebugModeEnabled: Bool = false
     
-    let layoutEngine: LayoutEngine
     var items: [CollectionItemProperties<ActionType>]
-    let rendererFactory: CustomComponentRendererFactory
     
-    public init(
-        layoutEngine: LayoutEngine,
-        rendererFactory: @escaping CustomComponentRendererFactory) {
+    fileprivate let renderer: ComponentRenderer
+    
+    public init(renderer: ComponentRenderer) {
         self.items = []
-        self.layoutEngine = layoutEngine
-        self.rendererFactory = rendererFactory
+        self.renderer = renderer
         super.init(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
    
         self.dataSource = self
@@ -47,7 +42,7 @@ public class PortalCollectionView<
         self.items = items
         
         let identifiers = Set(items.map { $0.identifier })
-        identifiers.forEach { register(CellType.self, forCellWithReuseIdentifier: $0) }
+        identifiers.forEach { register(UICollectionViewCell.self, forCellWithReuseIdentifier: $0) }
     }
     
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -59,14 +54,12 @@ public class PortalCollectionView<
         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let item = items[indexPath.row]
-        if let cell = dequeueReusableCell(with: item.identifier, for: indexPath) {
-            cell.component = itemRender(at: indexPath)
-            cell.isDebugModeEnabled = isDebugModeEnabled
-            cell.render(layoutEngine: layoutEngine, rendererFactory: rendererFactory)
-            return cell
-        } else {
-            return UICollectionViewCell()
-        }
+        let cell = dequeueReusableCell(withReuseIdentifier: item.identifier, for: indexPath)
+        cell.forwardMailbox(to: mailbox)
+        let cellComponent = itemRender(at: indexPath)
+        _ = renderer.render(component: cellComponent, into: cell.contentView)
+        
+        return cell
     }
     
     public func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -81,15 +74,6 @@ public class PortalCollectionView<
 }
 
 fileprivate extension PortalCollectionView {
-
-    fileprivate func dequeueReusableCell(with identifier: String, for indexPath: IndexPath) -> CellType? {
-        if let cell = dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as? CellType {
-            cell.forward(to: mailbox)
-            return cell
-        } else {
-            return .none
-        }
-    }
     
     fileprivate func itemRender(at indexPath: IndexPath) -> Component<ActionType> {
         // TODO cache the result of calling renderer. Once the diff algorithm is implemented find a way to only
@@ -106,6 +90,27 @@ fileprivate extension PortalCollectionView {
         //
         let item = items[indexPath.row]
         return item.renderer()
+    }
+    
+}
+
+fileprivate let isMailboxForwardedTagValue = 10101
+
+fileprivate extension UICollectionViewCell {
+    
+    var isMailboxForwarded: Bool {
+        get {
+            return self.tag == isMailboxForwardedTagValue
+        }
+        set {
+            self.tag = newValue ? isMailboxForwardedTagValue : 0
+        }
+    }
+    
+    func forwardMailbox<MessageType>(to mailbox: Mailbox<MessageType>) {
+        guard !isMailboxForwarded else { return }
+        self.contentView.getMailbox().forward(to: mailbox)
+        self.isMailboxForwarded = true
     }
     
 }

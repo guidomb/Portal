@@ -9,24 +9,7 @@
 import UIKit
 
 public let defaultSegmentedFontSize = UInt(UIFont.systemFontSize)
-
-internal struct SegmentedRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let segments: ZipList<SegmentProperties<ActionType>>
-    let style: StyleSheet<SegmentedStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let segmentedControl = UISegmentedControl()
-        let changeSet = SegmentedChangeSet.fullChangeSet(segments: segments, style: style, layout: layout)
-        
-        return segmentedControl.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-    
+  
 extension UISegmentedControl: MessageProducer {
     
     func apply<MessageType>(changeSet: SegmentedChangeSet<MessageType>,
@@ -62,6 +45,9 @@ fileprivate extension UISegmentedControl {
     fileprivate func apply<MessageType>(changeSet: PropertyChange<ZipList<SegmentProperties<MessageType>>>) {
         guard case .change(let segments) = changeSet else { return }
         
+        // TODO avoid removing and reinserting segments if they
+        // did not change.
+        removeAllSegments()
         for (index, segment) in segments.enumerated() {
             switch segment.content {
                 

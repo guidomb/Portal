@@ -114,6 +114,13 @@ public struct ButtonChangeSet<MessageType> {
     let buttonStyleSheet: [ButtonStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                buttonStyleSheet.isEmpty    &&
+                layout.isEmpty
+    }
+    
     init(
         properties: [ButtonProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],

@@ -16,15 +16,15 @@ internal struct NavigationBarTitleRenderer<
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
-    typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
     typealias ActionType = Action<RouteType, MessageType>
+    typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     
-    let navigationBarTitle: NavigationBarTitle<ActionType>
-    let navigationItem: UINavigationItem
-    let navigationBarSize: CGSize
-    let rendererFactory: CustomComponentRendererFactory
+    let renderer: ComponentRenderer
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Mailbox<ActionType>? {
+    func render(
+        title navigationBarTitle: NavigationBarTitle<ActionType>,
+        into navigationItem: UINavigationItem,
+        navigationBarSize: CGSize) -> Mailbox<ActionType>? {
         switch navigationBarTitle {
             
         case .text(let title):
@@ -36,15 +36,14 @@ internal struct NavigationBarTitleRenderer<
             return .none
             
         case .component(let titleComponent):
-            let titleView = UIView(frame: CGRect(origin: .zero, size: navigationBarSize))
-            navigationItem.titleView = titleView
-            var renderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>(
-                containerView: titleView,
-                layoutEngine: layoutEngine,
-                rendererFactory: rendererFactory
-            )
-            renderer.isDebugModeEnabled = isDebugModeEnabled
-            return renderer.render(component: titleComponent)
+            if let titleView = navigationItem.titleView {
+                renderer.apply(changeSet: titleComponent.fullChangeSet, to: titleView)
+                return .none
+            } else {
+                let titleView = UIView(frame: CGRect(origin: .zero, size: navigationBarSize))
+                navigationItem.titleView = titleView
+                return renderer.render(component: titleComponent, into: titleView)
+            }
         }
         
     }

@@ -155,6 +155,12 @@ public struct CollectionChangeSet<MessageType> {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                layout.isEmpty
+    }
+    
     init(
         properties: [CollectionProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],

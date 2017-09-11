@@ -16,15 +16,12 @@ public final class PortalTableView<
     
 where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
-    public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
+    public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     public typealias ActionType = Action<RouteType, MessageType>
-    public typealias TableViewCell = PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType>
     
     public let mailbox = Mailbox<ActionType>()
-    public var isDebugModeEnabled: Bool = false
     
-    fileprivate let rendererFactory: CustomComponentRendererFactory
-    fileprivate let layoutEngine: LayoutEngine
+    fileprivate let renderer: ComponentRenderer
     fileprivate var items: [TableItemProperties<ActionType>] = []
     
     // Used to cache cell actual height after rendering table
@@ -32,12 +29,9 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     // cells have dynamic height.
     fileprivate var cellHeights: [CGFloat?] = []
     
-    public init(
-        layoutEngine: LayoutEngine,
-        rendererFactory: @escaping CustomComponentRendererFactory) {
-        self.rendererFactory = rendererFactory
-        self.layoutEngine = layoutEngine
-        
+    public init(renderer: ComponentRenderer) {
+        self.renderer = renderer
+
         super.init(frame: .zero, style: .plain)
         
         self.dataSource = self
@@ -60,10 +54,10 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.row]
         let cellRender = itemRender(at: indexPath)
-        let cell = dequeueReusableCell(with: cellRender.typeIdentifier)
-        cell.component = cellRender.component
+        let cellComponent = cellRender.component
+        let cell = reusableCell(for: cellRender.typeIdentifier)
         
-        let componentHeight = cell.component?.layout.height
+        let componentHeight = cellComponent.layout.height
         if componentHeight?.value == .none && componentHeight?.maximum == .none {
             print(  "WARNING: Table item component with identifier '\(cellRender.typeIdentifier)' does not " +
                     "specify layout height! You need to either set layout.height.value or layout.height.maximum")
@@ -80,8 +74,10 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
         }
         
         cell.selectionStyle = item.onTap.map { _ in item.selectionStyle.asUITableViewCellSelectionStyle } ?? .none
-        cell.isDebugModeEnabled = isDebugModeEnabled
-        cell.render()
+        // Returned mailbox was forwarded once the cell was first created.
+        // That is why we can ignore render's return value.
+        // Check `reusableCell(for:)`
+        _ = renderer.render(component: cellComponent, into: cell.contentView)
         
         // After rendering the cell, the parent view returned by rendering the
         // item component has the actual height calculated after applying layout.
@@ -108,18 +104,12 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
 
 fileprivate extension PortalTableView {
     
-    fileprivate func dequeueReusableCell(with identifier: String) ->
-        PortalTableViewCell<MessageType, RouteType, CustomComponentRendererType> {
-            
-        if let cell = dequeueReusableCell(withIdentifier: identifier) as? TableViewCell {
+    fileprivate func reusableCell(for identifier: String) -> UITableViewCell {
+        if let cell = dequeueReusableCell(withIdentifier: identifier) {
             return cell
         } else {
-            let cell = TableViewCell(
-                reuseIdentifier: identifier,
-                layoutEngine: layoutEngine,
-                rendererFactory: rendererFactory
-            )
-            cell.mailbox.forward(to: mailbox)
+            let cell = UITableViewCell(style: .default, reuseIdentifier: identifier)
+            cell.getMailbox().forward(to: mailbox)
             return cell
         }
     }

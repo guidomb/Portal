@@ -10,24 +10,7 @@ import UIKit
 
 public let defaultTextViewFontSize = UInt(UIFont.systemFontSize)
 
-internal struct TextViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let textType: Text
-    let style: StyleSheet<TextViewStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let textView = UITextView()
-        let changeSet = TextViewChangeSet.fullChangeSet(text: textType, style: style, layout: layout)
-        
-        return textView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
-extension UITextView: MessageForwarder {
+extension UITextView {
     
     func apply<MessageType>(changeSet: TextViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(changeSet: changeSet.baseStyleSheet)

@@ -8,26 +8,7 @@
 
 import UIKit
 
-internal struct SpinnerRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let isActive: Bool
-    let style: StyleSheet<SpinnerStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let spinner = UIActivityIndicatorView()
-        spinner.hidesWhenStopped = false
-        
-        let changeSet = SpinnerChangeSet.fullChangeSet(isActive: isActive, style: style, layout: layout)
-        
-        return spinner.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
-extension UIActivityIndicatorView: MessageForwarder {
+extension UIActivityIndicatorView {
 
     func apply<MessageType>(changeSet: SpinnerChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(isActive: changeSet.isActive)

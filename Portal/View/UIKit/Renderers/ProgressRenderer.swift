@@ -11,24 +11,7 @@ import UIKit
 public let defaultTrackColor = Color.gray
 public let defaultProgressColor = Color.blue
 
-internal struct ProgressRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let progress: ProgressCounter
-    let style: StyleSheet<ProgressStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let progressBar = UIProgressView()
-        let changeSet = ProgressChangeSet.fullChangeSet(progress: progress, style: style, layout: layout)
-        
-        return progressBar.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
-extension UIProgressView: MessageForwarder {
+extension UIProgressView {
     
     func apply<MessageType>(changeSet: ProgressChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(changeSet: changeSet.progress)

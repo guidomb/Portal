@@ -10,9 +10,7 @@ import UIKit
 
 public protocol LayoutEngine {
 
-    func layout(view: UIView, inside container: UIView)
-
-    func apply(layout: Layout, to view: UIView)
+    func executeLayout(for view: UIView)
 
     func apply(changeSet: [Layout.Property], to view: UIView)
 
@@ -20,20 +18,15 @@ public protocol LayoutEngine {
 
 internal struct YogaLayoutEngine: LayoutEngine {
 
-    func layout(view: UIView, inside container: UIView) {
-        container.yoga.isEnabled = true
-        container.yoga.width = container.bounds.size.width
-        container.yoga.height = container.bounds.size.height
-        container.addSubview(view)
-        container.yoga.applyLayout(preservingOrigin: true)
-    }
-
-    func apply(layout: Layout, to view: UIView) {
-        apply(changeSet: layout.fullChangeSet, to: view)
+    func executeLayout(for view: UIView) {
+        view.yoga.isEnabled = true
+        view.yoga.width = view.bounds.size.width
+        view.yoga.height = view.bounds.size.height
+        view.yoga.applyLayout(preservingOrigin: true)
     }
 
     // swiftlint:disable cyclomatic_complexity
-    func apply(changeSet: [Layout.Property], to view: UIView) {
+    func apply(changeSet: [Layout.Property], to view: UIView) {  
         view.yoga.isEnabled = true
         
         for property in changeSet {

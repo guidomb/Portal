@@ -103,6 +103,13 @@ public struct ProgressChangeSet {
     let progressStyleSheet: [ProgressStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        guard case .noChange = progress else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                progressStyleSheet.isEmpty  &&
+                layout.isEmpty
+    }
+    
     init(
         progress: PropertyChange<ProgressCounter>,
         baseStyleSheet: [BaseStyleSheet.Property] = [],

@@ -83,6 +83,13 @@ public struct TextViewChangeSet {
     let textViewStyleSheet: [TextViewStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        guard case .noChange = text else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                textViewStyleSheet.isEmpty  &&
+                layout.isEmpty
+    }
+    
     init(
         text: PropertyChange<Text> = .noChange,
         baseStyleSheet: [BaseStyleSheet.Property] = [],

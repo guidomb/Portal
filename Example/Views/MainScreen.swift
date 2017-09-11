@@ -26,7 +26,8 @@ enum MainScreen {
     }
     
     static func mainView(date: Date?) -> View {
-        return view(for:  container(
+        return view(for:
+            container(
                 children: [
                     button(
                         text: "Replace content",

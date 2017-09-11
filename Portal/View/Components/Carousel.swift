@@ -159,6 +159,12 @@ public struct CarouselChangeSet<MessageType> {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        return  properties.isEmpty      &&
+            baseStyleSheet.isEmpty      &&
+            layout.isEmpty
+    }
+    
     init(
         properties: [CarouselProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],

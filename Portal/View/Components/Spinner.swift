@@ -54,6 +54,13 @@ public struct SpinnerChangeSet {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let spinnerStyleSheet: [SpinnerStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        guard case .noChange = isActive else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                spinnerStyleSheet.isEmpty   &&
+                layout.isEmpty
+    }
 
     init(
         isActive: PropertyChange<Bool> = .noChange,

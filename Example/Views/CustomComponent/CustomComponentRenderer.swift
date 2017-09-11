@@ -54,6 +54,10 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
         }
     }
     
+    func apply(changeSet: CustomComponentChangeSet, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
+        print("Applying change set for custom component")
+    }
+    
 }
 
 func myCustomComponent(layout: Layout) -> Component<ExampleApplication.Action> {

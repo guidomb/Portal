@@ -172,6 +172,13 @@ public struct TableChangeSet<MessageType> {
     let tableStyleSheet: [TableStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                tableStyleSheet.isEmpty     &&
+                layout.isEmpty
+    }
+    
     init(
         properties: [TableProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],

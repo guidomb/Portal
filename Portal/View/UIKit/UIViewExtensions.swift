@@ -10,6 +10,12 @@ import UIKit
 
 internal extension UIView {
     
+    internal static func with(parent: UIView) -> UIView {
+        let view = UIView()
+        parent.addSubview(view)
+        return view
+    }
+    
     internal func safeTraverse(visitor: @escaping (UIView) -> Void) {
         guard self.managedByPortal else { return }
         
@@ -51,6 +57,20 @@ internal extension UIView {
         leftBorder(thickness: 1.0, color: .red)
         rightBorder(thickness: 1.0, color: .red)
         
+    }
+    
+    internal func addChangeDebugAnimation(duration: TimeInterval = 0.5, backgroundColor: UIColor = .red) {
+        let frame = CGRect(origin: .zero, size: self.bounds.size)
+        let view = UIView(frame: frame)
+        view.backgroundColor = backgroundColor
+
+        UIView.animate(
+            withDuration: duration,
+            animations: { view.backgroundColor = .none },
+            completion: { _ in view.removeFromSuperview() }
+        )
+
+        self.addSubview(view)
     }
     
     internal func rotate360Degrees(duration: CFTimeInterval = 1.0, completionDelegate: CAAnimationDelegate? = .none) {

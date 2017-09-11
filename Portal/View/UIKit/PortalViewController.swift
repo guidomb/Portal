@@ -16,9 +16,9 @@ public final class PortalViewController<
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
     public typealias ActionType = Action<RouteType, MessageType>
-    public typealias RendererFactory = (ContainerController) ->
-        UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
-
+    public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
+    public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
+    
     internal typealias InternalActionType = InternalAction<RouteType, MessageType>
 
     public let mailbox: Mailbox<ActionType>
@@ -29,15 +29,17 @@ public final class PortalViewController<
     fileprivate var disposers: [String : () -> Void] = [:]
     
     public private(set) var component: Component<ActionType>
-    private let createRenderer: RendererFactory
+    private var renderer: ComponentRenderer!
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return orientation.uiInterfaceOrientation
     }
     
-    public init(component: Component<ActionType>, factory createRenderer: @escaping RendererFactory) {
+    public init(
+        component: Component<ActionType>,
+        layoutEngine: LayoutEngine = YogaLayoutEngine(),
+        customComponentRendererFactory: @escaping CustomComponentRendererFactory) {
         self.component = component
-        self.createRenderer = createRenderer
         self.mailbox = internalMailbox.filterMap { message in
             if case .action(let action) = message {
                 return action
@@ -46,6 +48,10 @@ public final class PortalViewController<
             }
         }
         super.init(nibName: nil, bundle: nil)
+        
+        self.renderer = ComponentRenderer(layoutEngine: layoutEngine) { [unowned self] in
+            customComponentRendererFactory(self)
+        }
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -78,16 +84,12 @@ public final class PortalViewController<
         // does not take into account the navigation and status bar in order
         // to sets its visible size.
         view.frame = calculateViewFrame()
-        let renderer = createRenderer(self)
-        let componentMailbox = renderer.render(component: component)
-        componentMailbox.forwardMap(to: internalMailbox) { .action($0) }
+        let componentMailbox = renderer.render(component: component, into: view)
+        componentMailbox.forwardMap(to: internalMailbox) { .action($0) }        
     }
     
     public func render(changeSet: ComponentChangeSet<ActionType>) {
-        let renderer = createRenderer(self)
-        if let componentMailbox = renderer.apply(changeSet: changeSet) {
-            componentMailbox.forwardMap(to: internalMailbox) { .action($0) }
-        }
+        renderer.apply(changeSet: changeSet, to: view)
     }
     
 }

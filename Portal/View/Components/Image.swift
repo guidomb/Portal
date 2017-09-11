@@ -47,6 +47,12 @@ public struct ImageViewChangeSet {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        guard case .noChange = image else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                layout.isEmpty
+    }
+    
     init(
         image: PropertyChange<Image?> = .noChange,
         baseStyleSheet: [BaseStyleSheet.Property] = [],
