@@ -15,6 +15,18 @@ public final class PortalViewController<
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
+    public struct ComponentPatch {
+        
+        let changeSet: ComponentChangeSet<ActionType>
+        let component: Component<ActionType>
+        
+        fileprivate init(changeSet: ComponentChangeSet<ActionType>, component: Component<ActionType>) {
+            self.changeSet = changeSet
+            self.component = component
+        }
+        
+    }
+    
     public typealias ActionType = Action<RouteType, MessageType>
     public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
@@ -28,7 +40,7 @@ public final class PortalViewController<
     
     fileprivate var disposers: [String : () -> Void] = [:]
     
-    public private(set) var component: Component<ActionType>
+    private var component: Component<ActionType>
     private var renderer: ComponentRenderer!
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
@@ -88,8 +100,14 @@ public final class PortalViewController<
         componentMailbox.forwardMap(to: internalMailbox) { .action($0) }        
     }
     
-    public func render(changeSet: ComponentChangeSet<ActionType>) {
-        renderer.apply(changeSet: changeSet, to: view)
+    public func calculatePatch(for component: Component<ActionType>) -> ComponentPatch {
+        let changeSet = self.component.changeSet(for: component)
+        return ComponentPatch(changeSet: changeSet, component: component)
+    }
+    
+    public func render(patch: ComponentPatch) {
+        component = patch.component
+        renderer.apply(changeSet: patch.changeSet, to: view)
     }
     
 }

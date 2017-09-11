@@ -139,8 +139,8 @@ fileprivate extension UIKitApplicationRenderer {
             // off the main thread. This could be a computationally
             // intensive task and we don't want to block the main
             // thread while doing it.
-            let changeSet = controller.component.changeSet(for: component)
-            return .executeRendering({ controller.render(changeSet: changeSet) })
+            let patch = controller.calculatePatch(for: component)
+            return .executeRendering({ controller.render(patch: patch) })
             
         case (.some(.navigationController(let navigationController)), .stack(let navigationBar)):
             guard !navigationController.isPopingTopController else {
@@ -156,9 +156,9 @@ fileprivate extension UIKitApplicationRenderer {
             // off the main thread. This could be a computationally
             // intensive task and we don't want to block the main
             // thread while doing it.
-            let changeSet = topController.component.changeSet(for: component)
+            let patch = topController.calculatePatch(for: component)
             return .executeRendering({
-                topController.render(changeSet: changeSet)
+                topController.render(patch: patch)
                 // TODO apply diff to navigation bar
                 navigationController.render(navigationBar: navigationBar, inside: topController.navigationItem)
             })
