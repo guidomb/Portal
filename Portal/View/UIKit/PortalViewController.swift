@@ -20,6 +20,29 @@ public final class PortalViewController<
         let changeSet: ComponentChangeSet<ActionType>
         let component: Component<ActionType>
         
+        // It's really important for consistency that only code inside this controller is able
+        // to create instances of ComponentPatch.
+        //
+        // The role of this struct is to maintain consistency between the componenet the user
+        // wants to render and the change set to be applied to transition from the current
+        // rendered component (virtual view) to the next one.
+        //
+        // The controller does not expose the rendered component, so the only way to get a
+        // change set is through the PortalViewController#calculatePatch(for:) method which
+        // will create the appropiate ComponentPatch instance.
+        //
+        // Rendering a patch is only possible using PortalViewController#render(patch:) method
+        // which apart from applying the change set to the controller's view it will save
+        // the component for future change set generation
+        //
+        // The main reason behind separating change set generation from rendering is to be able
+        // to calculate change sets off the main thread. The problem, and the reason why ComponentPatch
+        // exists, is to make sure that the change set that will be applied was generated from
+        // the component inside the patch, which will then be referenced by the controller in order
+        // to calculate new change sets against other components threes.
+        //
+        // Bottom line we want to make sure that the component used when generating the change set
+        // is the same one that will be stored by the controller once the change set is applied.
         fileprivate init(changeSet: ComponentChangeSet<ActionType>, component: Component<ActionType>) {
             self.changeSet = changeSet
             self.component = component
@@ -106,6 +129,10 @@ public final class PortalViewController<
     }
     
     public func render(patch: ComponentPatch) {
+        // Because nobody outside this file is able to create
+        // instances of ComponentPatch it is guaranteed
+        // that the patch's component was the one used
+        // to generate the patch's change set.
         component = patch.component
         renderer.apply(changeSet: patch.changeSet, to: view)
     }
