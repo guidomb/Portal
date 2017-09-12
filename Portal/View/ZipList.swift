@@ -44,6 +44,10 @@ public struct ZipList<Element>: Collection, CustomDebugStringConvertible {
         self.right = right
     }
     
+    public init(_ tuple: ([Element], Element, [Element])) {
+        self.init(left: tuple.0, center: tuple.1, right: tuple.2)
+    }
+    
     public subscript(index: Int) -> Element {
         precondition(index >= 0 && index < count, "Index of out bounds")
         if index < left.count {
