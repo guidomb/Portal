@@ -11,7 +11,7 @@ import UIKit
 extension UIActivityIndicatorView {
 
     func apply<MessageType>(changeSet: SpinnerChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
-        apply(isActive: changeSet.isActive)
+        apply(isActive: changeSet.isActive, hidesWhenStopped: changeSet.hidesWhenStopped)
         apply(changeSet: changeSet.baseStyleSheet)
         apply(changeSet: changeSet.spinnerStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
@@ -23,13 +23,15 @@ extension UIActivityIndicatorView {
 
 fileprivate extension UIActivityIndicatorView {
     
-    fileprivate func apply(isActive: PropertyChange<Bool>) {
-        guard case .change(let isActive) = isActive else { return }
-        
-        if isActive {
+    fileprivate func apply(isActive: PropertyChange<Bool>, hidesWhenStopped: PropertyChange<Bool>) {
+        if case .change(true) = isActive {
             startAnimating()
         } else {
             stopAnimating()
+        }
+        
+        if case .change(let hidesWhenStopped) = hidesWhenStopped {
+            self.hidesWhenStopped = hidesWhenStopped
         }
     }
     

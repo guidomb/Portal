@@ -127,8 +127,8 @@ extension Component {
             return .custom(CustomComponentChangeSet.fullChangeSet(
                 customComponent: customComponent, style: style, layout: layout))
 
-        case .spinner(let isActive, let style, let layout):
-            return .spinner(SpinnerChangeSet.fullChangeSet(isActive: isActive, style: style, layout: layout))
+        case .spinner(let isActive, let hidesWhenStopped, let style, let layout):
+            return .spinner(SpinnerChangeSet.fullChangeSet(isActive: isActive, hidesWhenStopped: hidesWhenStopped, style: style, layout: layout))
 
         case .textView(let text, let style, let layout):
             return .textView(TextViewChangeSet.fullChangeSet(text: text, style: style, layout: layout))
@@ -284,12 +284,14 @@ extension Component {
                 )
             )
 
-        case (.spinner(let oldIsActive, let oldStyle, let oldLayout),
-              .spinner(let newIsActive, let newStyle, let newLayout)):
+        case (.spinner(let oldIsActive, let oldHidesWhenStopped, let oldStyle, let oldLayout),
+              .spinner(let newIsActive, let newHidesWhenStopped, let newStyle, let newLayout)):
             let isActive: PropertyChange<Bool> = oldIsActive == newIsActive ? .noChange : .change(to: newIsActive)
+            let hidesWhenStopped: PropertyChange<Bool> = oldHidesWhenStopped == newHidesWhenStopped ? .noChange : .change(to: newHidesWhenStopped)
             return .spinner(
                 SpinnerChangeSet(
                     isActive: isActive,
+                    hidesWhenStopped: hidesWhenStopped,
                     baseStyleSheet: oldStyle.base.changeSet(for: newStyle.base),
                     layout: oldLayout.changeSet(for: newLayout)
                 )

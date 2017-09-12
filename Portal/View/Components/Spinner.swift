@@ -8,9 +8,10 @@
 
 public func spinner<MessageType>(
     isActive: Bool = false,
+    hidesWhenStopped: Bool = true,
     style: StyleSheet<SpinnerStyleSheet> = SpinnerStyleSheet.defaultStyleSheet,
     layout: Layout = layout()) -> Component<MessageType> {
-    return .spinner(isActive, style, layout)
+    return .spinner(isActive, hidesWhenStopped, style, layout)
 }
 
 public struct SpinnerStyleSheet: AutoPropertyDiffable {
@@ -40,10 +41,12 @@ public struct SpinnerChangeSet {
     
     static func fullChangeSet(
         isActive: Bool,
+        hidesWhenStopped: Bool,
         style: StyleSheet<SpinnerStyleSheet>,
         layout: Layout) -> SpinnerChangeSet {
         return SpinnerChangeSet(
             isActive: PropertyChange.change(to: isActive),
+            hidesWhenStopped: PropertyChange.change(to: hidesWhenStopped),
             baseStyleSheet: style.base.fullChangeSet,
             spinnerStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
@@ -51,6 +54,7 @@ public struct SpinnerChangeSet {
     }
     
     let isActive: PropertyChange<Bool>
+    let hidesWhenStopped: PropertyChange<Bool>
     let baseStyleSheet: [BaseStyleSheet.Property]
     let spinnerStyleSheet: [SpinnerStyleSheet.Property]
     let layout: [Layout.Property]
@@ -64,11 +68,13 @@ public struct SpinnerChangeSet {
 
     init(
         isActive: PropertyChange<Bool> = .noChange,
+        hidesWhenStopped: PropertyChange<Bool> = .noChange,
         baseStyleSheet: [BaseStyleSheet.Property] = [],
         spinnerStyleSheet: [SpinnerStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
         self.isActive = isActive
         self.baseStyleSheet = baseStyleSheet
+        self.hidesWhenStopped = hidesWhenStopped
         self.spinnerStyleSheet = spinnerStyleSheet
         self.layout = layout
     }
