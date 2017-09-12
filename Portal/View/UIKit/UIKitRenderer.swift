@@ -170,7 +170,9 @@ extension UIKitComponentRenderer {
                 result.view.addChangeDebugAnimation()
             }
 
-            result.afterLayout |> { afterLayoutTasks.append($0) }
+            if let afterLayoutTask = result.afterLayout {
+                afterLayoutTasks.append(afterLayoutTask)
+            }
         }
         
         view.apply(changeSet: changeSet.baseStyleSheet)
