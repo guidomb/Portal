@@ -13,7 +13,7 @@ enum CarouselScreen {
     typealias Action = Portal.Action<Route, Message>
     typealias View = Portal.View<Route, Message, Navigator>
     
-    static func view(color: Color) -> View {
+    static func view(color: Color, selectedItem index: UInt) -> View {
         let elements = (0...1000).map { (index) -> CarouselItemProperties<Action> in
             carouselItem(onTap: .none, identifier: "\(index)") {
                 container(
@@ -29,11 +29,23 @@ enum CarouselScreen {
             }
         }
     
-        let carouselProperties: CarouselProperties<Action> = properties(itemsWidth: 150, itemsHeight: 450, items: ZipList(of: elements, selected: 0)!) {
+        let carouselProperties: CarouselProperties<Action> = properties(itemsWidth: 150, itemsHeight: 450, items: ZipList(of: elements, selected: index)!) {
             $0.isSnapToCellEnabled = true
             $0.minimumLineSpacing = 5
             $0.minimumInteritemSpacing = 5
             $0.showsScrollIndicator = true
+            $0.onSelectionChange = { (operation: ZipListShiftOperation) -> Action in
+                switch operation {
+                    
+                case .left:
+                    let newIndex = index + 1 >= elements.count ? index : index + 1
+                    return .sendMessage(.selectedItemChanged(newIndex))
+                    
+                case .right:
+                    let newIndex = Int(index) - 1 < 0 ? 0 : index - 1
+                    return .sendMessage(.selectedItemChanged(newIndex))
+                }
+            }
         }
         
         return View(
