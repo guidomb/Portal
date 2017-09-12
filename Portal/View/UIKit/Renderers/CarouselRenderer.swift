@@ -33,10 +33,6 @@ internal struct CarouselRenderer<
             onSelectionChange: properties.onSelectionChange
         )
         
-        properties.refresh |> {
-            carouselView.configRefresh(properties: $0, tintColor: style.component.refreshTintColor)
-        }
-        
         carouselView.isDebugModeEnabled = isDebugModeEnabled
         carouselView.isSnapToCellEnabled = properties.isSnapToCellEnabled
         carouselView.showsHorizontalScrollIndicator = properties.showsScrollIndicator

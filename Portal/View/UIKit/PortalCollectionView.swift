@@ -12,7 +12,7 @@ public class PortalCollectionView<
     MessageType,
     RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
+    >: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate, PullToRefreshable
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
@@ -22,14 +22,10 @@ public class PortalCollectionView<
     
     public let mailbox = Mailbox<ActionType>()
     public var isDebugModeEnabled: Bool = false
-    
-    public var refreshMessage: ActionType? = .none
-    
+        
     let layoutEngine: LayoutEngine
     let items: [CollectionItemProperties<ActionType>]
     let rendererFactory: CustomComponentRendererFactory
-    
-    fileprivate var refreshable: RefreshController<ActionType>? = .none
     
     public init(
         items: [CollectionItemProperties<ActionType>],
@@ -78,15 +74,6 @@ public class PortalCollectionView<
     public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let item = items[indexPath.row]
         item.onTap |> { mailbox.dispatch(message: $0) }
-    }
-    
-    public func configRefresh(properties: RefreshProperties<ActionType>, tintColor: Color) {
-        refreshable = RefreshController(
-            properties: properties,
-            scroll: self,
-            tintColor: tintColor) { [unowned self] message in
-                self.mailbox.dispatch(message: message)
-        }
     }
     
 }

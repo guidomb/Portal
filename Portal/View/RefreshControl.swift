@@ -8,51 +8,6 @@
 
 import UIKit
 
-class RefreshController<MessageType> {
-    
-    var refreshAction: () -> Void
-    
-    init(
-        properties: RefreshProperties<MessageType>,
-        scroll: UIScrollView,
-        tintColor: Color,
-        dispatch: @escaping (MessageType) -> Void) {
-        let control = UIRefreshControl()
-        scroll.refreshControl = control
-        control.tintColor = tintColor.asUIColor
-        control.attributedTitle = properties.title
-        
-        switch properties.state {
-            
-        case .searching:
-            refreshAction = { _ in }
-            beginRefreshing(scroll)
-            
-        case .idle(searchAction: let message):
-            refreshAction = { dispatch(message) }
-            control.addTarget(
-                self,
-                action: #selector(refreshControlAction),
-                for: UIControlEvents.valueChanged
-            )
-            
-        }
-    }
-    
-    private func beginRefreshing(_ scroll: UIScrollView) {
-        if let refreshControl = scroll.refreshControl {
-            scroll.contentOffset = CGPoint(x:0, y:-refreshControl.frame.size.height)
-            refreshControl.beginRefreshing()
-        }
-    }
-    
-    private dynamic func refreshControlAction() {
-        refreshAction()
-    }
-
-    
-}
-
 public enum RefreshState<MessageType> {
     
     case idle(searchAction: MessageType)
@@ -87,7 +42,6 @@ public struct RefreshProperties<MessageType> {
     }
     
 }
-
 
 public func properties<MessageType>(
     state: RefreshState<MessageType>,

@@ -31,11 +31,7 @@ internal struct CollectionRenderer<
             layout: createFlowLayout(),
             rendererFactory: rendererFactory
         )
-        
-        properties.refresh |> {
-            collectionView.configRefresh(properties: $0, tintColor: style.component.refreshTintColor)
-        }
-        
+
         collectionView.isDebugModeEnabled = isDebugModeEnabled
         collectionView.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator
         collectionView.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator

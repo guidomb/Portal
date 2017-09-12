@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4684AEFB1F66F51D00D29431 /* PullToRefreshable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4684AEFA1F66F51D00D29431 /* PullToRefreshable.swift */; };
 		525E4BAB1F446EA8008BF41A /* Toggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525E4BAA1F446EA8008BF41A /* Toggle.swift */; };
 		525E4BB01F447426008BF41A /* ToggleRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525E4BAF1F447426008BF41A /* ToggleRenderer.swift */; };
 		9D0F33471E78F81800C65BED /* Portal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D0F333D1E78F81800C65BED /* Portal.framework */; };
@@ -146,6 +147,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4684AEFA1F66F51D00D29431 /* PullToRefreshable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshable.swift; sourceTree = "<group>"; };
 		525E4BAA1F446EA8008BF41A /* Toggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toggle.swift; sourceTree = "<group>"; };
 		525E4BAF1F447426008BF41A /* ToggleRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToggleRenderer.swift; sourceTree = "<group>"; };
 		9D0F333D1E78F81800C65BED /* Portal.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Portal.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -470,6 +472,7 @@
 				9D8C84821ECA3B750034C6BC /* UIKitRenderable.swift */,
 				9D8C84831ECA3B750034C6BC /* UIKitRenderer.swift */,
 				9D8C84841ECA3B750034C6BC /* UIViewExtensions.swift */,
+				4684AEFA1F66F51D00D29431 /* PullToRefreshable.swift */,
 			);
 			path = UIKit;
 			sourceTree = "<group>";
@@ -797,6 +800,7 @@
 				9D8C849E1ECA3B750034C6BC /* PortalCollectionViewCell.swift in Sources */,
 				9D8C84891ECA3B750034C6BC /* Collection.swift in Sources */,
 				9D8C84A21ECA3B750034C6BC /* PortalTableViewCell.swift in Sources */,
+				4684AEFB1F66F51D00D29431 /* PullToRefreshable.swift in Sources */,
 				9D8C848A1ECA3B750034C6BC /* Image.swift in Sources */,
 				D80298A01F1EAA9D00436C6C /* TextViewRenderer.swift in Sources */,
 				9D8C84AB1ECA3B750034C6BC /* LabelRenderer.swift in Sources */,
