@@ -30,7 +30,7 @@ enum ExamplesScreen {
         
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Collection")),
+            root: .stack(ExampleApplication.navigationBar(title: "Component Examples")),
             component: table(
                 items: items,
                 style: tableStyleSheet { base, table in
