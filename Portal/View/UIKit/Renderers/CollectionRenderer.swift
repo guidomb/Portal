@@ -20,7 +20,7 @@ internal struct CollectionRenderer<
     typealias ActionType = Action<RouteType, MessageType>
     
     let properties: CollectionProperties<ActionType>
-    let style: StyleSheet<EmptyStyleSheet>
+    let style: StyleSheet<CollectionStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     
@@ -31,7 +31,7 @@ internal struct CollectionRenderer<
             layout: createFlowLayout(),
             rendererFactory: rendererFactory
         )
-        
+
         collectionView.isDebugModeEnabled = isDebugModeEnabled
         collectionView.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator
         collectionView.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator

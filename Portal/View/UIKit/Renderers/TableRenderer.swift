@@ -35,6 +35,8 @@ internal struct TableRenderer<
         table.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator
         table.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator
         
+        table.configure(pullToRefresh: properties.refresh!, tintColor: style.component.refreshTintColor)
+        
         table.apply(style: style.base)
         table.apply(style: style.component)
         layoutEngine.apply(layout: layout, to: table)

@@ -20,7 +20,7 @@ internal struct CarouselRenderer<
     typealias ActionType = Action<RouteType, MessageType>
     
     let properties: CarouselProperties<ActionType>
-    let style: StyleSheet<EmptyStyleSheet>
+    let style: StyleSheet<CollectionStyleSheet>
     let layout: Layout
     let rendererFactory: CustomComponentRendererFactory
     

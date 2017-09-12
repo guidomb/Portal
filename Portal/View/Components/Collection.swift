@@ -36,6 +36,7 @@ public struct CollectionProperties<MessageType> {
     public var items: [CollectionItemProperties<MessageType>]
     public var showsVerticalScrollIndicator: Bool
     public var showsHorizontalScrollIndicator: Bool
+    public var refresh: RefreshProperties<MessageType>?
     
     // Layout properties
     public var itemsWidth: UInt
@@ -49,6 +50,7 @@ public struct CollectionProperties<MessageType> {
         items: [CollectionItemProperties<MessageType>] = [],
         showsVerticalScrollIndicator: Bool = false,
         showsHorizontalScrollIndicator: Bool = false,
+        refresh: RefreshProperties<MessageType>? = .none,
         itemsWidth: UInt,
         itemsHeight: UInt,
         minimumInteritemSpacing: UInt = 0,
@@ -58,6 +60,7 @@ public struct CollectionProperties<MessageType> {
         self.items = items
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
+        self.refresh = refresh
         self.itemsWidth = itemsWidth
         self.itemsHeight = itemsHeight
         self.minimumLineSpacing = minimumLineSpacing
@@ -72,6 +75,7 @@ public struct CollectionProperties<MessageType> {
             items: self.items.map { $0.map(transform) },
             showsVerticalScrollIndicator: self.showsVerticalScrollIndicator,
             showsHorizontalScrollIndicator: self.showsHorizontalScrollIndicator,
+            refresh: self.refresh.map { $0.map(transform) },
             itemsWidth: self.itemsWidth,
             itemsHeight: self.itemsHeight,
             minimumInteritemSpacing: self.minimumInteritemSpacing,
@@ -116,7 +120,7 @@ extension CollectionItemProperties {
 
 public func collection<MessageType>(
     properties: CollectionProperties<MessageType>,
-    style: StyleSheet<EmptyStyleSheet> = EmptyStyleSheet.default,
+    style: StyleSheet<CollectionStyleSheet> = CollectionStyleSheet.default,
     layout: Layout = layout()) -> Component<MessageType> {
     return .collection(properties, style, layout)
 }
@@ -135,4 +139,26 @@ public func properties<MessageType>(
     var properties = CollectionProperties<MessageType>(itemsWidth: itemsWidth, itemsHeight: itemsHeight)
     configure(&properties)
     return properties
+}
+
+// MARK: - Style sheet
+
+public struct CollectionStyleSheet {
+    
+    public static let `default` = StyleSheet<CollectionStyleSheet>(component: CollectionStyleSheet())
+    
+    public var refreshTintColor: Color
+    
+    fileprivate init(refreshTintColor: Color = .gray) {
+        self.refreshTintColor = refreshTintColor
+    }
+    
+}
+
+public func collectionStyleSheet(
+    configure: (inout BaseStyleSheet, inout CollectionStyleSheet) -> Void = { _ in }) -> StyleSheet<CollectionStyleSheet> {
+    var base = BaseStyleSheet()
+    var component = CollectionStyleSheet()
+    configure(&base, &component)
+    return StyleSheet(component: component, base: base)
 }
