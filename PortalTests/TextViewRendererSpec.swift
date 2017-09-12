@@ -32,7 +32,7 @@ class TextViewRendererSpec: QuickSpec {
                 }
                 
                 changeSet = TextViewChangeSet.fullChangeSet(
-                    textType: .regular("This is a textView!"),
+                    text: .regular("This is a textView!"),
                     style: textViewStyle,
                     layout: layout())
             }
@@ -54,7 +54,7 @@ class TextViewRendererSpec: QuickSpec {
                     }
                     
                     changeSet = TextViewChangeSet.fullChangeSet(
-                        textType: .attributed(NSAttributedString(string: "This is a textView!")),
+                        text: .attributed(NSAttributedString(string: "This is a textView!")),
                         style: textViewStyle,
                         layout: layout()
                     )

@@ -23,9 +23,9 @@ class TableRendererSpec: QuickSpec {
         
         beforeEach {
             layoutEngine = YogaLayoutEngine()
-            table = PortalTableView(layoutEngine: layoutEngine) {
+            table = PortalTableView(renderer: UIKitComponentRenderer(layoutEngine: layoutEngine) {
                 VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-            }
+            })
         }
         
         describe(".apply(changeSet: TableChangeSet) -> Result") {
@@ -79,9 +79,9 @@ class TableRendererSpec: QuickSpec {
                     var configuredTable: PortalTable!
                     
                     beforeEach {
-                        configuredTable = PortalTableView(layoutEngine: layoutEngine) {
+                        configuredTable = PortalTableView(renderer: UIKitComponentRenderer(layoutEngine: layoutEngine) {
                             VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-                        }
+                        })
                         _ = configuredTable.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     }
                     

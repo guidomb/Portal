@@ -31,8 +31,8 @@ class ProgressRenderSpec: QuickSpec {
                     progress.trackStyle = .image(Image.loadImage(named: "search.png", from: Bundle(for: ButtonRendererSpec.self))!)
                 }
                 
-                changeSet = ProgressChangeSet.fullChageSet(
-                    progressCounter: progressCounter,
+                changeSet = ProgressChangeSet.fullChangeSet(
+                    progress: progressCounter,
                     style: progressStyle,
                     layout: layout()
                 )

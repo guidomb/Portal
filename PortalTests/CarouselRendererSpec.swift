@@ -23,9 +23,10 @@ class CarouselRendererSpec: QuickSpec {
         
         beforeEach {
             layoutEngine = YogaLayoutEngine()
-            carousel = PortalCarouselView(layoutEngine: layoutEngine) {
+            let renderer = UIKitComponentRenderer(layoutEngine: layoutEngine) {
                 VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
             }
+            carousel = PortalCarouselView(renderer: renderer)
         }
         
         describe(".apply(changeSet: CarouselChangeSet) -> Result") {
