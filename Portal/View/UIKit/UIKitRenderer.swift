@@ -42,8 +42,8 @@ public struct UIKitComponentRenderer<
     }
     
     public func apply(changeSet: ComponentChangeSet<ActionType>, to containerView: UIView) {
-        let view = containerView.subviews.first ?? UIView.with(parent: containerView)
-        let renderResult = render(changeSet: changeSet, into: view)
+        let rootView = getOrCreateRootView(from: containerView)
+        let renderResult = render(changeSet: changeSet, into: rootView)
         layoutEngine.executeLayout(for: containerView)
         renderResult.afterLayout?()
         
@@ -194,6 +194,19 @@ extension UIKitComponentRenderer {
             let newView = SpecificView()
             return newView
         }
+    }
+    
+    fileprivate func getOrCreateRootView(from containerView: UIView) -> UIView {
+        let view: UIView
+        if let subview = containerView.subviews.first {
+            view = subview
+        } else {
+            view = UIView()
+            containerView.addSubview(view)
+            let mailbox: Mailbox<ActionType> = view.getMailbox()
+            mailbox.forward(to: containerView.getMailbox())
+        }
+        return view
     }
     
 }

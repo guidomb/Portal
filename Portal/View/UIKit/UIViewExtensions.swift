@@ -10,12 +10,6 @@ import UIKit
 
 internal extension UIView {
     
-    internal static func with(parent: UIView) -> UIView {
-        let view = UIView()
-        parent.addSubview(view)
-        return view
-    }
-    
     internal func safeTraverse(visitor: @escaping (UIView) -> Void) {
         guard self.managedByPortal else { return }
         
