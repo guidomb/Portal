@@ -44,6 +44,10 @@ public struct UIKitComponentRenderer<
     public func apply(changeSet: ComponentChangeSet<ActionType>, to containerView: UIView) {
         let rootView = getOrCreateRootView(from: containerView)
         let renderResult = render(changeSet: changeSet, into: rootView)
+        if rootView !== renderResult.view {
+            containerView.addSubview(renderResult.view)
+            renderResult.mailbox?.forward(to: containerView.getMailbox())
+        }
         layoutEngine.executeLayout(for: containerView)
         renderResult.afterLayout?()
         
