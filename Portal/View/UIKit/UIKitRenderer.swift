@@ -90,15 +90,15 @@ extension UIKitComponentRenderer {
             return apply(changeSet: containerChangeSet, to: containerView)
             
         case .table(let tableChangeSet):
-            let table = castOrRelease(view: view, to: TableView.self)
+            let table = castOrRelease(view: view, to: TableView.self) { TableView(renderer: self) }
             return table.apply(changeSet: tableChangeSet, layoutEngine: layoutEngine)
             
         case .collection(let collectionChangeSet):
-            let collection = castOrRelease(view: view, to: CollectionView.self)
+            let collection = castOrRelease(view: view, to: CollectionView.self) { CollectionView(renderer: self) }
             return collection.apply(changeSet: collectionChangeSet, layoutEngine: layoutEngine)
             
         case .carousel(let carouselChangeSet):
-            let carousel = castOrRelease(view: view, to: CarouselView.self)
+            let carousel = castOrRelease(view: view, to: CarouselView.self) { CarouselView(renderer: self) }
             return carousel.apply(changeSet: carouselChangeSet, layoutEngine: layoutEngine)
             
         case .touchable(let touchableChangeSet):
@@ -185,13 +185,14 @@ extension UIKitComponentRenderer {
     
     fileprivate func castOrRelease<SpecificView: UIView>(
         view: UIView?,
-        to viewType: SpecificView.Type) -> SpecificView {
+        to viewType: SpecificView.Type,
+        viewFactory: (() -> SpecificView)? = .none) -> SpecificView {
         
         if view != nil && view is SpecificView {
             return view as! SpecificView //swiftlint:disable:this force_cast
         } else {
             view?.removeFromSuperview()
-            let newView = SpecificView()
+            let newView = viewFactory?() ?? SpecificView()
             return newView
         }
     }
