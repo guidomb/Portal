@@ -20,7 +20,7 @@ enum SpinnerScreen {
             component: container(
                 children: [
                     createSpinner(isActive: true),
-                    createSpinner(isActive: false)
+                    createSpinner(isActive: false),
                 ],
                 style: styleSheet {
                     $0.backgroundColor = .black
@@ -41,6 +41,7 @@ fileprivate extension SpinnerScreen {
     fileprivate static func createSpinner(isActive: Bool) -> Component<Action> {
         return spinner(
             isActive: isActive,
+            hidesWhenStopped: false,
             style: spinnerStyleSheet { base, spinner in
                 base.backgroundColor = .black
                 spinner.color = .red
