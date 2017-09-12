@@ -15,7 +15,7 @@ enum TableScreen {
     
     static func view(color: Color) -> View {
         let items: [TableItemProperties<Action>] = (0...1000).map { index in
-            tableItem(height: 50, onTap: .none, selectionStyle: .none) { _ in
+            tableItem(height: 55, onTap: .none, selectionStyle: .none) { _ in
                 TableItemRender(
                     component: container (
                         children: [
@@ -37,6 +37,9 @@ enum TableScreen {
                         ],
                         style: styleSheet {
                             $0.backgroundColor = color
+                        },
+                        layout: layout {
+                            $0.height = Dimension(value: 55)
                         }
                     ),
                     typeIdentifier: "Cell \(index)"
