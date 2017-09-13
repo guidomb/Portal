@@ -72,9 +72,13 @@ fileprivate extension UISegmentedControl {
     }
     
     fileprivate func apply(changeSet: [SegmentedStyleSheet.Property]) {
-        var fontName: String? = .none
-        var fontSize: CGFloat? = .none
-        var textColor: UIColor? = .none
+        let attributes = titleTextAttributes(for: .normal) as? [String : Any]
+        let font = attributes?[NSFontAttributeName] as? UIFont
+        let color = attributes?[NSForegroundColorAttributeName] as? UIColor
+        
+        var fontName: String? = font?.fontName
+        var fontSize: CGFloat? = font?.pointSize
+        var textColor: UIColor? = color
         
         for property in changeSet {
             switch property {
