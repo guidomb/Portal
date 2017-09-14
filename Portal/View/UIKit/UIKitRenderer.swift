@@ -107,7 +107,22 @@ extension UIKitComponentRenderer {
             
         case .touchable(let touchableChangeSet):
             let result = render(changeSet: touchableChangeSet.child, into: view)
-            // TODO apply gesture recognizer to result?.view
+            
+            switch touchableChangeSet.gesture {
+                
+            case .change(to: .tap(let message)):
+                let mailbox: Mailbox<ActionType> = result.view.getMailbox()
+                let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
+                result.view.register(dispatcher: dispatcher)
+                result.view.gestureRecognizers?.forEach { result.view.removeGestureRecognizer($0) }
+                let recognizer = UITapGestureRecognizer(target: dispatcher, action: dispatcher.selector)
+                result.view.addGestureRecognizer(recognizer)
+            
+            case .noChange:
+                break
+                
+            }
+            
             return result
             
         case .segmented(let segmentedChangeSet):
