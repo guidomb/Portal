@@ -89,6 +89,8 @@ extension UIKitComponentRenderer {
             return imageView.apply(changeSet: imageViewChangeSet, layoutEngine: layoutEngine)
             
         case .container(let containerChangeSet):
+            // TODO check if view actual class is UIView if not should be discarded
+            // we cannot render a container inside a UIButton
             let containerView = view ?? UIView()
             containerView.managedByPortal = true
             return apply(changeSet: containerChangeSet, to: containerView)
@@ -181,15 +183,17 @@ extension UIKitComponentRenderer {
         }
         
         let mailbox: Mailbox<ActionType> = view.getMailbox()
-        for (subview, childChangeSet) in zip(subviews, changeSet.children) {
+        for (index, (subview, childChangeSet)) in zip(subviews, changeSet.children).enumerated() {
             let result = render(changeSet: childChangeSet, into: subview)
             
             if !reuseSubviews || result.view !== subview {
                 result.view.managedByPortal = true
-                // TODO This should not be added it should replace the current
-                // view if needed
-                view.addSubview(result.view)
                 result.mailbox?.forward(to: mailbox)
+                if reuseSubviews {
+                    view.insertSubview(result.view, at: index)
+                } else {
+                    view.addSubview(result.view)
+                }
             }
             
             if isShowViewChangeAnimation && !changeSet.isEmpty {
