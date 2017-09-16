@@ -33,26 +33,12 @@ extension ContainerController where Self: UIViewController {
     
 }
 
-public struct CustomComponentDescription {
-    
-    public let identifier: String
-    public let information: [String : Any]
-    public let style: StyleSheet<EmptyStyleSheet>
-    public let layout: Layout
-    
-}
-
 public protocol UIKitCustomComponentRenderer {
     
     associatedtype MessageType
     associatedtype RouteType: Route
     
     init(container: ContainerController)
-    
-    func renderComponent(
-        _ componentDescription: CustomComponentDescription,
-        inside view: UIView,
-        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void)
     
     func apply(
         changeSet: CustomComponentChangeSet,
@@ -64,13 +50,6 @@ public protocol UIKitCustomComponentRenderer {
 public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitCustomComponentRenderer {
     
     public init(container: ContainerController) {
-        
-    }
-    
-    public func renderComponent(
-        _ componentDescription: CustomComponentDescription,
-        inside view: UIView,
-        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void) {
         
     }
     

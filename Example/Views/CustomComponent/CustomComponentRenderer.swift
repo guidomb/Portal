@@ -21,10 +21,6 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
         self.container = container
     }
     
-    public func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
-        
-    }
-    
     func apply(changeSet: CustomComponentChangeSet, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
         print("Applying change set for custom component")
         guard changeSet.newCustomComponent.identifier == "MyCustomComponent" || changeSet.newCustomComponent.identifier == "MyCustomComponent2" else { return }
