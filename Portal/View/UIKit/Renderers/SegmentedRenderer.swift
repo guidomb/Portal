@@ -21,23 +21,7 @@ extension UISegmentedControl: MessageProducer {
         
         return Render<MessageType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
-    
-    fileprivate func dispatch<MessageType>(
-        messages: [MessageType?],
-        for event: UIControlEvents,
-        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
         
-        let dispatcher = MessageDispatcher(mailbox: mailbox) { sender in
-            guard let segmentedControl = sender as? UISegmentedControl else { return .none }
-            let index = segmentedControl.selectedSegmentIndex
-            return index < messages.count ? messages[index] : .none
-        }
-        
-        self.register(dispatcher: dispatcher)
-        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
-        return dispatcher.mailbox
-    }
-    
 }
 
 fileprivate extension UISegmentedControl {

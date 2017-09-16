@@ -27,10 +27,7 @@ internal extension UIView {
     }
     
     internal func register<MessageType>(dispatcher: MessageDispatcher<MessageType>) {
-        let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
-            as? NSMutableArray ?? NSMutableArray()
-        dispatchers.add(dispatcher)
-        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatcher,
                                  .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
