@@ -89,11 +89,16 @@ extension UIKitComponentRenderer {
             return imageView.apply(changeSet: imageViewChangeSet, layoutEngine: layoutEngine)
             
         case .container(let containerChangeSet):
-            // TODO check if view actual class is UIView if not should be discarded
-            // we cannot render a container inside a UIButton
-            let containerView = view ?? UIView()
-            containerView.managedByPortal = true
-            return apply(changeSet: containerChangeSet, to: containerView)
+            // We need to make sure that view's type is UIView and not
+            // any of it's subclasses because container components
+            // cannot be renderer inside a UIButton for example.
+            if let containerView = view, type(of: containerView) == UIView.self {
+                return apply(changeSet: containerChangeSet, to: containerView)
+            } else {
+                let containerView = UIView()
+                containerView.managedByPortal = true
+                return apply(changeSet: containerChangeSet, to: containerView)
+            }
             
         case .table(let tableChangeSet):
             let table = castOrRelease(view: view, to: TableView.self) { TableView(renderer: self) }
