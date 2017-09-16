@@ -106,24 +106,7 @@ extension UIKitComponentRenderer {
             return carousel.apply(changeSet: carouselChangeSet, layoutEngine: layoutEngine)
             
         case .touchable(let touchableChangeSet):
-            let result = render(changeSet: touchableChangeSet.child, into: view)
-            
-            switch touchableChangeSet.gesture {
-                
-            case .change(to: .tap(let message)):
-                let mailbox: Mailbox<ActionType> = result.view.getMailbox()
-                let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-                result.view.register(dispatcher: dispatcher)
-                result.view.gestureRecognizers?.forEach { result.view.removeGestureRecognizer($0) }
-                let recognizer = UITapGestureRecognizer(target: dispatcher, action: dispatcher.selector)
-                result.view.addGestureRecognizer(recognizer)
-            
-            case .noChange:
-                break
-                
-            }
-            
-            return result
+            return apply(changeSet: touchableChangeSet, to: view)
             
         case .segmented(let segmentedChangeSet):
             let segmented = castOrRelease(view: view, to: UISegmentedControl.self)
@@ -138,15 +121,7 @@ extension UIKitComponentRenderer {
             return textField.apply(changeSet: textFieldChangeSet, layoutEngine: layoutEngine)
             
         case .custom(let customComponentChangeSet):
-            let containerView = view ?? UIView()
-            containerView.managedByPortal = true
-            layoutEngine.apply(changeSet: customComponentChangeSet.layout, to: containerView)
-            containerView.apply(changeSet: customComponentChangeSet.baseStyleSheet)
-            let mailbox: Mailbox<ActionType> = containerView.getMailbox()
-            return Render(view: containerView, mailbox: mailbox) {
-                let renderer = self.rendererFactory()
-                renderer.apply(changeSet: customComponentChangeSet, inside: containerView, dispatcher: mailbox.dispatch)
-            }
+            return apply(changeSet: customComponentChangeSet, to: view ?? UIView())
             
         case .spinner(let spinnerChangeSet):
             let spinner = castOrRelease(view: view, to: UIActivityIndicatorView.self)
@@ -159,6 +134,38 @@ extension UIKitComponentRenderer {
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length
+    
+    fileprivate func apply(changeSet: TouchableChangeSet<ActionType>, to view: UIView?) -> Render<ActionType> {
+        let result = render(changeSet: changeSet.child, into: view)
+        
+        switch changeSet.gesture {
+            
+        case .change(to: .tap(let message)):
+            let mailbox: Mailbox<ActionType> = result.view.getMailbox()
+            let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
+            result.view.register(dispatcher: dispatcher)
+            result.view.gestureRecognizers?.forEach { result.view.removeGestureRecognizer($0) }
+            let recognizer = UITapGestureRecognizer(target: dispatcher, action: dispatcher.selector)
+            result.view.addGestureRecognizer(recognizer)
+            
+        case .noChange:
+            break
+            
+        }
+        
+        return result
+    }
+    
+    fileprivate func apply(changeSet: CustomComponentChangeSet, to containerView: UIView) -> Render<ActionType> {
+        containerView.managedByPortal = true
+        layoutEngine.apply(changeSet: changeSet.layout, to: containerView)
+        containerView.apply(changeSet: changeSet.baseStyleSheet)
+        let mailbox: Mailbox<ActionType> = containerView.getMailbox()
+        return Render(view: containerView, mailbox: mailbox) {
+            let renderer = self.rendererFactory()
+            renderer.apply(changeSet: changeSet, inside: containerView, dispatcher: mailbox.dispatch)
+        }
+    }
     
     fileprivate func apply(changeSet: ContainerChangeSet<ActionType>, to view: UIView) -> Render<ActionType> {
         var afterLayoutTasks = [AfterLayoutTask]()
