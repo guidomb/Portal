@@ -95,7 +95,7 @@ public func buttonStyleSheet(
 
 // MARK: - Change set
 
-internal struct ButtonChangeSet<MessageType> {
+public struct ButtonChangeSet<MessageType> {
  
     static func fullChangeSet(
         properties: ButtonProperties<MessageType>,
@@ -113,6 +113,13 @@ internal struct ButtonChangeSet<MessageType> {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let buttonStyleSheet: [ButtonStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                buttonStyleSheet.isEmpty    &&
+                layout.isEmpty
+    }
     
     init(
         properties: [ButtonProperties<MessageType>.Property] = [],

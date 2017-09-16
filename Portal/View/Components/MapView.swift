@@ -77,7 +77,7 @@ public func properties(configure: (inout MapProperties) -> Void) -> MapPropertie
 
 // MARK: - ChangeSet
 
-internal struct MapViewChangeSet {
+public struct MapViewChangeSet {
     
     static func fullChangeSet(
         properties: MapProperties,
@@ -93,6 +93,12 @@ internal struct MapViewChangeSet {
     let properties: [MapProperties.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                layout.isEmpty
+    }
     
     init(
         properties: [MapProperties.Property] = [],

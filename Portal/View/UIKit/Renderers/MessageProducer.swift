@@ -9,13 +9,13 @@
 fileprivate var messageDispatcherAssociationKey = 0
 fileprivate var mailboxAssociationKey = 1
 
-protocol MessageForwarder where Self: UIView {
+protocol MessageForwarder {
     
     func getMailbox<MessageType>() -> Mailbox<MessageType>
     
 }
 
-protocol MessageProducer: MessageForwarder where Self : UIControl {
+protocol MessageProducer where Self : UIControl {
     
     func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
     
@@ -31,7 +31,7 @@ protocol MessageProducer: MessageForwarder where Self : UIControl {
     
 }
 
-extension MessageForwarder {
+extension UIView: MessageForwarder {
     
     func getMailbox<MessageType>() -> Mailbox<MessageType> {
         let associatedObject = objc_getAssociatedObject(self, &mailboxAssociationKey)

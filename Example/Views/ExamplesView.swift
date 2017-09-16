@@ -30,7 +30,7 @@ enum ExamplesScreen {
         
         return View(
             navigator: .main,
-            root: .stack(ExampleApplication.navigationBar(title: "Collection")),
+            root: .stack(ExampleApplication.navigationBar(title: "Component Examples")),
             component: table(
                 items: items,
                 style: tableStyleSheet { base, table in
@@ -93,7 +93,7 @@ fileprivate extension ExamplesScreen {
     }
     
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {
-        return tableItem(height: 50, onTap: .navigate(to: route), selectionStyle: .none) { _ in
+        return tableItem(height: 55, onTap: .navigate(to: route), selectionStyle: .none) { _ in
             TableItemRender(
                 component: container (
                     children: [
@@ -105,9 +105,8 @@ fileprivate extension ExamplesScreen {
                                 $0.backgroundColor = .blue
                             },
                             layout: layout {
-                                $0.flex = flex { $0.grow = .one }
-                                $0.height = Dimension(value: 50)
                                 $0.alignment = alignment { $0.items = .center }
+                                $0.height = Dimension(value: 50)
                                 $0.justifyContent = .center
                                 $0.margin = .by(edge: Edge(bottom: 5))
                             }
@@ -115,6 +114,9 @@ fileprivate extension ExamplesScreen {
                     ],
                     style: styleSheet {
                         $0.backgroundColor = .green
+                    },
+                    layout: layout {
+                        $0.height = Dimension(value: 55)
                     }
                 ),
                 typeIdentifier: text

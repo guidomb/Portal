@@ -142,7 +142,7 @@ public func properties<MessageType>(
 
 // MARK: - ChangeSet
 
-internal struct CarouselChangeSet<MessageType> {
+public struct CarouselChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: CarouselProperties<MessageType>,
@@ -158,6 +158,12 @@ internal struct CarouselChangeSet<MessageType> {
     let properties: [CarouselProperties<MessageType>.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty      &&
+            baseStyleSheet.isEmpty      &&
+            layout.isEmpty
+    }
     
     init(
         properties: [CarouselProperties<MessageType>.Property] = [],

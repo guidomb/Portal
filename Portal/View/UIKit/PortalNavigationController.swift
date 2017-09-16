@@ -16,6 +16,7 @@ public final class PortalNavigationController<
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
+    public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
     public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
     public typealias ContentControllerType = PortalViewController<MessageType, RouteType, CustomComponentRendererType>
     public typealias ActionType = Action<RouteType, MessageType>
@@ -29,14 +30,20 @@ public final class PortalNavigationController<
     
     internal let internalMailbox = Mailbox<InternalActionType>()
     
-    public var topController: ContentControllerType? {
-        return self.topViewController as? ContentControllerType
+    public var topController: ContentControllerType {
+        // This force case is safe because PortalNavigationController
+        // only supports PortalViewController as child controllers.
+        //
+        // If this force cast fails it means that somebody somehow
+        // pushed a view controller that does not inherit from
+        // PortalViewController into the navigation stack.
+        // That is bad!!! Really bad!
+        return self.topViewController as! ContentControllerType // swiftlint:disable:this force_cast
     }
     
     public private(set) var isPopingTopController = false
 
-    fileprivate let layoutEngine: LayoutEngine
-    fileprivate let rendererFactory: CustomComponentRendererFactory
+    fileprivate var renderer: NavigationBarTitleRenderer<MessageType, RouteType, CustomComponentRendererType>!
     fileprivate var disposers: [String : () -> Void] = [:]
     fileprivate var currentNavigationBarOnBack: InternalActionType? = .none
 
@@ -63,9 +70,7 @@ public final class PortalNavigationController<
     init(layoutEngine: LayoutEngine,
          statusBarStyle: UIStatusBarStyle = .`default`,
          rendererFactory: @escaping CustomComponentRendererFactory) {
-        self.rendererFactory = rendererFactory
         self.statusBarStyle = statusBarStyle
-        self.layoutEngine = layoutEngine
         self.mailbox = internalMailbox.filterMap { message in
             if case .action(let action) = message {
                 return action
@@ -74,7 +79,11 @@ public final class PortalNavigationController<
             }
         }
         super.init(nibName: nil, bundle: nil)
+        
         self.delegate = self
+        self.renderer = NavigationBarTitleRenderer(
+            renderer: ComponentRenderer(layoutEngine: layoutEngine) { [unowned self] in rendererFactory(self) }
+        )
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -121,15 +130,12 @@ public final class PortalNavigationController<
         }
         
         if let title = navigationBar.properties.title {
-            let renderer = NavigationBarTitleRenderer(
-                navigationBarTitle: title,
-                navigationItem: navigationItem,
-                navigationBarSize: self.navigationBar.bounds.size,
-                rendererFactory: { self.rendererFactory(self) }
+            let navigationBarMailbox = renderer.render(
+                title: title,
+                into: navigationItem,
+                navigationBarSize: self.navigationBar.bounds.size
             )
-            renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled) |> { navigationBarMailbox in
-                navigationBarMailbox.forwardMap(to: internalMailbox) { .action($0) }
-            }
+            navigationBarMailbox?.forwardMap(to: internalMailbox) { .action($0) }
         }
     }
     

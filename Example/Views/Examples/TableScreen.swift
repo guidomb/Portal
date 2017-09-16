@@ -14,8 +14,9 @@ enum TableScreen {
     typealias View = Portal.View<Route, Message, Navigator>
     
     static func view(color: Color) -> View {
+        let margin: UInt = 5
         let items: [TableItemProperties<Action>] = (0...1000).map { index in
-            tableItem(height: 50, onTap: .none, selectionStyle: .none) { _ in
+            tableItem(height: 55, onTap: .none, selectionStyle: .none) { height in
                 TableItemRender(
                     component: container (
                         children: [
@@ -28,15 +29,18 @@ enum TableScreen {
                                 },
                                 layout: layout {
                                     $0.flex = flex { $0.grow = .one }
-                                    $0.height = Dimension(value: 50)
+                                    $0.height = Dimension(value: height - margin)
                                     $0.alignment = alignment { $0.items = .center }
                                     $0.justifyContent = .center
-                                    $0.margin = .by(edge: Edge(bottom: 5))
+                                    $0.margin = .by(edge: Edge(bottom: margin))
                                 }
                             )
                         ],
                         style: styleSheet {
                             $0.backgroundColor = color
+                        },
+                        layout: layout {
+                            $0.height = Dimension(value: height)
                         }
                     ),
                     typeIdentifier: "Cell \(index)"

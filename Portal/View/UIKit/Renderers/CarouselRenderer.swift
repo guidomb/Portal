@@ -8,36 +8,6 @@
 
 import UIKit
 
-internal struct CarouselRenderer<
-    MessageType,
-    RouteType,
-    CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UIKitRenderer
-    
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
-    
-    typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: CarouselProperties<ActionType>
-    let style: StyleSheet<EmptyStyleSheet>
-    let layout: Layout
-    let rendererFactory: CustomComponentRendererFactory
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let carousel = PortalCarouselView(
-            layoutEngine: layoutEngine,
-            rendererFactory: rendererFactory
-        )
-
-        carousel.isDebugModeEnabled = isDebugModeEnabled
-        let changeSet = CarouselChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
-        
-        return carousel.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
 extension PortalCarouselView {
     
     func apply(changeSet: CarouselChangeSet<ActionType>, layoutEngine: LayoutEngine) -> Render<ActionType> {
@@ -45,7 +15,7 @@ extension PortalCarouselView {
         apply(changeSet: changeSet.baseStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        return Render<ActionType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+        return Render<ActionType>(view: self, mailbox: mailbox, executeAfterLayout: .none)
     }
     
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum TextType {
+public enum Text: AutoEquatable {
     
     case regular(String)
     case attributed(NSAttributedString)
@@ -64,33 +64,40 @@ public func textViewStyleSheet(
 
 // MARK: - Change set
 
-internal struct TextViewChangeSet {
+public struct TextViewChangeSet {
     
     static func fullChangeSet(
-        textType: TextType,
+        text: Text,
         style: StyleSheet<TextViewStyleSheet>,
         layout: Layout) -> TextViewChangeSet {
         return TextViewChangeSet(
-            textType: .change(to: textType),
-            baseStyle: style.base.fullChangeSet,
-            textViewStyle: style.component.fullChangeSet,
+            text: .change(to: text),
+            baseStyleSheet: style.base.fullChangeSet,
+            textViewStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }
     
-    let textType: PropertyChange<TextType>
-    let textViewStyle: [TextViewStyleSheet.Property]
-    let baseStyle: [BaseStyleSheet.Property]
+    let text: PropertyChange<Text>
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let textViewStyleSheet: [TextViewStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        guard case .noChange = text else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                textViewStyleSheet.isEmpty  &&
+                layout.isEmpty
+    }
+    
     init(
-        textType: PropertyChange<TextType> = .noChange,
-        baseStyle: [BaseStyleSheet.Property] = [],
-        textViewStyle: [TextViewStyleSheet.Property] = [],
+        text: PropertyChange<Text> = .noChange,
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        textViewStyleSheet: [TextViewStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
-        self.textType = textType
-        self.textViewStyle = textViewStyle
-        self.baseStyle = baseStyle
+        self.text = text
+        self.baseStyleSheet = baseStyleSheet
+        self.textViewStyleSheet = textViewStyleSheet
         self.layout = layout
     }
     

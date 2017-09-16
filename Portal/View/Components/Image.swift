@@ -30,7 +30,7 @@ public func imageView<MessageType>(
 
 // MARK: - ChangeSet
 
-internal struct ImageViewChangeSet {
+public struct ImageViewChangeSet {
     
     static func fullChangeSet(
         image: Image,
@@ -46,6 +46,12 @@ internal struct ImageViewChangeSet {
     let image: PropertyChange<Image?>
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        guard case .noChange = image else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                layout.isEmpty
+    }
     
     init(
         image: PropertyChange<Image?> = .noChange,

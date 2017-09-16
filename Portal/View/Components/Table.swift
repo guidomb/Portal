@@ -153,7 +153,7 @@ public func tableStyleSheet(
 
 // MARK: - ChangeSet
 
-internal struct TableChangeSet<MessageType> {
+public struct TableChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: TableProperties<MessageType>,
@@ -171,6 +171,13 @@ internal struct TableChangeSet<MessageType> {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let tableStyleSheet: [TableStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                tableStyleSheet.isEmpty     &&
+                layout.isEmpty
+    }
     
     init(
         properties: [TableProperties<MessageType>.Property] = [],

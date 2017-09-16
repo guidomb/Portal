@@ -10,23 +10,6 @@ import UIKit
 
 public let defaultLabelFontSize = UInt(UIFont.labelFontSize)
 
-internal struct LabelRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: LabelProperties
-    let style: StyleSheet<LabelStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let label = UILabel()
-        let changeSet = LabelChangeSet.fullChangeSet(properties: properties, styleSheet: style, layout: layout)
-        
-        return label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
 extension UILabel {
     
     internal func apply<MessageType>(

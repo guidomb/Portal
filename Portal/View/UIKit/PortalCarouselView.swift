@@ -23,13 +23,8 @@ public final class PortalCarouselView<
     fileprivate var lastOffset: CGFloat = 0
     fileprivate var selectedIndex: Int = 0
     
-    public override init(
-        layoutEngine: LayoutEngine,
-        rendererFactory: @escaping CustomComponentRendererFactory) {
-        super.init(
-            layoutEngine: layoutEngine,
-            rendererFactory: rendererFactory
-        )
+    public override init(renderer: ComponentRenderer) {
+        super.init(renderer: renderer)
     }
     
     required public init?(coder aDecoder: NSCoder) {

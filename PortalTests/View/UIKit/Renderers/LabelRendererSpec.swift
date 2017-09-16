@@ -41,7 +41,7 @@ class LabelRendererSpec: QuickSpec {
 
                 changeSet = LabelChangeSet.fullChangeSet(
                     properties: labelProperties,
-                    styleSheet: labelStyle,
+                    style: labelStyle,
                     layout: layout()
                 )
             }

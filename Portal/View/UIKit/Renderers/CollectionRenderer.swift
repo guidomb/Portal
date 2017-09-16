@@ -8,37 +8,7 @@
 
 import UIKit
 
-internal struct CollectionRenderer<
-    MessageType,
-    RouteType,
-    CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UIKitRenderer
-    
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
-    
-    typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: CollectionProperties<ActionType>
-    let style: StyleSheet<EmptyStyleSheet>
-    let layout: Layout
-    let rendererFactory: CustomComponentRendererFactory
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let collectionView = PortalCollectionView(
-            layoutEngine: layoutEngine,
-            rendererFactory: rendererFactory
-        )
-
-        collectionView.isDebugModeEnabled = isDebugModeEnabled
-        let changeSet = CollectionChangeSet.fullChangeSet(properties: properties, style: style, layout: layout)
-        
-        return collectionView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
-extension PortalCollectionView: MessageForwarder {
+extension PortalCollectionView {
     
     func apply(
         changeSet: CollectionChangeSet<ActionType>,

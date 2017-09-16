@@ -11,27 +11,10 @@ import UIKit
 public let defaultTrackColor = Color.gray
 public let defaultProgressColor = Color.blue
 
-internal struct ProgressRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let progress: ProgressCounter
-    let style: StyleSheet<ProgressStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let progressBar = UIProgressView()
-        let changeSet = ProgressChangeSet.fullChageSet(progressCounter: progress, style: style, layout: layout)
-        
-        return progressBar.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-
-extension UIProgressView: MessageForwarder {
+extension UIProgressView {
     
     func apply<MessageType>(changeSet: ProgressChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
-        apply(changeSet: changeSet.progressCounter)
+        apply(changeSet: changeSet.progress)
         apply(changeSet: changeSet.baseStyleSheet)
         apply(changeSet: changeSet.progressStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
@@ -43,14 +26,10 @@ extension UIProgressView: MessageForwarder {
 
 fileprivate extension UIProgressView {
 
-    fileprivate func apply(changeSet: [ProgressCounter.Property]) {
-        for property in changeSet {
-            switch property {
-                
-            case .progress(let progress):
-                self.progress = progress
-            }
-        }
+    fileprivate func apply(changeSet: PropertyChange<ProgressCounter>) {
+        guard case .change(let progressCounter) = changeSet else { return }
+        
+        self.progress = progressCounter.progress
     }
     
     fileprivate func apply(changeSet: [ProgressStyleSheet.Property]) {

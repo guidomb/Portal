@@ -6,7 +6,7 @@
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
-public struct ProgressCounter: AutoPropertyDiffable {
+public struct ProgressCounter {
     
     internal static let initial = ProgressCounter()
     
@@ -84,31 +84,38 @@ public func progressStyleSheet(
 
 // MARK: Change Set
 
-internal struct ProgressChangeSet {
+public struct ProgressChangeSet {
     
-    static func fullChageSet(
-        progressCounter: ProgressCounter,
+    static func fullChangeSet(
+        progress: ProgressCounter,
         style: StyleSheet<ProgressStyleSheet>,
         layout: Layout) -> ProgressChangeSet {
         return ProgressChangeSet(
-            progressCounter: progressCounter.fullChangeSet,
+            progress: .change(to: progress),
             baseStyleSheet: style.base.fullChangeSet,
             progressStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }
     
-    let progressCounter: [ProgressCounter.Property]
+    let progress: PropertyChange<ProgressCounter>
     let baseStyleSheet: [BaseStyleSheet.Property]
     let progressStyleSheet: [ProgressStyleSheet.Property]
     let layout: [Layout.Property]
     
+    var isEmpty: Bool {
+        guard case .noChange = progress else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                progressStyleSheet.isEmpty  &&
+                layout.isEmpty
+    }
+    
     init(
-        progressCounter: [ProgressCounter.Property] = [],
+        progress: PropertyChange<ProgressCounter>,
         baseStyleSheet: [BaseStyleSheet.Property] = [],
         progressStyleSheet: [ProgressStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
-        self.progressCounter = progressCounter
+        self.progress = progress
         self.baseStyleSheet = baseStyleSheet
         self.progressStyleSheet = progressStyleSheet
         self.layout = layout

@@ -5,7 +5,6 @@
 //  Created by Guido Marucci Blas on 1/27/17.
 //
 //
-
 import Foundation
 
 public enum RootComponent<MessageType> {
@@ -17,11 +16,11 @@ public enum RootComponent<MessageType> {
 }
 
 public enum SupportedOrientations {
-    
+
     case portrait
     case landscape
     case all
-    
+
 }
 
 public enum Gesture<MessageType> {
@@ -44,15 +43,15 @@ public extension Gesture {
 }
 
 public struct CustomComponent {
-    
+
     public let identifier: String
     public let information: [String : Any]
-    
+
     public init(identifier: String, information: [String : Any] = [:]) {
         self.identifier = identifier
         self.information = information
     }
-    
+
 }
 
 public indirect enum Component<MessageType> {
@@ -70,8 +69,8 @@ public indirect enum Component<MessageType> {
     case progress(ProgressCounter, StyleSheet<ProgressStyleSheet>, Layout)
     case textField(TextFieldProperties<MessageType>, StyleSheet<TextFieldStyleSheet>, Layout)
     case custom(CustomComponent, StyleSheet<EmptyStyleSheet>, Layout)
-    case spinner(Bool, StyleSheet<SpinnerStyleSheet>, Layout)
-    case textView(TextType, StyleSheet<TextViewStyleSheet>, Layout)
+    case spinner(StyleSheet<SpinnerStyleSheet>, Layout)
+    case textView(Text, StyleSheet<TextViewStyleSheet>, Layout)
 
     public var layout: Layout {
         switch self {
@@ -102,25 +101,25 @@ public indirect enum Component<MessageType> {
 
         case .segmented(_, _, let layout):
             return layout
-        
+
         case .progress(_, _, let layout):
             return layout
-            
+
         case .collection(_, _, let layout):
             return layout
-            
+
         case .carousel(_, _, let layout):
             return layout
 
         case .custom(_, _, let layout):
             return layout
 
-        case .spinner(_, _, let layout):
+        case .spinner(_, let layout):
             return layout
-            
+
         case .textView(_, _, let layout):
             return layout
-            
+
         }
     }
 
@@ -159,25 +158,25 @@ extension Component {
 
         case .segmented(let segments, let style, let layout):
             return .segmented(segments.map { $0.map(transform) }, style, layout)
-            
+
         case .progress(let progress, let style, let layout):
             return .progress(progress, style, layout)
 
         case .collection(let properties, let style, let layout):
             return .collection(properties.map(transform), style, layout)
-            
+
         case .carousel(let properties, let style, let layout):
             return .carousel(properties.map(transform), style, layout)
 
         case .custom(let customComponent, let style, let layout):
             return .custom(customComponent, style, layout)
-            
-        case .spinner(let isActive, let style, let layout):
-            return .spinner(isActive, style, layout)
-            
+
+        case .spinner(let style, let layout):
+            return .spinner(style, layout)
+
         case .textView(let text, let style, let layout):
             return .textView(text, style, layout)
-            
+
         }
     }
     // swiftlint:enable cyclomatic_complexity

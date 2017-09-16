@@ -22,6 +22,8 @@ enum Message {
     case stateLoaded(State?)
     case segmentSelected(UInt)
     case changeColor
+    case selectedItemChanged(UInt)
+    
 }
 
 enum Navigator: Equatable {
@@ -109,7 +111,7 @@ enum State {
     case segmentedExample(selected: UInt)
     case spinnerExample
     case tableExample(color: Color)
-    case carouselExample(color: Color)
+    case carouselExample(color: Color, selectedItem: UInt)
     
 }
 
@@ -129,6 +131,7 @@ final class ExampleApplication: Portal.Application {
     }
     
     func update(state: State, message: Message) -> (State, Command?)? {
+        print("---> Message: \(message)")
         switch (state, message) {
             
         case (.uninitialized, .applicationStarted):
@@ -235,7 +238,7 @@ final class ExampleApplication: Portal.Application {
             return (.tableExample(color: .green), .none)
         
         case (.examples, .routeChanged(.carouselExample)):
-            return (.carouselExample(color: .black), .none)
+            return (.carouselExample(color: .black, selectedItem: 0), .none)
             
         // MARK:- Collection example state transitions
             
@@ -304,11 +307,14 @@ final class ExampleApplication: Portal.Application {
         
         // MARK:- Table example state transitions
             
-        case (.carouselExample(.white), .changeColor):
-            return (.carouselExample(color: .black), .none)
+        case (.carouselExample(.white, let index), .changeColor):
+            return (.carouselExample(color: .black, selectedItem: index), .none)
             
-        case (.carouselExample(.black), .changeColor):
-            return (.carouselExample(color: .white), .none)
+        case (.carouselExample(.black, let index), .changeColor):
+            return (.carouselExample(color: .white, selectedItem: index), .none)
+        
+        case (.carouselExample(let color, _), .selectedItemChanged(let index)):
+            return (.carouselExample(color: color, selectedItem: index), .none)
             
         case (.carouselExample, .routeChanged(.examples)):
             return (.examples, .none)
@@ -380,8 +386,8 @@ final class ExampleApplication: Portal.Application {
         case .tableExample(let color):
             return TableScreen.view(color: color)
         
-        case .carouselExample(let color):
-            return CarouselScreen.view(color: color)
+        case .carouselExample(let color, let index):
+            return CarouselScreen.view(color: color, selectedItem: index)
             
         default:
             return DefaultScreen.view()

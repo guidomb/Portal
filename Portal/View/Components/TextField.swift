@@ -115,7 +115,7 @@ public func textFieldStyleSheet(
 
 // MARK: - Change set
 
-internal struct TextFieldChangeSet<MessageType> {
+public struct TextFieldChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: TextFieldProperties<MessageType>,
@@ -133,6 +133,13 @@ internal struct TextFieldChangeSet<MessageType> {
     let baseStyleSheet: [BaseStyleSheet.Property]
     let textFieldStyleSheet: [TextFieldStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                textFieldStyleSheet.isEmpty &&
+                layout.isEmpty
+    }
     
     init(
         properties: [TextFieldProperties<MessageType>.Property] = [],

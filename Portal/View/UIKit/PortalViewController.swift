@@ -15,13 +15,47 @@ public final class PortalViewController<
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
+    public struct ComponentPatch {
+        
+        let changeSet: ComponentChangeSet<ActionType>
+        let component: Component<ActionType>
+        
+        // It's really important for consistency that only code inside this controller is able
+        // to create instances of ComponentPatch.
+        //
+        // The role of this struct is to maintain consistency between the componenet the user
+        // wants to render and the change set to be applied to transition from the current
+        // rendered component (virtual view) to the next one.
+        //
+        // The controller does not expose the rendered component, so the only way to get a
+        // change set is through the PortalViewController#calculatePatch(for:) method which
+        // will create the appropiate ComponentPatch instance.
+        //
+        // Rendering a patch is only possible using PortalViewController#render(patch:) method
+        // which apart from applying the change set to the controller's view it will save
+        // the component for future change set generation
+        //
+        // The main reason behind separating change set generation from rendering is to be able
+        // to calculate change sets off the main thread. The problem, and the reason why ComponentPatch
+        // exists, is to make sure that the change set that will be applied was generated from
+        // the component inside the patch, which will then be referenced by the controller in order
+        // to calculate new change sets against other components threes.
+        //
+        // Bottom line we want to make sure that the component used when generating the change set
+        // is the same one that will be stored by the controller once the change set is applied.
+        fileprivate init(changeSet: ComponentChangeSet<ActionType>, component: Component<ActionType>) {
+            self.changeSet = changeSet
+            self.component = component
+        }
+        
+    }
+    
     public typealias ActionType = Action<RouteType, MessageType>
-    public typealias RendererFactory = (ContainerController) ->
-        UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
-
+    public typealias ComponentRenderer = UIKitComponentRenderer<MessageType, RouteType, CustomComponentRendererType>
+    public typealias CustomComponentRendererFactory = (ContainerController) -> CustomComponentRendererType
+    
     internal typealias InternalActionType = InternalAction<RouteType, MessageType>
 
-    public var component: Component<ActionType>
     public let mailbox: Mailbox<ActionType>
     public var orientation: SupportedOrientations = .all
     
@@ -29,15 +63,18 @@ public final class PortalViewController<
     
     fileprivate var disposers: [String : () -> Void] = [:]
     
-    private let createRenderer: RendererFactory
+    private var component: Component<ActionType>
+    private var renderer: ComponentRenderer!
     
     public override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return orientation.uiInterfaceOrientation
     }
     
-    public init(component: Component<ActionType>, factory createRenderer: @escaping RendererFactory) {
+    public init(
+        component: Component<ActionType>,
+        layoutEngine: LayoutEngine = YogaLayoutEngine(),
+        customComponentRendererFactory: @escaping CustomComponentRendererFactory) {
         self.component = component
-        self.createRenderer = createRenderer
         self.mailbox = internalMailbox.filterMap { message in
             if case .action(let action) = message {
                 return action
@@ -46,6 +83,10 @@ public final class PortalViewController<
             }
         }
         super.init(nibName: nil, bundle: nil)
+        
+        self.renderer = ComponentRenderer(layoutEngine: layoutEngine) { [unowned self] in
+            customComponentRendererFactory(self)
+        }
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -78,9 +119,22 @@ public final class PortalViewController<
         // does not take into account the navigation and status bar in order
         // to sets its visible size.
         view.frame = calculateViewFrame()
-        let renderer = createRenderer(self)
-        let componentMailbox = renderer.render(component: component)
-        componentMailbox.forwardMap(to: internalMailbox) { .action($0) }
+        let componentMailbox = renderer.render(component: component, into: view)
+        componentMailbox.forwardMap(to: internalMailbox) { .action($0) }        
+    }
+    
+    public func calculatePatch(for component: Component<ActionType>) -> ComponentPatch {
+        let changeSet = self.component.changeSet(for: component)
+        return ComponentPatch(changeSet: changeSet, component: component)
+    }
+    
+    public func render(patch: ComponentPatch) {
+        // Because nobody outside this file is able to create
+        // instances of ComponentPatch it is guaranteed
+        // that the patch's component was the one used
+        // to generate the patch's change set.
+        component = patch.component
+        renderer.apply(changeSet: patch.changeSet, to: view)
     }
     
 }

@@ -138,7 +138,7 @@ public func properties<MessageType>(
 
 // MARK: - ChangeSet
 
-internal struct CollectionChangeSet<MessageType> {
+public struct CollectionChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: CollectionProperties<MessageType>,
@@ -154,6 +154,12 @@ internal struct CollectionChangeSet<MessageType> {
     let properties: [CollectionProperties<MessageType>.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
     let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                layout.isEmpty
+    }
     
     init(
         properties: [CollectionProperties<MessageType>.Property] = [],

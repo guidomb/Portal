@@ -23,9 +23,9 @@ class CollectionRendererSpec: QuickSpec {
         
         beforeEach {
             layoutEngine = YogaLayoutEngine()
-            collection = PortalCollectionView(layoutEngine: layoutEngine) {
+            collection = PortalCollectionView(renderer: UIKitComponentRenderer(layoutEngine: layoutEngine) {
                 VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-            }
+            })
         }
         
         describe(".apply(changeSet: CollectionChangeSet) -> Result") {
@@ -106,9 +106,9 @@ class CollectionRendererSpec: QuickSpec {
                     var configuredCollection: PortalCollection!
                     
                     beforeEach {
-                        configuredCollection = PortalCollectionView(layoutEngine: layoutEngine) {
+                        configuredCollection = PortalCollectionView(renderer: UIKitComponentRenderer(layoutEngine: layoutEngine) {
                             VoidCustomComponentRenderer<String, MockRoute>(container:  MockContainerController())
-                        }
+                        })
                         _ = configuredCollection.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     }
                     

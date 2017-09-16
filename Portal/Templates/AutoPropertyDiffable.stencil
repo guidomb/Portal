@@ -43,16 +43,24 @@
         {% else %}
           {% if instanceVariable.type.based.AutoPropertyDiffable %}
             {% if instanceVariable.isOptional %}
-        switch (self.{{ instanceVariable.name}}, {{ type.name|lowerFirst }}.{{ instanceVariable.name }}) {
+        switch (self.{{ instanceVariable.name }}, {{ type.name|lowerFirst }}.{{ instanceVariable.name }}) {
         case (.some(let old), .some(let new)):
-            changeSet.append(.{{ instanceVariable.name }}(old.changeSet(for: new)))
+            let {{ instanceVariable.name }}ChangeSet = old.changeSet(for: new)
+            if !{{ instanceVariable.name }}ChangeSet.isEmpty {
+                changeSet.append(.{{ instanceVariable.name }}({{ instanceVariable.name }}ChangeSet))
+            }
         case (.none, .some(let new)):
             changeSet.append(.{{ instanceVariable.name }}(new.fullChangeSet))
-        default:
+        case (.some(_), .none):
             changeSet.append(.{{ instanceVariable.name }}(.none))
+        case (.none, .none):
+            break
         }
             {% else %}
-        changeSet.append(.{{ instanceVariable.name }}(self.{{ instanceVariable.name}}.changeSet(for: {{ type.name|lowerFirst }}.{{ instanceVariable.name }})))
+        let {{ instanceVariable.name}}ChangeSet = self.{{ instanceVariable.name }}.changeSet(for: {{ type.name|lowerFirst }}.{{ instanceVariable.name }})
+        if !{{ instanceVariable.name}}ChangeSet.isEmpty {
+            changeSet.append(.{{ instanceVariable.name }}({{ instanceVariable.name}}ChangeSet))
+        }
             {% endif %}
           {% else %}
         if self.{{ instanceVariable.name }} != {{ type.name|lowerFirst }}.{{ instanceVariable.name }} {

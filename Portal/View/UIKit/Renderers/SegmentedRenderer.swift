@@ -9,52 +9,19 @@
 import UIKit
 
 public let defaultSegmentedFontSize = UInt(UIFont.systemFontSize)
-
-internal struct SegmentedRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let segments: ZipList<SegmentProperties<ActionType>>
-    let style: StyleSheet<SegmentedStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let segmentedControl = UISegmentedControl()
-        let changeSet = SegmentedChangeSet.fullChangeSet(segments: segments, style: style, layout: layout)
-        
-        return segmentedControl.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-    }
-    
-}
-    
+  
 extension UISegmentedControl: MessageProducer {
     
     func apply<MessageType>(changeSet: SegmentedChangeSet<MessageType>,
                             layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(changeSet: changeSet.segments)
-        apply(changeSet: changeSet.baseStyle)
-        apply(changeSet: changeSet.segmentedStyle)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.segmentedStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
         return Render<MessageType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
-    
-    fileprivate func dispatch<MessageType>(
-        messages: [MessageType?],
-        for event: UIControlEvents,
-        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
         
-        let dispatcher = MessageDispatcher(mailbox: mailbox) { sender in
-            guard let segmentedControl = sender as? UISegmentedControl else { return .none }
-            let index = segmentedControl.selectedSegmentIndex
-            return index < messages.count ? messages[index] : .none
-        }
-        
-        self.register(dispatcher: dispatcher)
-        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
-        return dispatcher.mailbox
-    }
-    
 }
 
 fileprivate extension UISegmentedControl {
@@ -62,6 +29,9 @@ fileprivate extension UISegmentedControl {
     fileprivate func apply<MessageType>(changeSet: PropertyChange<ZipList<SegmentProperties<MessageType>>>) {
         guard case .change(let segments) = changeSet else { return }
         
+        // TODO avoid removing and reinserting segments if they
+        // did not change.
+        removeAllSegments()
         for (index, segment) in segments.enumerated() {
             switch segment.content {
                 
@@ -86,9 +56,13 @@ fileprivate extension UISegmentedControl {
     }
     
     fileprivate func apply(changeSet: [SegmentedStyleSheet.Property]) {
-        var fontName: String? = .none
-        var fontSize: CGFloat? = .none
-        var textColor: UIColor? = .none
+        let attributes = titleTextAttributes(for: .normal) as? [String : Any]
+        let font = attributes?[NSFontAttributeName] as? UIFont
+        let color = attributes?[NSForegroundColorAttributeName] as? UIColor
+        
+        var fontName: String? = font?.fontName
+        var fontSize: CGFloat? = font?.pointSize
+        var textColor: UIColor? = color
         
         for property in changeSet {
             switch property {
