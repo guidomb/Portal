@@ -34,6 +34,8 @@ enum CollectionScreen {
                                         layout: layout {
                                             $0.height = Dimension(value: 150)
                                             $0.width = Dimension(value: 150)
+                                            $0.alignment = Alignment(items: .center)
+                                            $0.justifyContent = .center
                                         }
                                     )
                                 }
