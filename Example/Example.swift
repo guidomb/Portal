@@ -10,7 +10,7 @@ import UIKit
 import Portal
 
 enum Message {
-    
+
     case applicationStarted
     case replaceContent
     case goToRoot
@@ -23,19 +23,20 @@ enum Message {
     case segmentSelected(UInt)
     case changeColor
     case selectedItemChanged(UInt)
-    
+    case toggle(Bool)
+
 }
 
 enum Navigator: Equatable {
-    
+
     case main
     case modal
     case other
-    
+
 }
 
 enum Route: Portal.Route {
-    
+
     case root
     case modal
     case detail
@@ -52,7 +53,7 @@ enum Route: Portal.Route {
     case spinnerExample
     case tableExample
     case carouselExample
-    
+
     var previous: Route? {
         switch self {
         case .root:
@@ -89,11 +90,11 @@ enum Route: Portal.Route {
             return .examples
         }
     }
-    
+
 }
 
 enum State {
-    
+
     case uninitialized
     case started(date: Date?, showAlert: Bool)
     case replacedContent
@@ -112,288 +113,288 @@ enum State {
     case spinnerExample
     case tableExample(color: Color)
     case carouselExample(color: Color, selectedItem: UInt)
-    
+
 }
 
 final class ExampleApplication: Portal.Application {
-    
+
     typealias Action = Portal.Action<Route, Message>
     typealias View = Portal.View<Route, Message, Navigator>
     typealias Subscription = Portal.Subscription<Message, Route, IgniteSubscription>
-    
+
     var initialState: State { return .uninitialized }
-    
+
     var initialRoute: Route { return .root }
-    
+
     func translateRouteChange(from currentRoute: Route, to nextRoute: Route) -> Message? {
         print("Route change '\(currentRoute)' -> '\(nextRoute)'")
         return .routeChanged(to: nextRoute)
     }
-    
+
     func update(state: State, message: Message) -> (State, Command?)? {
         print("---> Message: \(message)")
         switch (state, message) {
-            
+
         case (.uninitialized, .applicationStarted):
             return (.started(date: .none, showAlert: false), .none)
-            
+
         // MARK:- Started state transitions
-            
+
         case (.started, .replaceContent):
             return (.replacedContent, .none)
-            
+
         case (.started, .routeChanged(.modal)):
             return (.modalScreen(counter: 0), .none)
-            
+
         case (.started, .routeChanged(.detail)):
             return (.detailedScreen(counter: 0), .none)
-            
+
         case (.started, .routeChanged(.landscape)):
             return (.landscapeScreen(text: "Hello!", counter: 0), .none)
-            
+
         case (.started, .tick(let date)):
             return (.started(date: date, showAlert: false), .none)
-            
+
         case (.started(let date, _), .pong(let text)):
             print("PONG -> \(text)")
             return (.started(date: date, showAlert: true), .none)
-            
+
         case (.started, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Replaced content state transitions
-            
+
         case (.replacedContent, .goToRoot):
             return (.started(date: .none, showAlert: false), .none)
-            
+
         // MARK:- Detailed screen state transitions
-            
+
         case (.detailedScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
-            
+
         case (.detailedScreen(let counter), .increment):
             return (.detailedScreen(counter: counter + 1), .none)
-            
+
         case (.detailedScreen(let counter), .ping(_)):
             return (.detailedScreen(counter: counter + 1), .none)
-            
+
         case (.modalScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
-            
+
         // MARK:- Modal screen state transitions
-            
+
         case (.modalScreen(let counter), .routeChanged(.detail)):
             return (.detailedScreen(counter: counter + 5), .none)
-            
+
         case (.modalScreen(let count), .increment):
             return (.modalScreen(counter: count + 1), .none)
-            
+
         case (.modalScreen, .routeChanged(.landscape)):
             return (.landscapeScreen(text: "Modal after modal!", counter: 0), .none)
-            
+
         // MARK:- Landscape screen state transitions
-            
+
         case (.landscapeScreen, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
-            
+
         case (.landscapeScreen, .tick(_)):
             return (.landscapeScreen(text: "Tick tock!", counter: 0), .none)
-            
+
         case (.landscapeScreen(let text, let count), .increment):
             return (.landscapeScreen(text: text, counter: count + 1), .none)
-        
+
         // MARK:- Examples screen state transitions
-        
+
         case (.examples, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
-            
+
         case (.examples, .routeChanged(.collectionExample)):
             return (.collectionExample(color: .black), .none)
-        
+
         case (.examples, .routeChanged(.labelExample)):
             return (.labelExample, .none)
-            
+
         case (.examples, .routeChanged(.textViewExample)):
             return (.textViewExample, .none)
-            
+
         case (.examples, .routeChanged(.textFieldExample)):
             return (.textFieldExample, .none)
-        
+
         case (.examples, .routeChanged(.imageExample)):
             return (.imageExample, .none)
-        
+
         case (.examples, .routeChanged(.mapExample)):
             return (.mapExample, .none)
-        
+
         case (.examples, .routeChanged(.progressExample)):
             return (.progressExample, .none)
 
         case (.examples, .routeChanged(.segmentedExample)):
             return (.segmentedExample(selected: 3), .none)
-            
+
         case (.examples, .routeChanged(.spinnerExample)):
             return (.spinnerExample, .none)
-       
+
         case (.examples, .routeChanged(.tableExample)):
             return (.tableExample(color: .green), .none)
-        
+
         case (.examples, .routeChanged(.carouselExample)):
             return (.carouselExample(color: .black, selectedItem: 0), .none)
-            
+
         // MARK:- Collection example state transitions
-            
+
         case (.collectionExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+
         case (.collectionExample(.white), .changeColor):
             return (.collectionExample(color: .black), .none)
-            
+
         case (.collectionExample(.black), .changeColor):
             return (.collectionExample(color: .white), .none)
-            
+
         // MARK:- Label example state transitions
-        
+
         case (.labelExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+
         // MARK:- TextView example state transitions
-        
+
         case (.textViewExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+
         // MARK:- TextField example state transitions
-            
+
         case (.textFieldExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+
         // MARK:- Image example state transitions
-            
+
         case (.imageExample, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Map example state transitions
-            
+
         case (.mapExample, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Progress example state transitions
-            
+
         case (.progressExample, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Segment example state transitions
-            
+
         case (.segmentedExample, .segmentSelected(let index)):
             return (.segmentedExample(selected: index), .none)
-            
+
         case (.segmentedExample, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Spinner example state transitions
-            
+
         case (.spinnerExample, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Table example state transitions
-            
+
         case (.tableExample(.green), .changeColor):
             return (.tableExample(color: .red), .none)
-            
+
         case (.tableExample(.red), .changeColor):
             return (.tableExample(color: .green), .none)
-            
+
         case (.tableExample, .routeChanged(.examples)):
             return (.examples, .none)
-        
+
         // MARK:- Table example state transitions
-            
+
         case (.carouselExample(.white, let index), .changeColor):
             return (.carouselExample(color: .black, selectedItem: index), .none)
-            
+
         case (.carouselExample(.black, let index), .changeColor):
             return (.carouselExample(color: .white, selectedItem: index), .none)
-        
+
         case (.carouselExample(let color, _), .selectedItemChanged(let index)):
             return (.carouselExample(color: color, selectedItem: index), .none)
-            
+
         case (.carouselExample, .routeChanged(.examples)):
             return (.examples, .none)
-            
+
         // MARK:- Miscelaneus state transitions
-            
+
         case (_, .pong(let text)):
             print("PONG -> \(text)")
             return (state, .none)
-            
+
         default:
             return .none
-            
+
         }
-        
+
     }
-    
+
     func view(for state: State) -> View {
         switch state {
-            
+
         case .started(_, true):
             return MainScreen.alert()
-            
+
         case .started(let date, false):
             return MainScreen.mainView(date: date)
-            
+
         case .replacedContent:
             return MainScreen.replacedContent()
-            
+
         case .detailedScreen(let counter):
             return DetailScreen.view(counter: counter)
-            
+
         case .modalScreen(let counter):
             return ModalScreen.view(counter: counter)
-            
+
         case .landscapeScreen(let text, let count):
             return LandscapeScreen.view(text: text, count: count)
-        
+
         case .examples:
             return ExamplesScreen.view()
-        
+
         case .collectionExample(let color):
             return CollectionScreen.view(color: color)
-        
+
         case .labelExample:
             return LabelScreen.view()
-        
+
         case .textFieldExample:
             return TextFieldScreen.view()
-            
+
         case .textViewExample:
             return TextViewScreen.view()
-            
+
         case .imageExample:
             return ImageScreen.view()
-            
+
         case .mapExample:
             return MapScreen.view()
-        
+
         case .spinnerExample:
             return SpinnerScreen.view()
-            
+
         case .progressExample:
             return ProgressScreen.view()
-            
+
         case .segmentedExample(let index):
             return SegmentedScreen.view(selected: index)
 
         case .tableExample(let color):
             return TableScreen.view(color: color)
-        
+
         case .carouselExample(let color, let index):
             return CarouselScreen.view(color: color, selectedItem: index)
-            
+
         default:
             return DefaultScreen.view()
         }
     }
-    
+
     func subscriptions(for state: State) -> [Subscription] {
         switch state {
         case .started:
@@ -417,5 +418,5 @@ final class ExampleApplication: Portal.Application {
             return []
         }
     }
-    
+
 }

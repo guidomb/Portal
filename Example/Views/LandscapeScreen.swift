@@ -35,7 +35,18 @@ enum LandscapeScreen {
                         style: modalButtonStyleSheet
                     ),
                     label(text: text),
-                    label(text: "Count \(count)")
+                    label(text: "Count \(count)"),
+                    toggle(
+                        isOn: true,
+                        onSwitch: {
+                            return .sendMessage(Message.toggle($0))
+                        },
+                        style: toggleStyleSheet {
+                            $1.onTintColor = .blue
+                            $1.tintChangingColor = .yellow
+                            $1.thumbTintColor = .black
+                        }
+                    ),
                 ],
                 style: styleSheet() {
                     $0.backgroundColor = .red

@@ -138,6 +138,10 @@ extension UIKitComponentRenderer {
             let textView = castOrRelease(view: view, to: UITextView.self)
             return textView.apply(changeSet: textViewChangeSet, layoutEngine: layoutEngine)
             
+        case .toggle(let toggleChangeSet):
+            let toggle = castOrRelease(view: view, to: UISwitch.self)
+            return toggle.apply(changeSet: toggleChangeSet, layoutEngine: layoutEngine)
+            
         }
     }
     // swiftlint:enable cyclomatic_complexity function_body_length

@@ -5,6 +5,7 @@
 //  Created by Guido Marucci Blas on 9/10/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
+// swiftlint:disable file_length
 import Foundation
 
 public indirect enum ComponentChangeSet<MessageType> {
@@ -24,6 +25,7 @@ public indirect enum ComponentChangeSet<MessageType> {
     case custom(CustomComponentChangeSet)
     case spinner(SpinnerChangeSet)
     case textView(TextViewChangeSet)
+    case toggle(ToggleChangeSet<MessageType>)
 
 }
 
@@ -75,6 +77,9 @@ extension ComponentChangeSet {
             
         case .textView(let textViewChangeSet):
             return textViewChangeSet.isEmpty
+            
+        case .toggle(let toggleChangeSet):
+            return toggleChangeSet.isEmpty
             
         }
     }
@@ -132,6 +137,10 @@ extension Component {
 
         case .textView(let text, let style, let layout):
             return .textView(TextViewChangeSet.fullChangeSet(text: text, style: style, layout: layout))
+            
+        case .toggle(let properties, let style, let layout):
+            return .toggle(ToggleChangeSet.fullChangeSet(properties: properties, style: style, layout: layout))
+            
         }
     }
 
@@ -300,6 +309,17 @@ extension Component {
                 TextViewChangeSet(
                     text: text,
                     baseStyleSheet: oldStyle.base.changeSet(for: newStyle.base),
+                    layout: oldLayout.changeSet(for: newLayout)
+                )
+            )
+            
+        case (.toggle(let oldProperties, let oldStyle, let oldLayout),
+              .toggle(let newProperties, let newStyle, let newLayout)):
+            return .toggle(
+                ToggleChangeSet(
+                    properties: oldProperties.changeSet(for: newProperties),
+                    baseStyleSheet: oldStyle.base.changeSet(for: newStyle.base),
+                    toggleStyleSheet: oldStyle.component.changeSet(for: newStyle.component),
                     layout: oldLayout.changeSet(for: newLayout)
                 )
             )

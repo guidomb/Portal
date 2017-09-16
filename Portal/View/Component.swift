@@ -71,6 +71,7 @@ public indirect enum Component<MessageType> {
     case custom(CustomComponent, StyleSheet<EmptyStyleSheet>, Layout)
     case spinner(StyleSheet<SpinnerStyleSheet>, Layout)
     case textView(Text, StyleSheet<TextViewStyleSheet>, Layout)
+    case toggle(ToggleProperties<MessageType>, StyleSheet<ToggleStyleSheet>, Layout)
 
     public var layout: Layout {
         switch self {
@@ -115,6 +116,9 @@ public indirect enum Component<MessageType> {
             return layout
 
         case .spinner(_, let layout):
+            return layout
+
+        case .toggle(_, _, let layout):
             return layout
 
         case .textView(_, _, let layout):
@@ -173,6 +177,9 @@ extension Component {
 
         case .spinner(let style, let layout):
             return .spinner(style, layout)
+
+        case .toggle(let properties, let style, let layout):
+            return .toggle(properties.map(transform), style, layout)
 
         case .textView(let text, let style, let layout):
             return .textView(text, style, layout)
