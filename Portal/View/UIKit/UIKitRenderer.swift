@@ -23,7 +23,7 @@ public struct UIKitComponentRenderer<
     typealias CollectionView = PortalCollectionView<MessageType, RouteType, CustomComponentRendererType>
     typealias CarouselView = PortalCarouselView<MessageType, RouteType, CustomComponentRendererType>
 
-    public var isDebugModeEnabled = true
+    public var isDebugModeEnabled = false
     public var debugConfiguration = RendererDebugConfiguration()
 
     fileprivate let layoutEngine: LayoutEngine
