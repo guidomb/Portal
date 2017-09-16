@@ -19,8 +19,7 @@ enum SpinnerScreen {
             root: .stack(ExampleApplication.navigationBar(title: "Spinner")),
             component: container(
                 children: [
-                    createSpinner(isActive: true),
-                    createSpinner(isActive: false)
+                    createSpinner()
                 ],
                 style: styleSheet {
                     $0.backgroundColor = .black
@@ -38,9 +37,8 @@ enum SpinnerScreen {
 
 fileprivate extension SpinnerScreen {
     
-    fileprivate static func createSpinner(isActive: Bool) -> Component<Action> {
+    fileprivate static func createSpinner() -> Component<Action> {
         return spinner(
-            isActive: isActive,
             style: spinnerStyleSheet { base, spinner in
                 base.backgroundColor = .black
                 spinner.color = .red
