@@ -326,10 +326,10 @@ public struct CustomComponentChangeSet {
         )
     }
 
-    let oldCustomComponent: CustomComponent?
-    let newCustomComponent: CustomComponent
-    let baseStyleSheet: [BaseStyleSheet.Property]
-    let layout: [Layout.Property]
+    public let oldCustomComponent: CustomComponent?
+    public let newCustomComponent: CustomComponent
+    public let baseStyleSheet: [BaseStyleSheet.Property]
+    public let layout: [Layout.Property]
 
     init(
         oldCustomComponent: CustomComponent?,

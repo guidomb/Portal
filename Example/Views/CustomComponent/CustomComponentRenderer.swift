@@ -22,9 +22,14 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     }
     
     public func renderComponent(_ componentDescription: CustomComponentDescription, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
-        guard componentDescription.identifier == "MyCustomComponent" || componentDescription.identifier == "MyCustomComponent2" else { return }
         
-        if componentDescription.identifier == "MyCustomComponent" {
+    }
+    
+    func apply(changeSet: CustomComponentChangeSet, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
+        print("Applying change set for custom component")
+        guard changeSet.newCustomComponent.identifier == "MyCustomComponent" || changeSet.newCustomComponent.identifier == "MyCustomComponent2" else { return }
+        
+        if changeSet.newCustomComponent.identifier == "MyCustomComponent" {
             print("Rendering MyCustomComponent")
             let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
             if let customView = bundle?.last as? CustomView {
@@ -52,10 +57,6 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
                 CustomComponentRenderer.cachedController = controller
             }
         }
-    }
-    
-    func apply(changeSet: CustomComponentChangeSet, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
-        print("Applying change set for custom component")
     }
     
 }
