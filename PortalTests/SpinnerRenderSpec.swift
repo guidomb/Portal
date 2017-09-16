@@ -29,38 +29,15 @@ class SpinnerRenderSpec: QuickSpec {
             
             beforeEach {
                 changeSet = SpinnerChangeSet.fullChangeSet(
-                    isActive: true,
                     style: style,
                     layout: layout()
                 )
             }
         
-            context("when the change set contains spinner property changes") {
-                
-                it("applies 'isActive' property changes") {
-                    let spinner = UIActivityIndicatorView()
-                    let _: Render<String> = spinner.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    expect(spinner.isAnimating).to(beTrue())
-                }
-                
-                context("when the `isActive` is already configured") {
-                    
-                    var configuredSpinner: UIActivityIndicatorView!
-                    
-                    beforeEach {
-                        configuredSpinner = UIActivityIndicatorView()
-                        let _: Render<String> = configuredSpinner.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    }
-                    
-                    it("replaces the previous value") {
-                        let newChangeSet = SpinnerChangeSet(isActive: .change(to: false))
-                        let _: Render<String> = configuredSpinner.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
-                        
-                        expect(configuredSpinner.isAnimating).to(beFalse())
-                    }
-                    
-                }
-                
+            it("makes the spinner spin") {
+                let spinner = UIActivityIndicatorView()
+                let _: Render<String> = spinner.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                expect(spinner.isAnimating).to(beTrue())
             }
             
             context("when the change set contains spinner stylesheet changes") {
