@@ -17,15 +17,13 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
     private let container: ContainerController
     
     init(container: ContainerController) {
-        print("Creating custom renderer")
         self.container = container
     }
     
     func apply(changeSet: CustomComponentChangeSet, inside view: UIView, dispatcher: @escaping (Action) -> Void) {
-        print("Applying change set for custom component")
-        guard changeSet.newCustomComponent.identifier == "MyCustomComponent" || changeSet.newCustomComponent.identifier == "MyCustomComponent2" else { return }
-        
-        if changeSet.newCustomComponent.identifier == "MyCustomComponent" {
+        switch (changeSet.oldCustomComponent?.identifier, changeSet.newCustomComponent.identifier) {
+            
+        case (.none, "MyCustomComponent"):
             print("Rendering MyCustomComponent")
             let bundle = Bundle.main.loadNibNamed("CustomView", owner: nil, options: nil)
             if let customView = bundle?.last as? CustomView {
@@ -33,7 +31,8 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
                 customView.frame = CGRect(origin: .zero, size: view.frame.size)
                 view.addSubview(customView)
             }
-        } else {
+            
+        case (.none, "MyCustomComponent2"):
             print("Rendering MyCustomComponent2")
             if let cachedController = CustomComponentRenderer.cachedController {
                 print("Using cached version of the custom controller")
@@ -52,6 +51,20 @@ final class CustomComponentRenderer: UIKitCustomComponentRenderer {
                 }
                 CustomComponentRenderer.cachedController = controller
             }
+            
+        case (.some("MyCustomComponent"), "MyCustomComponent"):
+            // Here you diff old component's information against new component's information
+            // and only render what has changed
+            break
+            
+        case (.some("MyCustomComponent2"), "MyCustomComponent2"):
+            // Here you diff old component's information against new component's information
+            // and only render what has changed
+            break
+            
+        default:
+            break
+            
         }
     }
     
