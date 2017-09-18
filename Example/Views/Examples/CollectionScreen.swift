@@ -46,8 +46,8 @@ enum CollectionScreen {
                             $0.minimumInteritemSpacing = 5
                             $0.scrollDirection = .horizontal
                         },
-                        style: styleSheet {
-                            $0.backgroundColor = color
+                        style: collectionStyleSheet { base, collection in
+                            base.backgroundColor = color
                         },
                         layout: layout {
                             $0.flex = flex { $0.grow = .one }

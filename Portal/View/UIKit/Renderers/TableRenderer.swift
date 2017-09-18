@@ -15,7 +15,7 @@ extension PortalTableView {
         apply(changeSet: changeSet.baseStyleSheet)
         apply(changeSet: changeSet.tableStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
-        
+
         return Render<ActionType>(view: self, mailbox: mailbox, executeAfterLayout: .none)
     }
     
@@ -36,6 +36,14 @@ fileprivate extension PortalTableView {
                 
             case .showsVerticalScrollIndicator(let enabled):
                 showsVerticalScrollIndicator = enabled
+                
+            case .refresh(let maybeRefreshProperties):
+                if let refreshProperties = maybeRefreshProperties {
+                    self.configure(pullToRefresh: refreshProperties)
+                } else {
+                    self.removePullToRefresh()
+                }
+                
             }
         }
     }
@@ -46,6 +54,10 @@ fileprivate extension PortalTableView {
                 
             case .separatorColor(let color):
                 separatorColor = color.asUIColor
+            
+            case .refreshTintColor(let refreshTintColor):
+                self.scrollView.refreshControl?.tintColor = refreshTintColor.asUIColor
+                
             }
         }
     }

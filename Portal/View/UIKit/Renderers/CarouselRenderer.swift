@@ -14,7 +14,7 @@ extension PortalCarouselView {
         apply(changeSet: changeSet.properties)
         apply(changeSet: changeSet.baseStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
-        
+
         return Render<ActionType>(view: self, mailbox: mailbox, executeAfterLayout: .none)
     }
     

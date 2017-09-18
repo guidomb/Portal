@@ -37,6 +37,8 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
     public var items: [CollectionItemProperties<MessageType>]
     public var showsVerticalScrollIndicator: Bool
     public var showsHorizontalScrollIndicator: Bool
+    // sourcery: skipDiff
+    public var refresh: RefreshProperties<MessageType>?
     
     // Layout properties
     public var itemsSize: Size
@@ -50,6 +52,7 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
         showsVerticalScrollIndicator: Bool = false,
         showsHorizontalScrollIndicator: Bool = false,
         itemsSize: Size,
+        refresh: RefreshProperties<MessageType>? = .none,
         minimumInteritemSpacing: UInt = 0,
         minimumLineSpacing: UInt = 0,
         scrollDirection: CollectionScrollDirection = .vertical,
@@ -58,6 +61,7 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
         self.itemsSize = itemsSize
+        self.refresh = refresh
         self.minimumLineSpacing = minimumLineSpacing
         self.minimumInteritemSpacing = minimumInteritemSpacing
         self.sectionInset = sectionInset
@@ -71,6 +75,7 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
             showsVerticalScrollIndicator: self.showsVerticalScrollIndicator,
             showsHorizontalScrollIndicator: self.showsHorizontalScrollIndicator,
             itemsSize: self.itemsSize,
+            refresh: self.refresh.map { $0.map(transform) },
             minimumInteritemSpacing: self.minimumInteritemSpacing,
             minimumLineSpacing: self.minimumLineSpacing,
             scrollDirection: self.scrollDirection,
@@ -113,7 +118,7 @@ extension CollectionItemProperties {
 
 public func collection<MessageType>(
     properties: CollectionProperties<MessageType>,
-    style: StyleSheet<EmptyStyleSheet> = EmptyStyleSheet.default,
+    style: StyleSheet<CollectionStyleSheet> = CollectionStyleSheet.default,
     layout: Layout = layout()) -> Component<MessageType> {
     return .collection(properties, style, layout)
 }
@@ -136,37 +141,65 @@ public func properties<MessageType>(
     return properties
 }
 
+// MARK: - Style sheet
+
+public struct CollectionStyleSheet: AutoPropertyDiffable {
+    
+    public static let `default` = StyleSheet<CollectionStyleSheet>(component: CollectionStyleSheet())
+    
+    public var refreshTintColor: Color
+    
+    fileprivate init(refreshTintColor: Color = .gray) {
+        self.refreshTintColor = refreshTintColor
+    }
+    
+}
+
+public func collectionStyleSheet(
+    configure: (inout BaseStyleSheet, inout CollectionStyleSheet) -> Void = { _ in })
+    -> StyleSheet<CollectionStyleSheet> {
+    var base = BaseStyleSheet()
+    var component = CollectionStyleSheet()
+    configure(&base, &component)
+    return StyleSheet(component: component, base: base)
+}
+
 // MARK: - ChangeSet
 
 public struct CollectionChangeSet<MessageType> {
     
     static func fullChangeSet(
         properties: CollectionProperties<MessageType>,
-        style: StyleSheet<EmptyStyleSheet>,
+        style: StyleSheet<CollectionStyleSheet>,
         layout: Layout) -> CollectionChangeSet<MessageType> {
         return CollectionChangeSet(
             properties: properties.fullChangeSet,
             baseStyleSheet: style.base.fullChangeSet,
+            collectionStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }
     
     let properties: [CollectionProperties<MessageType>.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
+    let collectionStyleSheet: [CollectionStyleSheet.Property]
     let layout: [Layout.Property]
     
     var isEmpty: Bool {
-        return  properties.isEmpty          &&
-                baseStyleSheet.isEmpty      &&
+        return  properties.isEmpty              &&
+                baseStyleSheet.isEmpty          &&
+                collectionStyleSheet.isEmpty    &&
                 layout.isEmpty
     }
     
     init(
         properties: [CollectionProperties<MessageType>.Property] = [],
         baseStyleSheet: [BaseStyleSheet.Property] = [],
+        collectionStyleSheet: [CollectionStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
         self.properties = properties
         self.baseStyleSheet = baseStyleSheet
+        self.collectionStyleSheet = collectionStyleSheet
         self.layout = layout
     }
     

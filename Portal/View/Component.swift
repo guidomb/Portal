@@ -62,7 +62,7 @@ public indirect enum Component<MessageType> {
     case imageView(Image, StyleSheet<EmptyStyleSheet>, Layout)
     case container([Component<MessageType>], StyleSheet<EmptyStyleSheet>, Layout)
     case table(TableProperties<MessageType>, StyleSheet<TableStyleSheet>, Layout)
-    case collection(CollectionProperties<MessageType>, StyleSheet<EmptyStyleSheet>, Layout)
+    case collection(CollectionProperties<MessageType>, StyleSheet<CollectionStyleSheet>, Layout)
     case carousel(CarouselProperties<MessageType>, StyleSheet<EmptyStyleSheet>, Layout)
     case touchable(gesture: Gesture<MessageType>, child: Component<MessageType>)
     case segmented(ZipList<SegmentProperties<MessageType>>, StyleSheet<SegmentedStyleSheet>, Layout)

@@ -24,16 +24,14 @@ class TextFieldRendererSpec: QuickSpec {
             var changeSet: TextFieldChangeSet<String>!
             
             beforeEach {
-                let events = TextFieldEvents<String>(
-                    onEditingBegin: "onEditingBegin",
-                    onEditingChanged: "onEditingChanged",
-                    onEditingEnd: "onEditingEnd"
-                )
-                
                 let textFieldProperties: TextFieldProperties<String> = properties {
                     $0.text = "Hello World"
                     $0.placeholder = "Placeholder"
-                    $0.onEvents = events
+                    $0.onEvents = textFieldEvents {
+                        $0.onEditingBegin = { text in "onEditingBegin: \(text)" }
+                        $0.onEditingChanged = { text in "onEditingChanged: \(text)" }
+                        $0.onEditingEnd = { text in "onEditingEnd: \(text)" }
+                    }
                 }
                 
                 let textFieldStyle = textFieldStyleSheet { base, textField in
@@ -68,7 +66,7 @@ class TextFieldRendererSpec: QuickSpec {
                     let result = textField.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     result.mailbox?.subscribe { message in
-                        expect(message).to(equal("onEditingBegin"))
+                        expect(message).to(equal("onEditingBegin: Hello World"))
                         done()
                     }
                     
@@ -80,7 +78,7 @@ class TextFieldRendererSpec: QuickSpec {
                     let result = textField.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     result.mailbox?.subscribe { message in
-                        expect(message).to(equal("onEditingChanged"))
+                        expect(message).to(equal("onEditingChanged: Hello World"))
                         done()
                     }
                     
@@ -92,7 +90,7 @@ class TextFieldRendererSpec: QuickSpec {
                     let result = textField.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     result.mailbox?.subscribe { message in
-                        expect(message).to(equal("onEditingEnd"))
+                        expect(message).to(equal("onEditingEnd: Hello World"))
                         done()
                     }
                     
@@ -121,12 +119,7 @@ class TextFieldRendererSpec: QuickSpec {
                     }
                     
                     it("removes the textField's onEvents handler") {
-                        let events = TextFieldEvents<String>(
-                            onEditingBegin: .none,
-                            onEditingChanged: .none,
-                            onEditingEnd: .none
-                        )
-                        let newChangeSet = TextFieldChangeSet<String>(properties: [.onEvents(events)])
+                        let newChangeSet = TextFieldChangeSet<String>(properties: [.onEvents(textFieldEvents())])
                         let result = configuredTextField.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
                         result.mailbox?.subscribe { _ in fail("On editing handler was not removed") }
@@ -148,11 +141,11 @@ class TextFieldRendererSpec: QuickSpec {
                     }
                     
                     it("replaces the previous onEditingBegin handler") {
-                        let events = TextFieldEvents<String>(
-                            onEditingBegin: "NewMessage!",
-                            onEditingChanged: "onEditingChanged",
-                            onEditingEnd: "onEditingEnd"
-                        )
+                        let events: TextFieldEvents<String> = textFieldEvents {
+                            $0.onEditingBegin = { text in "NewMessage!: \(text)" }
+                            $0.onEditingChanged = { text in "onEditingChanged: \(text)" }
+                            $0.onEditingEnd = { text in "onEditingEnd: \(text)" }
+                        }
                         let newChangeSet = TextFieldChangeSet<String>(properties: [.onEvents(events)])
                         let result = configuredTextField.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
@@ -164,15 +157,15 @@ class TextFieldRendererSpec: QuickSpec {
                         configuredTextField.sendActions(for: .editingDidBegin)
                         
                         expect(receivedMessages.count).to(equal(1))
-                        expect(receivedMessages.firstObject as? String).to(equal("NewMessage!"))
+                        expect(receivedMessages.firstObject as? String).to(equal("NewMessage!: Hello World"))
                     }
                     
                     it("replaces the previous onEditingChanged handler") {
-                        let events = TextFieldEvents<String>(
-                            onEditingBegin: "onEditingBegin",
-                            onEditingChanged: "NewMessage!",
-                            onEditingEnd: "onEditingEnd"
-                        )
+                        let events: TextFieldEvents<String> = textFieldEvents {
+                            $0.onEditingBegin = { text in "onEditingBegin: \(text)" }
+                            $0.onEditingChanged = { text in "NewMessage!: \(text)" }
+                            $0.onEditingEnd = { text in "onEditingEnd: \(text)" }
+                        }
                         let newChangeSet = TextFieldChangeSet<String>(properties: [.onEvents(events)])
                         let result = configuredTextField.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
@@ -184,15 +177,15 @@ class TextFieldRendererSpec: QuickSpec {
                         configuredTextField.sendActions(for: .editingChanged)
                         
                         expect(receivedMessages.count).to(equal(1))
-                        expect(receivedMessages.firstObject as? String).to(equal("NewMessage!"))
+                        expect(receivedMessages.firstObject as? String).to(equal("NewMessage!: Hello World"))
                     }
                     
                     it("replaces the previous onEditingEnd handler") {
-                        let events = TextFieldEvents<String>(
-                            onEditingBegin: "onEditingBegin",
-                            onEditingChanged: "onEditingChanged",
-                            onEditingEnd: "NewMessage!"
-                        )
+                        let events: TextFieldEvents<String> = textFieldEvents {
+                            $0.onEditingBegin = { text in "onEditingBegin: \(text)" }
+                            $0.onEditingChanged = { text in "onEditingChanged: \(text)" }
+                            $0.onEditingEnd = { text in "NewMessage!: \(text)" }
+                        }
                         let newChangeSet = TextFieldChangeSet<String>(properties: [.onEvents(events)])
                         let result = configuredTextField.apply(changeSet: newChangeSet, layoutEngine: layoutEngine)
                         
@@ -204,7 +197,7 @@ class TextFieldRendererSpec: QuickSpec {
                         configuredTextField.sendActions(for: .editingDidEnd)
                         
                         expect(receivedMessages.count).to(equal(1))
-                        expect(receivedMessages.firstObject as? String).to(equal("NewMessage!"))
+                        expect(receivedMessages.firstObject as? String).to(equal("NewMessage!: Hello World"))
                     }
                     
                 }

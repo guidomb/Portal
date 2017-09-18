@@ -49,7 +49,7 @@ class CollectionRendererSpec: QuickSpec {
                 
                 changeSet = CollectionChangeSet.fullChangeSet(
                     properties: collectionProperties,
-                    style: styleSheet(),
+                    style: collectionStyleSheet(),
                     layout: layout()
                 )
             }

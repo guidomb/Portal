@@ -49,6 +49,7 @@ public struct CarouselProperties<MessageType>: AutoPropertyDiffable {
         showsScrollIndicator: Bool = false,
         isSnapToCellEnabled: Bool = false,
         itemsSize: Size,
+        refresh: RefreshProperties<MessageType>? = .none,
         minimumInteritemSpacing: UInt = 0,
         minimumLineSpacing: UInt = 0,
         sectionInset: SectionInset = .zero,

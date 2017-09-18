@@ -12,7 +12,7 @@ public class PortalCollectionView<
     MessageType,
     RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate
+    >: UICollectionView, UICollectionViewDataSource, UICollectionViewDelegate, PullToRefreshable
     
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     
@@ -21,7 +21,7 @@ public class PortalCollectionView<
     
     public let mailbox = Mailbox<ActionType>()
     
-    var items: [CollectionItemProperties<ActionType>]
+    internal private(set) var items: [CollectionItemProperties<ActionType>]
     
     fileprivate let renderer: ComponentRenderer
     

@@ -34,9 +34,19 @@ fileprivate extension UITextField {
                 
             case .text(let text):
                 self.text = text
-            
+                
             case .placeholder(let placeholder):
                 self.placeholder = placeholder
+                
+            case .isSecureTextEntry(let isSecureTextEntry):
+                self.isSecureTextEntry = isSecureTextEntry
+                
+            case .shouldReturn(let shouldReturn):
+                if shouldReturn {
+                    self.delegate = self
+                } else {
+                    self.delegate = .none
+                }
                 
             case .onEvents(let events):
                 apply(events: events)
@@ -45,9 +55,12 @@ fileprivate extension UITextField {
     }
     
     fileprivate func apply<MessageType>(events: TextFieldEvents<MessageType>) {
-        for (event, maybeEvent) in events.getMessagesByEvent() {
-            if let message = maybeEvent {
-                _ = self.on(event: event, dispatch: message)
+        for (event, maybeMessageMapper) in events.getMessageMappersByEvent() {
+            if let messageMapper = maybeMessageMapper {
+                _ = self.on(event: event) { sender -> MessageType? in
+                    guard let textField = sender as? UITextField else { return .none }
+                    return textField.text.flatMap(messageMapper)
+                }
             } else {
                 _ = self.unregisterDispatcher(for: event) as MessageDispatcher<MessageType>?
             }
@@ -60,7 +73,7 @@ fileprivate extension UITextField {
                 
             case .textAligment(let aligment):
                 self.textAlignment = aligment.asNSTextAligment
-            
+                
             case .textColor(let color):
                 self.textColor = color.asUIColor
                 
@@ -79,12 +92,21 @@ fileprivate extension UITextField {
 
 extension TextFieldEvents {
     
-    fileprivate func getMessagesByEvent() -> [(UIControlEvents, MessageType?)] {
+    fileprivate func getMessageMappersByEvent() -> [(UIControlEvents, ((String) -> MessageType)?)] {
         return [
             (.editingDidBegin, onEditingBegin),
             (.editingChanged, onEditingChanged),
             (.editingDidEnd, onEditingEnd)
         ]
+    }
+    
+}
+
+extension UITextField: UITextFieldDelegate {
+    
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
     }
     
 }

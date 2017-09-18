@@ -23,19 +23,28 @@ public struct TableProperties<MessageType>: AutoPropertyDiffable {
     public var items: [TableItemProperties<MessageType>]
     public var showsVerticalScrollIndicator: Bool
     public var showsHorizontalScrollIndicator: Bool
+    // sourcery: skipDiff
+    public var refresh: RefreshProperties<MessageType>?
     
     fileprivate init(
         items: [TableItemProperties<MessageType>] = [],
         showsVerticalScrollIndicator: Bool = true,
-        showsHorizontalScrollIndicator: Bool = true) {
+        showsHorizontalScrollIndicator: Bool = true,
+        refresh: RefreshProperties<MessageType>? = .none) {
         self.items = items
         self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
+        self.refresh = refresh
     }
     
     public func map<NewMessageType>(
         _ transform: @escaping (MessageType) -> NewMessageType) -> TableProperties<NewMessageType> {
-        return TableProperties<NewMessageType>(items: self.items.map { $0.map(transform) })
+        return TableProperties<NewMessageType>(
+            items: self.items.map { $0.map(transform) },
+            showsVerticalScrollIndicator: self.showsVerticalScrollIndicator,
+            showsHorizontalScrollIndicator: self.showsHorizontalScrollIndicator,
+            refresh: self.refresh.map { $0.map(transform) }
+        )
     }
     
 }
@@ -136,9 +145,11 @@ public struct TableStyleSheet: AutoPropertyDiffable {
     public static let `default` = StyleSheet<TableStyleSheet>(component: TableStyleSheet())
     
     public var separatorColor: Color
+    public var refreshTintColor: Color
     
-    fileprivate init(separatorColor: Color = Color.clear) {
+    fileprivate init(separatorColor: Color = Color.clear, refreshTintColor: Color = .gray) {
         self.separatorColor = separatorColor
+        self.refreshTintColor = refreshTintColor
     }
     
 }

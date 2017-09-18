@@ -12,7 +12,7 @@ public final class PortalTableView<
     MessageType,
     RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UITableView, UITableViewDataSource, UITableViewDelegate
+    >: UITableView, UITableViewDataSource, UITableViewDelegate, PullToRefreshable
     
 where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
     

@@ -16,8 +16,9 @@ extension PortalCollectionView {
         
         apply(changeSet: changeSet.properties)
         apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.collectionStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
-        
+
         return Render<ActionType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
     
@@ -68,11 +69,30 @@ fileprivate extension PortalCollectionView {
                 
             case .showsVerticalScrollIndicator(let showsVerticalScrollIndicator):
                 self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
+                
+            case .refresh(let maybeRefreshProperties):
+                if let refreshProperties = maybeRefreshProperties {
+                    self.configure(pullToRefresh: refreshProperties)
+                } else {
+                    self.removePullToRefresh()
+                }
+                
             }
         }
 
         collectionViewLayout = layout
     }
     // swiftlint:enable cyclomatic_complexity
+    
+    fileprivate func apply(changeSet: [CollectionStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .refreshTintColor(let refreshTintColor):
+                self.scrollView.refreshControl?.tintColor = refreshTintColor.asUIColor
+                
+            }
+        }
+    }
     
 }
