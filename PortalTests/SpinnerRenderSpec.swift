@@ -9,7 +9,7 @@
 import Quick
 import Nimble
 @testable import Portal
-
+
 class SpinnerRenderSpec: QuickSpec {
     override func spec() {
         
