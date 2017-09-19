@@ -1,14 +1,14 @@
 //
-//  CollectionScreen.swift
+//  HorizontalCollectionScreen.swift
 //  Portal
 //
-//  Created by Argentino Ducret on 8/29/17.
+//  Created by Argentino Ducret on 9/19/17.
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
 import Portal
 
-enum CollectionScreen {
+enum HorizontalCollectionScreen {
     
     typealias Action = Portal.Action<Route, Message>
     typealias View = Portal.View<Route, Message, Navigator>
@@ -45,6 +45,7 @@ enum CollectionScreen {
                             $0.minimumLineSpacing = 5
                             $0.minimumInteritemSpacing = 5
                             $0.scrollDirection = .horizontal
+                            $0.paging = true
                         },
                         style: collectionStyleSheet { base, collection in
                             base.backgroundColor = color
@@ -69,7 +70,7 @@ enum CollectionScreen {
     static func navigationBar() -> NavigationBar<Action> {
         return Portal.navigationBar(
             properties: properties() {
-                $0.title = .text("Collection")
+                $0.title = .text("Horizontal Collection")
                 $0.backButtonTitle = "test"
                 $0.rightButtonItems = [
                     .textButton(title: "Color!", onTap: .sendMessage(.changeColor)),
@@ -86,3 +87,4 @@ enum CollectionScreen {
     }
     
 }
+

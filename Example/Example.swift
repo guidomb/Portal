@@ -24,7 +24,9 @@ enum Message {
     case changeColor
     case selectedItemChanged(UInt)
     case toggle(Bool)
-
+    case search
+    case searchComplete
+    
 }
 
 enum Navigator: Equatable {
@@ -42,7 +44,7 @@ enum Route: Portal.Route {
     case detail
     case landscape
     case examples
-    case collectionExample
+    case verticalCollectionExample
     case labelExample
     case textViewExample
     case textFieldExample
@@ -53,7 +55,8 @@ enum Route: Portal.Route {
     case spinnerExample
     case tableExample
     case carouselExample
-
+    case horizontalCollectionExample
+    
     var previous: Route? {
         switch self {
         case .root:
@@ -66,7 +69,7 @@ enum Route: Portal.Route {
             return .root
         case .examples:
             return .root
-        case .collectionExample:
+        case .verticalCollectionExample:
             return .examples
         case .labelExample:
             return .examples
@@ -88,6 +91,8 @@ enum Route: Portal.Route {
             return .examples
         case .carouselExample:
             return .examples
+        case .horizontalCollectionExample:
+            return .examples
         }
     }
 
@@ -102,7 +107,7 @@ enum State {
     case modalScreen(counter: UInt)
     case landscapeScreen(text: String, counter: UInt)
     case examples
-    case collectionExample(color: Color)
+    case verticalCollectionExample(color: Color, searching: Bool, showFullName: Bool)
     case labelExample
     case textViewExample
     case textFieldExample
@@ -111,9 +116,9 @@ enum State {
     case progressExample
     case segmentedExample(selected: UInt)
     case spinnerExample
-    case tableExample(color: Color)
-    case carouselExample(color: Color, selectedItem: UInt)
-
+    case tableExample(color: Color, searching: Bool, showFullName: Bool)
+    case verticalCarouselExample(color: Color, selectedItem: UInt)
+    case horizontalCollectionExample(color: Color)
 }
 
 final class ExampleApplication: Portal.Application {
@@ -208,9 +213,12 @@ final class ExampleApplication: Portal.Application {
         case (.examples, .routeChanged(.root)):
             return (.started(date: .none, showAlert: false), .none)
 
-        case (.examples, .routeChanged(.collectionExample)):
-            return (.collectionExample(color: .black), .none)
+        case (.examples, .routeChanged(.verticalCollectionExample)):
+            return (.verticalCollectionExample(color: .black, searching: false, showFullName: true), .none)
 
+        case (.examples, .routeChanged(.horizontalCollectionExample)):
+            return (.horizontalCollectionExample(color: .black), .none)
+            
         case (.examples, .routeChanged(.labelExample)):
             return (.labelExample, .none)
 
@@ -236,22 +244,39 @@ final class ExampleApplication: Portal.Application {
             return (.spinnerExample, .none)
 
         case (.examples, .routeChanged(.tableExample)):
-            return (.tableExample(color: .green), .none)
+            return (.tableExample(color: .green, searching: false, showFullName: true), .none)
 
         case (.examples, .routeChanged(.carouselExample)):
-            return (.carouselExample(color: .black, selectedItem: 0), .none)
+            return (.verticalCarouselExample(color: .black, selectedItem: 0), .none)
 
-        // MARK:- Collection example state transitions
+        // MARK:- Vertical Collection example state transitions
 
-        case (.collectionExample, .routeChanged(.examples)):
+        case (.verticalCollectionExample, .routeChanged(.examples)):
             return (.examples, .none)
 
-        case (.collectionExample(.white), .changeColor):
-            return (.collectionExample(color: .black), .none)
+        case (.verticalCollectionExample(.white, let searching, let showFullName), .changeColor):
+            return (.verticalCollectionExample(color: .black, searching: searching, showFullName: showFullName), .none)
 
-        case (.collectionExample(.black), .changeColor):
-            return (.collectionExample(color: .white), .none)
+        case (.verticalCollectionExample(.black, let searching, let showFullName), .changeColor):
+            return (.verticalCollectionExample(color: .white, searching: searching, showFullName: showFullName), .none)
 
+        case (.verticalCollectionExample(let color, _, let showFullName), .search):
+            return (.verticalCollectionExample(color: color, searching: true, showFullName: showFullName), .search)
+            
+        case (.verticalCollectionExample(let color, _, let showFullName), .searchComplete):
+            return (.verticalCollectionExample(color: color, searching: false, showFullName: !showFullName), .none)
+            
+        // MARK:- Horizontal Collection example state transitions
+            
+        case (.horizontalCollectionExample, .routeChanged(.examples)):
+            return (.examples, .none)
+            
+        case (.horizontalCollectionExample(.white), .changeColor):
+            return (.horizontalCollectionExample(color: .black), .none)
+            
+        case (.horizontalCollectionExample(.black), .changeColor):
+            return (.horizontalCollectionExample(color: .white), .none)
+            
         // MARK:- Label example state transitions
 
         case (.labelExample, .routeChanged(.examples)):
@@ -297,27 +322,33 @@ final class ExampleApplication: Portal.Application {
 
         // MARK:- Table example state transitions
 
-        case (.tableExample(.green), .changeColor):
-            return (.tableExample(color: .red), .none)
+        case (.tableExample(.green, let searching, let showFullName), .changeColor):
+            return (.tableExample(color: .red, searching: searching, showFullName: showFullName), .none)
 
-        case (.tableExample(.red), .changeColor):
-            return (.tableExample(color: .green), .none)
+        case (.tableExample(.red, let searching, let showFullName), .changeColor):
+            return (.tableExample(color: .green, searching: searching, showFullName: showFullName), .none)
 
+        case (.tableExample(let color, _, let showFullName), .search):
+            return (.tableExample(color: color, searching: true, showFullName: showFullName), .search)
+        
+        case (.tableExample(let color, _, let showFullName), .searchComplete):
+            return (.tableExample(color: color, searching: false, showFullName: !showFullName), .none)
+            
         case (.tableExample, .routeChanged(.examples)):
             return (.examples, .none)
 
         // MARK:- Table example state transitions
 
-        case (.carouselExample(.white, let index), .changeColor):
-            return (.carouselExample(color: .black, selectedItem: index), .none)
+        case (.verticalCarouselExample(.white, let index), .changeColor):
+            return (.verticalCarouselExample(color: .black, selectedItem: index), .none)
 
-        case (.carouselExample(.black, let index), .changeColor):
-            return (.carouselExample(color: .white, selectedItem: index), .none)
+        case (.verticalCarouselExample(.black, let index), .changeColor):
+            return (.verticalCarouselExample(color: .white, selectedItem: index), .none)
 
-        case (.carouselExample(let color, _), .selectedItemChanged(let index)):
-            return (.carouselExample(color: color, selectedItem: index), .none)
+        case (.verticalCarouselExample(let color, _), .selectedItemChanged(let index)):
+            return (.verticalCarouselExample(color: color, selectedItem: index), .none)
 
-        case (.carouselExample, .routeChanged(.examples)):
+        case (.verticalCarouselExample, .routeChanged(.examples)):
             return (.examples, .none)
 
         // MARK:- Miscelaneus state transitions
@@ -357,8 +388,8 @@ final class ExampleApplication: Portal.Application {
         case .examples:
             return ExamplesScreen.view()
 
-        case .collectionExample(let color):
-            return CollectionScreen.view(color: color)
+        case .verticalCollectionExample(let color, let searching, let showFullName):
+            return VerticalCollectionScreen.view(color: color, searching: searching, showFullName: showFullName)
 
         case .labelExample:
             return LabelScreen.view()
@@ -384,12 +415,15 @@ final class ExampleApplication: Portal.Application {
         case .segmentedExample(let index):
             return SegmentedScreen.view(selected: index)
 
-        case .tableExample(let color):
-            return TableScreen.view(color: color)
+        case .tableExample(let color, let searching, let showFullName):
+            return TableScreen.view(color: color, searching: searching, showFullName: showFullName)
 
-        case .carouselExample(let color, let index):
+        case .verticalCarouselExample(let color, let index):
             return CarouselScreen.view(color: color, selectedItem: index)
-
+        
+        case .horizontalCollectionExample(color: let color):
+            return HorizontalCollectionScreen.view(color: color)
+            
         default:
             return DefaultScreen.view()
         }

@@ -16,6 +16,8 @@ enum IgniteSubscription: Equatable {
 
 enum Command {
     
+    case search
+    
 }
 
 final class ExampleSubscriptionManager: Portal.SubscriptionManager {
@@ -39,7 +41,14 @@ final class ExampleCommandExecutor: Portal.CommandExecutor {
     }
     
     func execute(command: Command, dispatch: @escaping (ExampleApplication.Action) -> Void) {
+        switch command {
         
+        case .search:
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                dispatch(.sendMessage(.searchComplete))
+            }
+            
+        }
     }
     
 }

@@ -16,7 +16,7 @@ internal protocol PullToRefreshable {
     
     var mailbox: Mailbox<ActionType> { get }
     
-    func configure(pullToRefresh properties: RefreshProperties<ActionType>)
+    func configure(pullToRefresh properties: RefreshProperties<ActionType>, offset: CGPoint)
     
     func removePullToRefresh()
     
@@ -32,7 +32,8 @@ extension PullToRefreshable where Self : UIScrollView {
 
 extension PullToRefreshable where Self : UIView {
     
-    func configure(pullToRefresh properties: RefreshProperties<ActionType>) {
+    func configure(pullToRefresh properties: RefreshProperties<ActionType>, offset: CGPoint) {
+        scrollView.refreshControl?.endRefreshing()
         let refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = properties.title
         scrollView.refreshControl = refreshControl
@@ -40,12 +41,13 @@ extension PullToRefreshable where Self : UIView {
         switch properties.state {
             
         case .searching:
-            scrollView.contentOffset = CGPoint(x:0, y: -refreshControl.frame.size.height)
+            scrollView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
             refreshControl.beginRefreshing()
             
         case .idle(let message):
-            _ = refreshControl.on(event: .valueChanged, dispatch: message)
-
+            let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
+            self.register(dispatcher: dispatcher)
+            _ = refreshControl.dispatch(message: message, for: .valueChanged, with: mailbox)
         }
     }
     
@@ -55,4 +57,17 @@ extension PullToRefreshable where Self : UIView {
     
 }
 
-extension UIRefreshControl: MessageProducer { }
+extension UIRefreshControl {
+    
+    fileprivate func dispatch<MessageType>(
+        message: MessageType,
+        for event: UIControlEvents,
+        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
+        
+        let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
+        self.register(dispatcher: dispatcher)
+        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
+        return dispatcher.mailbox
+    }
+    
+}

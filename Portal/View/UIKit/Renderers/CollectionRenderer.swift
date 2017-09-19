@@ -19,7 +19,7 @@ extension PortalCollectionView {
         apply(changeSet: changeSet.collectionStyleSheet)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
 
-        return Render<ActionType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+        return Render<ActionType>(view: self, mailbox: mailbox, executeAfterLayout: .none)
     }
     
 }
@@ -72,14 +72,21 @@ fileprivate extension PortalCollectionView {
                 
             case .refresh(let maybeRefreshProperties):
                 if let refreshProperties = maybeRefreshProperties {
-                    self.configure(pullToRefresh: refreshProperties)
+                    self.configure(pullToRefresh: refreshProperties, offset: scrollView.contentOffset)
                 } else {
                     self.removePullToRefresh()
                 }
-                
+            
+            case .paging(let isPagingEnabled):
+                self.isPagingEnabled = isPagingEnabled
             }
         }
 
+        if layout.scrollDirection == .horizontal {
+            removePullToRefresh()
+            alwaysBounceVertical = false
+        }
+    
         collectionViewLayout = layout
     }
     // swiftlint:enable cyclomatic_complexity
