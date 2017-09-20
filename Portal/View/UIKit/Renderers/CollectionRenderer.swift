@@ -72,7 +72,7 @@ fileprivate extension PortalCollectionView {
                 
             case .refresh(let maybeRefreshProperties):
                 if let refreshProperties = maybeRefreshProperties {
-                    self.configure(pullToRefresh: refreshProperties, offset: scrollView.contentOffset)
+                    self.configure(pullToRefresh: refreshProperties)
                 } else {
                     self.removePullToRefresh()
                 }
