@@ -46,6 +46,7 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
     public var minimumLineSpacing: UInt
     public var scrollDirection: CollectionScrollDirection
     public var sectionInset: SectionInset
+    public var paging: Bool
     
     fileprivate init(
         items: [CollectionItemProperties<MessageType>] = [],
@@ -56,7 +57,8 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
         minimumInteritemSpacing: UInt = 0,
         minimumLineSpacing: UInt = 0,
         scrollDirection: CollectionScrollDirection = .vertical,
-        sectionInset: SectionInset = .zero) {
+        sectionInset: SectionInset = .zero,
+        paging: Bool = false) {
         self.items = items
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
@@ -66,6 +68,7 @@ public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
         self.minimumInteritemSpacing = minimumInteritemSpacing
         self.sectionInset = sectionInset
         self.scrollDirection = scrollDirection
+        self.paging = paging
     }
     
     public func map<NewMessageType>(

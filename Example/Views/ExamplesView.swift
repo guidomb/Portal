@@ -15,7 +15,8 @@ enum ExamplesScreen {
     
     static func view() -> View {
         let items: [TableItemProperties<Action>] = [
-            collection(),
+            verticalCollection(),
+            horizontalCollection(),
             labelComponent(),
             textField(),
             textView(),
@@ -48,8 +49,8 @@ enum ExamplesScreen {
 
 fileprivate extension ExamplesScreen {
     
-    fileprivate static func collection() -> TableItemProperties<Action> {
-        return defaultCell(text: "Collection", route: .collectionExample)
+    fileprivate static func verticalCollection() -> TableItemProperties<Action> {
+        return defaultCell(text: "Vertical Collection", route: .verticalCollectionExample)
     }
     
     fileprivate static func labelComponent() -> TableItemProperties<Action> {
@@ -90,6 +91,10 @@ fileprivate extension ExamplesScreen {
     
     fileprivate static func carouselView() -> TableItemProperties<Action> {
         return defaultCell(text: "Carousel", route: .carouselExample)
+    }
+    
+    fileprivate static func horizontalCollection() -> TableItemProperties<Action> {
+        return defaultCell(text: "Horizontal Collection", route: .horizontalCollectionExample)
     }
     
     fileprivate static func defaultCell(text: String, route: Route) -> TableItemProperties<Action> {

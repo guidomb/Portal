@@ -33,6 +33,7 @@ extension PullToRefreshable where Self : UIScrollView {
 extension PullToRefreshable where Self : UIView {
     
     func configure(pullToRefresh properties: RefreshProperties<ActionType>) {
+        scrollView.refreshControl?.endRefreshing()
         let refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = properties.title
         scrollView.refreshControl = refreshControl
@@ -40,12 +41,12 @@ extension PullToRefreshable where Self : UIView {
         switch properties.state {
             
         case .searching:
-            scrollView.contentOffset = CGPoint(x:0, y: -refreshControl.frame.size.height)
+            scrollView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
             refreshControl.beginRefreshing()
             
         case .idle(let message):
-            _ = refreshControl.on(event: .valueChanged, dispatch: message)
-
+            let refreshControlMailbox = refreshControl.on(event: .valueChanged, dispatch: message)
+            refreshControlMailbox.forward(to: mailbox)
         }
     }
     

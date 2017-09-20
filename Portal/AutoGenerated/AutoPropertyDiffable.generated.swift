@@ -250,6 +250,7 @@ public extension CollectionProperties {
         case minimumLineSpacing(UInt)
         case scrollDirection(CollectionScrollDirection)
         case sectionInset(SectionInset)
+        case paging(Bool)
 
     }
 
@@ -264,6 +265,7 @@ public extension CollectionProperties {
             .minimumLineSpacing(self.minimumLineSpacing),
             .scrollDirection(self.scrollDirection),
             .sectionInset(self.sectionInset),
+            .paging(self.paging),
         ]
     }
 
@@ -291,6 +293,9 @@ public extension CollectionProperties {
         }
         if self.sectionInset != collectionProperties.sectionInset {
             changeSet.append(.sectionInset(collectionProperties.sectionInset))
+        }
+        if self.paging != collectionProperties.paging {
+            changeSet.append(.paging(collectionProperties.paging))
         }
         return changeSet
     }

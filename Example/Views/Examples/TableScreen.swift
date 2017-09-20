@@ -13,7 +13,7 @@ enum TableScreen {
     typealias Action = Portal.Action<Route, Message>
     typealias View = Portal.View<Route, Message, Navigator>
     
-    static func view(color: Color) -> View {
+    static func view(color: Color, searching: Bool, showFullName: Bool) -> View {
         let margin: UInt = 5
         let items: [TableItemProperties<Action>] = (0...1000).map { index in
             tableItem(height: 55, onTap: .none, selectionStyle: .none) { height in
@@ -22,7 +22,7 @@ enum TableScreen {
                         children: [
                             container(
                                 children: [
-                                    label(text: "Cell \(index)")
+                                    label(text: showFullName ? "Cell \(index)" : "\(index)")
                                 ],
                                 style: styleSheet {
                                     $0.backgroundColor = .blue
@@ -48,11 +48,23 @@ enum TableScreen {
             }
         }
         
+        let refreshState: RefreshState<Action> = searching ? .searching : .idle(searchAction: .sendMessage(.search))
+        
+        let refreshProperties: RefreshProperties<Action> = properties(state: refreshState) {
+            let title = NSAttributedString(string: "Table refresh")
+            $0.title = title
+        }
+        
+        let tableProperties: TableProperties<Action> = properties {
+            $0.items = items
+            $0.refresh = refreshProperties
+        }
+        
         return View(
             navigator: .main,
             root: .stack(navigationBar()),
             component: table(
-                items: items,
+                properties: tableProperties,
                 style: tableStyleSheet { base, table in
                     base.backgroundColor = .green
                 },
