@@ -38,6 +38,7 @@ enum TableScreen {
                         ],
                         style: styleSheet {
                             $0.backgroundColor = color
+                            $0.cornerRadius = 25
                         },
                         layout: layout {
                             $0.height = Dimension(value: height)

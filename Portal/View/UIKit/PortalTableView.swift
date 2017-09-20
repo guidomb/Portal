@@ -88,6 +88,12 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
         cell.bounds.size.height = actualCellHeight
         cell.contentView.bounds.size.height = actualCellHeight
         
+        // This is needed to avoid a visual bug
+        // If the user sets the container's backgroundColor as clear inside a PortalTableViewCell
+        // the user will see a white background because this class has a default background (.white),
+        // that is why we need to the the table view cell's background to clear.
+        cell.backgroundColor = .clear
+        
         return cell
     }
     
