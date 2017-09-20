@@ -455,6 +455,13 @@ fileprivate final class ExecutionQueue {
             self.operationsCount -= 1
             if let oobo = self.outOfBandOperation {
                 oobo()
+                // FIXME if executing `oobo` has the side effect of
+                // pushing a view controller into the navigation stack
+                // we will then execute a render in the presenter view
+                // controller that should be skipped
+                //
+                // `operation` should not be executed if `oobo` has the side
+                // effect of executing a controller transition.
                 self.outOfBandOperation = .none
             }
             operation()
