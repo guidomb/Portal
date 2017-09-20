@@ -86,11 +86,11 @@ fileprivate func fromUI<MessageType>(
     text: String ) -> MessageType? {
     switch event {
         
-    case .editingDidBegin:
+    case UIControlEvents.editingDidBegin:
         return textFieldEvents.onEditingBegin?(text)
-    case .editingChanged:
+    case UIControlEvents.editingChanged:
         return textFieldEvents.onEditingChanged?(text)
-    case .editingDidEnd:
+    case UIControlEvents.editingDidEnd:
         return textFieldEvents.onEditingEnd?(text)
     default:
         return .none
