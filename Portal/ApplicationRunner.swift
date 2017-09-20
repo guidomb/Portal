@@ -59,7 +59,7 @@ public class ApplicationRunner<
     fileprivate var navigationState: NavigationStateType?
     fileprivate var middlewares: [Middleware]
     fileprivate var subscriptionsManager: SubscriptionsManager<RouteType, MessageType, CustomSubscriptionManager>?
-    fileprivate let dispatchQueue = ExecutionQueue()
+    fileprivate let messageQueue = OperationQueue()
     
     internal init(
         application: ApplicationType,
@@ -75,6 +75,7 @@ public class ApplicationRunner<
             self.dispatch(action: $0)
         }
         self.renderer = rendererFactory { [unowned self] in self.internalDispatch(action: $0) }
+        self.messageQueue.maxConcurrentOperationCount = 1
     }
     
     public final func dispatch(action: ActionType) {
@@ -94,7 +95,7 @@ public class ApplicationRunner<
 internal extension ApplicationRunner {
     
     internal final func internalDispatch(action: InternalActionType) {
-        dispatchQueue.enqueue { self.serialDispatch(action: action) }
+        messageQueue.addOperation { self.serialDispatch(action: action) }
     }
     
     // swiftlint:disable cyclomatic_complexity function_body_length
@@ -103,21 +104,16 @@ internal extension ApplicationRunner {
             
         case (.action(.dismissNavigator(let maybeAction)), .some(let navigationState)):
             if let nextNavigationState = navigationState.dismissCurrentNavigator() {
-                // When dismissing a navigator we need to stop
-                // processing messages until the view transition
-                // has been executed to avoid modifying the view
-                // in the middle of an animation / transition.
+                // When dismissing a navigator we need to stop processing messages until the view transition
+                // has been executed to avoid modifying the view in the middle of an animation / transition.
                 //
-                // By using the `performTransition` method
-                // we are wrapping the method that performs the
-                // view transition inside a scope that suspend / resumes
-                // operations enqueued in the dispatch queue.
-                //
-                // In this case we need to make sure that `handleNavigatorDismissal`
-                // is executed before any other operation that could be waiting for
-                // execution inside the dispatch queue.
+                // `performTransition` wraps the `dismissCurrentNavigator` method and adds all the boilerplate
+                // logic to avoid sincronization issues
                 let dismissCurrentNavigator = performTransition(renderer?.dismissCurrentNavigator)
                 dismissCurrentNavigator {
+                    // A this point `performTransition` has guaranteed that no other message was processed since
+                    // the dismissal transition was executed and that this closure gets executed before any other
+                    // message in the queue.
                     self.handleNavigatorDismissal(from: navigationState, to: nextNavigationState, action: maybeAction)
                 }
             } else {
@@ -131,29 +127,23 @@ internal extension ApplicationRunner {
                 return
             }
             
-            func handleChangeToPreviousRoute() {
-                handleRouteChange(from: navigationState.currentRoute, to: previousRoute) { view, nextState in
+            // When navigating to a previous route we need to stop processing messages until the view transition
+            // has been executed to avoid modifying the view in the middle of an animation / transition.
+            //
+            // `performTransition` wraps the `rewindCurrentNavigator` method and adds all the boilerplate
+            // logic to avoid sincronization issues
+            let rewindCurrentNavigator = self.performTransition(renderer?.rewindCurrentNavigator)
+            rewindCurrentNavigator {
+                // A this point `performTransition` has guaranteed that no other message was processed since
+                // the dismissal transition was executed and that this closure gets executed before any other
+                // message in the queue.
+                self.handleRouteChange(from: navigationState.currentRoute, to: previousRoute) { view, nextState in
                     self.currentState = nextState
                     self.navigationState = navigationState.navigate(to: previousRoute, using: view.navigator)
                     
-                    render(view: view)
+                    self.render(view: view)
                 }
             }
-            // When rewinding a navigator we need to stop
-            // processing messages until the view transition
-            // has been executed to avoid modifying the view
-            // in the middle of an animation / transition.
-            //
-            // By using the `performTransition` method
-            // we are wrapping the method that performs the
-            // view transition inside a scope that suspends / resumes
-            // operations enqueued in the dispatch queue.
-            //
-            // In this case we need to make sure that `rewindCurrentNavigator`
-            // is executed before any other operation that could be waiting for
-            // execution inside the dispatch queue.
-            let rewindCurrentNavigator = self.performTransition(renderer?.rewindCurrentNavigator)
-            rewindCurrentNavigator(handleChangeToPreviousRoute)
             
         case (.action(.navigate(to: let nextRoute)), .some(let navigationState))
             where navigationState.currentRoute != nextRoute:
@@ -351,20 +341,61 @@ fileprivate extension ApplicationRunner {
     fileprivate func executeRendererTransition(_ transition: RenderTransition) {
         guard let renderer = self.renderer else { return }
         
-        dispatchQueue.suspend()
+        messageQueue.isSuspended = true
         transition(renderer, {
-            self.dispatchQueue.resume()
+            self.messageQueue.isSuspended = false
         })
     }
     
+    // This method is intended to be used to execute a view controller transition like presenting or dismissing
+    // a modal view controller. The reason being that view controller transition are usually animated and UIKit
+    // provides a callback block that gets executed once the transition was completed.
+    //
+    // Because message processing must be sequential, we cannot process messages while executing a view controller
+    // transition because that could result in inconsistent application state or miss-rendering issues. Also there
+    // are some actions exposed by Portal, like `.dismissNavigator(thenSend: Action<MessageType, RouteType>)` that
+    // are designed to be executed atomically; meaning that immediatly after the navigator (view controller) has been
+    // dismissed the action indicated by `thenSend` associated value should be dispatched, without processing any other
+    // messages that could be waiting in the processing queue.
+    //
+    // A typical example where rendering issues could happen if transition are not handled properly could be when the
+    // user wants to dismiss a modal view controller and push a detail view in the navigation stack of the view
+    // controller that presented the modal view controller in the first place. Presenting the detail view should
+    // happen right after the modal view controller is dismissed. The problem could arise if message are being
+    // dispatched while the modal dismissal transition and the detail view controller transition is being performed.
+    //
+    // This messages could be dispatched by asincronous processes or a subscription. To avoid loosing message and
+    // mantain arraival ordering, because message are processed sequentially in separate queue (or thread) and view
+    // controller transitions are executed on the main thread; Portal needs to suspend execution of messages in the
+    // processing queue, then tell UIKit (or any other view layer) to execute the transition and once the transition is
+    // completed resume processing message.
+    //
+    // In cases where transitions need to dispatch a message right after the transition has completed, like with
+    // `.dismissNavigator(thenSend: Action<MessageType, RouteType>)`, we need to guarantee that the `thenSend` action
+    // will be executed right away, no matter if there are pending messages in the queue. In other words, the `thenSend`
+    // action has higher priority that any other message in the operation queue waiting to be processed.
+    //
+    // This methods wraps the transition in a function that receives a transition completion callback and when called
+    // suspends the message processing queue, executes the transition and once the transition is completed enqueues
+    // the received transition completion callback to be executed with the highest priority and resumes the
+    // message processing queue.
+    //
+    // - Parameter maybeTransition: An optional view transition represented by a function tha receives a function to
+    // be executed after the transition has been completed.
+    //
     fileprivate func performTransition(
         _ maybeTransition: ScreenTransition?) -> (@escaping ScreenTransitionCompletion) -> Void {
         guard let transition = maybeTransition else { return { _ in } }
         
-        return { completion in
-            self.dispatchQueue.suspend()
+        return { transitionCompletionCallback in
+            self.messageQueue.isSuspended = true
             transition({
-                self.dispatchQueue.resume(with: completion)
+                // The transition completion callback needs to have a higher priority in order to be executed
+                // off the main thread right after the processing queue is resumed
+                let operation = BlockOperation(block: transitionCompletionCallback)
+                operation.queuePriority = .veryHigh
+                self.messageQueue.addOperation(operation)
+                self.messageQueue.isSuspended = false
             })
         }
     }
@@ -416,57 +447,5 @@ fileprivate struct NavigationState<RouteType: Route, NavigatorType: Equatable> {
         
         return nextState
     }
-}
-
-fileprivate final class ExecutionQueue {
-    
-    private let queue = DispatchQueue(label: "me.guidomb.Portal.ApplicationQueue")
-    private var outOfBandOperation: (() -> Void)? = .none
-    private var operationsCount: UInt = 0
-    
-    func suspend() {
-        queue.suspend()
-    }
-    
-    func resume(with outOfBandOperation: (() -> Void)? = .none) {
-        
-        switch (self.outOfBandOperation, outOfBandOperation) {
-        case (.some(let previousOutOfBandOperation), .some(let currentOutOfBandOperation)):
-            self.outOfBandOperation = {
-                currentOutOfBandOperation()
-                previousOutOfBandOperation()
-            }
-        case (.none, .some(let currentOutOfBandOperation)):
-            self.outOfBandOperation = currentOutOfBandOperation
-        default:
-            break
-        }
-        
-        if operationsCount == 0 && self.outOfBandOperation != nil {
-            enqueue(operation: {})
-        }
-        
-        queue.resume()
-    }
-    
-    func enqueue(operation: @escaping () -> Void) {
-        operationsCount += 1
-        queue.async {
-            self.operationsCount -= 1
-            if let oobo = self.outOfBandOperation {
-                oobo()
-                // FIXME if executing `oobo` has the side effect of
-                // pushing a view controller into the navigation stack
-                // we will then execute a render in the presenter view
-                // controller that should be skipped
-                //
-                // `operation` should not be executed if `oobo` has the side
-                // effect of executing a controller transition.
-                self.outOfBandOperation = .none
-            }
-            operation()
-        }
-    }
-    
 }
 // swiftlint:enable file_length
