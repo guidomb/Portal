@@ -22,7 +22,8 @@ enum TableScreen {
                         children: [
                             container(
                                 children: [
-                                    label(text: showFullName ? "Cell \(index)" : "\(index)")
+                                    label(text: showFullName ? "Cell \(index)" : "\(index)"),
+                                    button(text: "Pong!", onTap: .sendMessage(.pong("pong!")))
                                 ],
                                 style: styleSheet {
                                     $0.backgroundColor = .blue

@@ -28,7 +28,8 @@ enum HorizontalCollectionScreen {
                                 collectionItem(onTap: .none, identifier: "Item \(index)") {
                                     return container(
                                         children: [
-                                            label(text: "Item \(index)")
+                                            label(text: "Item \(index)"),
+                                            button(text: "Pong!", onTap: .sendMessage(.pong("pong!")))
                                         ],
                                         style: styleSheet { $0.backgroundColor = .red },
                                         layout: layout {

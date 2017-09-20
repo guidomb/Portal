@@ -74,10 +74,9 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
         }
         
         cell.selectionStyle = item.onTap.map { _ in item.selectionStyle.asUITableViewCellSelectionStyle } ?? .none
-        // Returned mailbox was forwarded once the cell was first created.
-        // That is why we can ignore render's return value.
-        // Check `reusableCell(for:)`
-        _ = renderer.render(component: cellComponent, into: cell.contentView)
+
+        let componentMailbox = renderer.render(component: cellComponent, into: cell.contentView)
+        componentMailbox.forward(to: cell.getMailbox())
         
         // After rendering the cell, the parent view returned by rendering the
         // item component has the actual height calculated after applying layout.
