@@ -10,12 +10,12 @@ The following describes a proposal to implement a "live reloading" feature for P
 4. `PortalLiveReloadServer` also watches changes of a file that must contain a class conforming to `PortalPlayground` protocol.
 5. Every time such file changes the server compiles the file by building a Swift Package Manager compatible project that creates a command line tool called `pcs` (Portal Component Serializer).
 6. `pcs` is run which causes it to execute the `render` functions of the type that conforms to `PortalPlayground`, serializes the returned view, connects to a running instance of a `PortalLiveReloadServer` and sends the serialized component.
-6. `PortalLiveReloadServer`, which depends on a macOS compatible version of Portal, is responsible for
-  * Maintaining a reference to the current displayed component
-  * Accept render request from `pcs` clients and then generate change sets between current displayed component and received component
-  * Store received component as the new current displayed component
-  * Broadcast change set to any connected rendering client
-7. When a change set is broadcasted by `PortalLiveReloadServer`, all listening `LiveReloadViewController` clients render such change set into their respective container views.
+7. `PortalLiveReloadServer`, which depends on a macOS compatible version of Portal, is responsible for
+    * Maintaining a reference to the current displayed component
+    * Accept render request from `pcs` clients and then generate change sets between current displayed component and received component
+    * Store received component as the new current displayed component
+    * Broadcast change set to any connected rendering client
+8. When a change set is broadcasted by `PortalLiveReloadServer`, all listening `LiveReloadViewController` clients render such change set into their respective container views.
 
 ### Observations
 
