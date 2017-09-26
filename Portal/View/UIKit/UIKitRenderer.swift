@@ -78,7 +78,11 @@ extension UIKitComponentRenderer {
         // no longer valid in case this view is no longer wrapped
         // with a touchable component but can be reused to render the current
         // change set.
-        view?.gestureRecognizers?.forEach { view?.removeGestureRecognizer($0) }
+        //
+        // We need to differentiate which are the gesture recognizers managed
+        // by Portal because if we remove all gesture recognizer, things like
+        // scrolling detection on table and collection views won't work.
+        view?.removeAllManagedGestureRecognizers()
 
         switch changeSet {
         
@@ -170,7 +174,7 @@ extension UIKitComponentRenderer {
             let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
             result.view.register(dispatcher: dispatcher)
             let recognizer = UITapGestureRecognizer(target: dispatcher, action: dispatcher.selector)
-            result.view.addGestureRecognizer(recognizer)
+            result.view.addManagedGestureRecognizer(recognizer)
             
         case .noChange:
             break

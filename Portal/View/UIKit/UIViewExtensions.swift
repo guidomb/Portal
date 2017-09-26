@@ -77,10 +77,32 @@ internal extension UIView {
         layer.add(rotateAnimation, forKey: AnimationKey.rotation360.rawValue)
     }
     
+    internal func addManagedGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
+        if #available(iOS 11.0, *) {
+            gestureRecognizer.name = gestureRecognizerName
+        } else {
+            managedGestureRecognizers.append(gestureRecognizer)
+        }
+    }
+    
+    internal func removeAllManagedGestureRecognizers() {
+        if #available(iOS 11.0, *) {
+            gestureRecognizers?.forEach { gestureRecognizer in
+                if gestureRecognizer.name == gestureRecognizerName {
+                    removeGestureRecognizer(gestureRecognizer)
+                }
+            }
+        } else {
+            managedGestureRecognizers.forEach { removeGestureRecognizer($0) }
+        }
+    }
+    
 }
 
 fileprivate var managedByPortalAssociationKey = 0
 fileprivate var messageDispatcherAssociationKey = 1
+fileprivate var gestureRecognizersAssociationKey = 2
+fileprivate let gestureRecognizerName = "com.guidomb.Portal.GestureRecognizer"
 
 fileprivate enum AnimationKey: String {
     
@@ -89,6 +111,15 @@ fileprivate enum AnimationKey: String {
 }
 
 fileprivate extension UIView {
+    
+    fileprivate var managedGestureRecognizers: [UIGestureRecognizer] {
+        get {
+            return objc_getAssociatedObject(self, &gestureRecognizersAssociationKey) as? [UIGestureRecognizer] ?? []
+        }
+        set {
+            return objc_setAssociatedObject(self, &gestureRecognizersAssociationKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
 
     fileprivate func topBorder(thickness: Float, color: UIColor) {
         let borderView = UIView(frame: CGRect(
