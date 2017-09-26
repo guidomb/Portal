@@ -70,8 +70,18 @@ extension UIKitComponentRenderer {
     
     // swiftlint:disable cyclomatic_complexity function_body_length
     fileprivate func render(changeSet: ComponentChangeSet<ActionType>, into view: UIView?) -> Render<ActionType> {
+        // We need to remove any gesture recognizers that could have been added
+        // if the view was wrapped with a touchable component in the previous
+        // render cycle.
+        //
+        // We need to do this here to avoid having gesture recognizers that are
+        // no longer valid in case this view is no longer wrapped
+        // with a touchable component but can be reused to render the current
+        // change set.
+        view?.gestureRecognizers?.forEach { view?.removeGestureRecognizer($0) }
+
         switch changeSet {
-            
+        
         case .button(let buttonChangeSet):
             let button = castOrRelease(view: view, to: UIButton.self)
             return button.apply(changeSet: buttonChangeSet, layoutEngine: layoutEngine)
@@ -150,7 +160,7 @@ extension UIKitComponentRenderer {
         let result = render(changeSet: changeSet.child, into: view)
         
         switch changeSet.gesture {
-            
+        
         case .change(to: .tap(let message)):
             if result.view is UIImageView {
                 result.view.isUserInteractionEnabled = true
@@ -159,7 +169,6 @@ extension UIKitComponentRenderer {
             let mailbox: Mailbox<ActionType> = result.view.getMailbox()
             let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
             result.view.register(dispatcher: dispatcher)
-            result.view.gestureRecognizers?.forEach { result.view.removeGestureRecognizer($0) }
             let recognizer = UITapGestureRecognizer(target: dispatcher, action: dispatcher.selector)
             result.view.addGestureRecognizer(recognizer)
             
@@ -204,6 +213,7 @@ extension UIKitComponentRenderer {
                 result.mailbox?.forward(to: mailbox)
                 if reuseSubviews {
                     view.insertSubview(result.view, at: index)
+                    subview?.removeFromSuperview()
                 } else {
                     view.addSubview(result.view)
                 }
