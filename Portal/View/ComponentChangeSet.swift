@@ -135,8 +135,8 @@ extension Component {
         case .spinner(let style, let layout):
             return .spinner(SpinnerChangeSet.fullChangeSet(style: style, layout: layout))
 
-        case .textView(let text, let style, let layout):
-            return .textView(TextViewChangeSet.fullChangeSet(text: text, style: style, layout: layout))
+        case .textView(let properties, let style, let layout):
+            return .textView(TextViewChangeSet.fullChangeSet(properties: properties, style: style, layout: layout))
             
         case .toggle(let properties, let style, let layout):
             return .toggle(ToggleChangeSet.fullChangeSet(properties: properties, style: style, layout: layout))
@@ -302,12 +302,11 @@ extension Component {
                 )
             )
 
-        case (.textView(let oldText, let oldStyle, let oldLayout),
-              .textView(let newText, let newStyle, let newLayout)):
-            let text: PropertyChange<Text> = oldText == newText ? .noChange : .change(to: newText)
+        case (.textView(let oldProperties, let oldStyle, let oldLayout),
+              .textView(let newProperties, let newStyle, let newLayout)):
             return .textView(
                 TextViewChangeSet(
-                    text: text,
+                    properties: oldProperties.changeSet(for: newProperties),
                     baseStyleSheet: oldStyle.base.changeSet(for: newStyle.base),
                     layout: oldLayout.changeSet(for: newLayout)
                 )

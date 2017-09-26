@@ -70,7 +70,7 @@ public indirect enum Component<MessageType> {
     case textField(TextFieldProperties<MessageType>, StyleSheet<TextFieldStyleSheet>, Layout)
     case custom(CustomComponent, StyleSheet<EmptyStyleSheet>, Layout)
     case spinner(StyleSheet<SpinnerStyleSheet>, Layout)
-    case textView(Text, StyleSheet<TextViewStyleSheet>, Layout)
+    case textView(TextViewProperties, StyleSheet<TextViewStyleSheet>, Layout)
     case toggle(ToggleProperties<MessageType>, StyleSheet<ToggleStyleSheet>, Layout)
 
     public var layout: Layout {
