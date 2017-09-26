@@ -15,7 +15,7 @@ extension UITextView {
     func apply<MessageType>(changeSet: TextViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
         apply(changeSet: changeSet.baseStyleSheet)
         apply(changeSet: changeSet.textViewStyleSheet)
-        apply(text: changeSet.text)
+        apply(changeSet: changeSet.properties)
         layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
         return Render(view: self, mailbox: .none, executeAfterLayout: .none)
@@ -46,15 +46,22 @@ fileprivate extension UITextView {
         }
     }
     
-    fileprivate func apply(text: PropertyChange<Text>) {
-        if case .change(to: let value) = text {
-            switch value {
+    fileprivate func apply(changeSet: [TextViewProperties.Property]) {
+        for property in changeSet {
+            switch property {
                 
-            case .regular(let text):
-                self.text = text
+            case .text(let value):
+                switch value {
+                    
+                case .regular(let text):
+                    self.text = text
+                    
+                case .attributed(let attributedText):
+                    self.attributedText = attributedText
+                }
                 
-            case .attributed(let attributedText):
-                self.attributedText = attributedText
+            case .isScrollEnabled(let isScrollEnabled):
+                self.isScrollEnabled = isScrollEnabled
             }
         }
     }

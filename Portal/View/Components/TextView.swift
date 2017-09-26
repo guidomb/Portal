@@ -16,17 +16,29 @@ public enum Text: AutoEquatable {
 }
 
 public func textView<MessageType>(
-    text: String,
+    properties: TextViewProperties = TextViewProperties(),
     style: StyleSheet<TextViewStyleSheet> = TextViewStyleSheet.`default`,
     layout: Layout = layout()) -> Component<MessageType> {
-    return .textView(.regular(text), style, layout)
+    return .textView(properties, style, layout)
 }
 
-public func textView<MessageType>(
-    text: NSAttributedString,
-    style: StyleSheet<TextViewStyleSheet> = TextViewStyleSheet.`default`,
-    layout: Layout = layout()) -> Component<MessageType> {
-    return .textView(.attributed(text), style, layout)
+public struct TextViewProperties: AutoPropertyDiffable {
+    
+    public var text: Text
+    public var isScrollEnabled: Bool
+    
+    fileprivate init(text: Text = .regular(""), isScrollEnabled: Bool = false) {
+        self.text = text
+        self.isScrollEnabled = isScrollEnabled
+    }
+    
+}
+
+public func properties(
+    configure: (inout TextViewProperties) -> Void) -> TextViewProperties {
+    var properties = TextViewProperties()
+    configure(&properties)
+    return properties
 }
 
 // MARK: - Style sheet
@@ -67,35 +79,35 @@ public func textViewStyleSheet(
 public struct TextViewChangeSet {
     
     static func fullChangeSet(
-        text: Text,
+        properties: TextViewProperties,
         style: StyleSheet<TextViewStyleSheet>,
         layout: Layout) -> TextViewChangeSet {
         return TextViewChangeSet(
-            text: .change(to: text),
+            properties: properties.fullChangeSet,
             baseStyleSheet: style.base.fullChangeSet,
             textViewStyleSheet: style.component.fullChangeSet,
             layout: layout.fullChangeSet
         )
     }
     
-    let text: PropertyChange<Text>
+    let properties: [TextViewProperties.Property]
     let baseStyleSheet: [BaseStyleSheet.Property]
     let textViewStyleSheet: [TextViewStyleSheet.Property]
     let layout: [Layout.Property]
     
     var isEmpty: Bool {
-        guard case .noChange = text else { return false }
-        return  baseStyleSheet.isEmpty      &&
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
                 textViewStyleSheet.isEmpty  &&
                 layout.isEmpty
     }
     
     init(
-        text: PropertyChange<Text> = .noChange,
+        properties: [TextViewProperties.Property],
         baseStyleSheet: [BaseStyleSheet.Property] = [],
         textViewStyleSheet: [TextViewStyleSheet.Property] = [],
         layout: [Layout.Property] = []) {
-        self.text = text
+        self.properties = properties
         self.baseStyleSheet = baseStyleSheet
         self.textViewStyleSheet = textViewStyleSheet
         self.layout = layout

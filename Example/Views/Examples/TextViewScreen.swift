@@ -14,13 +14,18 @@ enum TextViewScreen {
     typealias View = Portal.View<Route, Message, Navigator>
     
     static func view() -> View {
+        let textViewProperties: TextViewProperties = properties {
+            $0.text = .regular("This is a TextView!")
+            $0.isScrollEnabled = false
+        }
+        
         return View(
             navigator: .main,
             root: .stack(ExampleApplication.navigationBar(title: "Text View")),
             component: container(
                 children: [
                     textView(
-                        text: "This is a text view!",
+                        properties: textViewProperties,
                         style: textViewStyleSheet { base, textView in
                             base.backgroundColor = .white
                             textView.textColor = .red

@@ -24,6 +24,10 @@ class TextViewRendererSpec: QuickSpec {
             var changeSet: TextViewChangeSet!
             
             beforeEach {
+                let textViewProperties: TextViewProperties = properties {
+                    $0.text = .regular("This is a textView!")
+                    $0.isScrollEnabled = false
+                }
                 let textViewStyle = textViewStyleSheet { base, textView in
                     textView.textColor = .red
                     textView.textFont = Font(name: "Helvetica")
@@ -32,7 +36,7 @@ class TextViewRendererSpec: QuickSpec {
                 }
                 
                 changeSet = TextViewChangeSet.fullChangeSet(
-                    text: .regular("This is a textView!"),
+                    properties: textViewProperties,
                     style: textViewStyle,
                     layout: layout())
             }
@@ -53,8 +57,13 @@ class TextViewRendererSpec: QuickSpec {
                         textView.textAligment = .center
                     }
                     
+                    let textViewProperties: TextViewProperties = properties {
+                        $0.text = .attributed(NSAttributedString(string: "This is a textView!"))
+                        $0.isScrollEnabled = false
+                    }
+                    
                     changeSet = TextViewChangeSet.fullChangeSet(
-                        text: .attributed(NSAttributedString(string: "This is a textView!")),
+                        properties: textViewProperties,
                         style: textViewStyle,
                         layout: layout()
                     )

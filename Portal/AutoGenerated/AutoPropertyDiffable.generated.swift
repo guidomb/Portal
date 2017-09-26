@@ -923,6 +923,36 @@ public extension TextFieldStyleSheet {
 
 }
 
+// MARK: - TextViewProperties AutoPropertyDiffable
+public extension TextViewProperties {
+
+    public enum Property {
+
+        case text(Text)
+        case isScrollEnabled(Bool)
+
+    }
+
+    public var fullChangeSet: [TextViewProperties.Property] {
+        return [
+            .text(self.text),
+            .isScrollEnabled(self.isScrollEnabled),
+        ]
+    }
+
+    public func changeSet(for textViewProperties: TextViewProperties) -> [TextViewProperties.Property] {
+        var changeSet: [TextViewProperties.Property] = []
+        if self.text != textViewProperties.text {
+            changeSet.append(.text(textViewProperties.text))
+        }
+        if self.isScrollEnabled != textViewProperties.isScrollEnabled {
+            changeSet.append(.isScrollEnabled(textViewProperties.isScrollEnabled))
+        }
+        return changeSet
+    }
+
+}
+
 // MARK: - TextViewStyleSheet AutoPropertyDiffable
 public extension TextViewStyleSheet {
 
