@@ -152,6 +152,10 @@ extension UIKitComponentRenderer {
         switch changeSet.gesture {
             
         case .change(to: .tap(let message)):
+            if result.view is UIImageView {
+                result.view.isUserInteractionEnabled = true
+            }
+            
             let mailbox: Mailbox<ActionType> = result.view.getMailbox()
             let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
             result.view.register(dispatcher: dispatcher)
