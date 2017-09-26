@@ -8,54 +8,64 @@
 
 import UIKit
 
-internal struct TableRenderer<
-    MessageType,
-    RouteType,
-    CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UIKitRenderer
-    
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
+extension PortalTableView {
 
-    typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: TableProperties<ActionType>
-    let style: StyleSheet<TableStyleSheet>
-    let layout: Layout
-    let rendererFactory: CustomComponentRendererFactory
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let table = PortalTableView<MessageType, RouteType, CustomComponentRendererType>(
-            items: properties.items,
-            layoutEngine: layoutEngine,
-            rendererFactory: rendererFactory
-        )
-        
-        table.isDebugModeEnabled = isDebugModeEnabled
-        table.showsVerticalScrollIndicator = properties.showsVerticalScrollIndicator
-        table.showsHorizontalScrollIndicator = properties.showsHorizontalScrollIndicator
-        
-        properties.refresh |> { table.configure(pullToRefresh: $0, tintColor: style.component.refreshTintColor) }
-        
-        table.apply(style: style.base)
-        table.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: table)
-        
-        return Render(view: table, mailbox: table.mailbox)
+    func apply(changeSet: TableChangeSet<ActionType>, layoutEngine: LayoutEngine) -> Render<ActionType> {
+        apply(changeSet: changeSet.properties)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.tableStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+
+        return Render<ActionType>(view: self, mailbox: mailbox, executeAfterLayout: .none)
     }
-    
+
 }
 
-extension UITableView {
-    
-    fileprivate func apply(style: TableStyleSheet) {
-        self.separatorColor = style.separatorColor.asUIColor
+fileprivate extension PortalTableView {
+
+    fileprivate func apply(changeSet: [TableProperties<ActionType>.Property]) {
+        for property in changeSet {
+            switch property {
+
+            case .items(let items):
+                setItems(items: items)
+                reloadData()
+
+            case .showsHorizontalScrollIndicator(let enabled):
+                showsHorizontalScrollIndicator = enabled
+
+            case .showsVerticalScrollIndicator(let enabled):
+                showsVerticalScrollIndicator = enabled
+
+            case .refresh(let maybeRefreshProperties):
+                if let refreshProperties = maybeRefreshProperties {
+                    self.configure(pullToRefresh: refreshProperties)
+                } else {
+                    self.removePullToRefresh()
+                }
+
+            }
+        }
     }
-    
+
+    fileprivate func apply(changeSet: [TableStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+
+            case .separatorColor(let color):
+                separatorColor = color.asUIColor
+
+            case .refreshTintColor(let refreshTintColor):
+                self.scrollView.refreshControl?.tintColor = refreshTintColor.asUIColor
+
+            }
+        }
+    }
+
 }
 
 extension TableItemSelectionStyle {
-    
+
     internal var asUITableViewCellSelectionStyle: UITableViewCellSelectionStyle {
         switch self {
         case .none:
@@ -68,5 +78,5 @@ extension TableItemSelectionStyle {
             return .gray
         }
     }
-    
+
 }

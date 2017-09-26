@@ -6,7 +6,7 @@
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
-public struct Shadow {
+public struct Shadow: AutoPropertyDiffable, AutoEquatable {
     
     public var color: Color
     public var opacity: Float
@@ -31,7 +31,7 @@ public struct Shadow {
 }
 
 // swiftlint:disable identifier_name
-public struct Offset {
+public struct Offset: AutoEquatable {
     
     public var x: Float
     public var y: Float

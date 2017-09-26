@@ -8,92 +8,105 @@
 
 import UIKit
 
-internal struct TextFieldRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: TextFieldProperties<ActionType>
-    let style: StyleSheet<TextFieldStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let textField = UITextField()
-        textField.placeholder = properties.placeholder
-        textField.text = properties.text
-        textField.isSecureTextEntry = properties.isSecureTextEntry
-        
-        textField.apply(style: style.base)
-        textField.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: textField)
-        
-        textField.unregisterDispatchers()
-        textField.removeTarget(.none, action: .none, for: .editingDidBegin)
-        textField.removeTarget(.none, action: .none, for: .editingChanged)
-        textField.removeTarget(.none, action: .none, for: .editingDidEnd)
-        if properties.shouldReturn {
-            textField.delegate = textField
-        }
-        
-        let mailbox: Mailbox<Action<RouteType, MessageType>> = textField.bindMessageDispatcher { mailbox in
-            _ = textField.dispatch(onEvents: self.properties.onEvents, for: .editingDidBegin, with: mailbox)
-            _ = textField.dispatch(onEvents: self.properties.onEvents, for: .editingChanged, with: mailbox)
-            _ = textField.dispatch(onEvents: self.properties.onEvents, for: .editingDidEnd, with: mailbox)
-        }
-        
-        return Render(view: textField, mailbox: mailbox)
+public let defaultTextFieldFontSize = UInt(UIFont.systemFontSize)
+
+extension UITextField: MessageProducer {
+
+    internal func apply<MessageType>(
+        changeSet: TextFieldChangeSet<MessageType>,
+        layoutEngine: LayoutEngine) -> Render<MessageType> {
+
+        apply(changeSet: changeSet.properties)
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.textFieldStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
-    
+
+}
+
+fileprivate extension UITextField {
+
+    fileprivate func apply<MessageType>(changeSet: [TextFieldProperties<MessageType>.Property]) {
+        for property in changeSet {
+            switch property {
+
+            case .text(let text):
+                self.text = text
+
+            case .placeholder(let placeholder):
+                self.placeholder = placeholder
+
+            case .isSecureTextEntry(let isSecureTextEntry):
+                self.isSecureTextEntry = isSecureTextEntry
+
+            case .shouldReturn(let shouldReturn):
+                if shouldReturn {
+                    self.delegate = self
+                } else {
+                    self.delegate = .none
+                }
+
+            case .onEvents(let events):
+                apply(events: events)
+            }
+        }
+    }
+
+    fileprivate func apply<MessageType>(events: TextFieldEvents<MessageType>) {
+        for (event, maybeMessageMapper) in events.getMessageMappersByEvent() {
+            if let messageMapper = maybeMessageMapper {
+                _ = self.on(event: event) { sender -> MessageType? in
+                    guard let textField = sender as? UITextField else { return .none }
+                    return textField.text.flatMap(messageMapper)
+                }
+            } else {
+                _ = self.unregisterDispatcher(for: event) as MessageDispatcher<MessageType>?
+            }
+        }
+    }
+
+    fileprivate func apply(changeSet: [TextFieldStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+
+            case .textAligment(let aligment):
+                self.textAlignment = aligment.asNSTextAligment
+
+            case .textColor(let color):
+                self.textColor = color.asUIColor
+
+            case .textFont(let font):
+                let fontSize = self.font?.pointSize ?? CGFloat(defaultTextFieldFontSize)
+                self.font = font.uiFont(withSize: fontSize)
+
+            case .textSize(let textSize):
+                let fontName = self.font?.fontName
+                fontName |> { self.font = UIFont(name: $0, size: CGFloat(textSize)) }
+            }
+        }
+    }
+
+}
+
+extension TextFieldEvents {
+
+    fileprivate func getMessageMappersByEvent() -> [(UIControlEvents, ((String) -> MessageType)?)] {
+        return [
+            (.editingDidBegin, onEditingBegin),
+            (.editingChanged, onEditingChanged),
+            (.editingDidEnd, onEditingEnd)
+        ]
+    }
+
 }
 
 extension UITextField: UITextFieldDelegate {
-    
-    fileprivate func apply(style: TextFieldStyleSheet) {
-        let size = CGFloat(style.textSize)
-        style.textFont.uiFont(withSize: size)     |> { self.font = $0 }
-        style.textColor                           |> { self.textColor = $0.asUIColor }
-        style.textAligment                        |> { self.textAlignment = $0.asNSTextAligment }
-    }
-    
+
     public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
         return true
     }
-    
-}
 
-extension UITextField {
-    
-    fileprivate func dispatch<MessageType>(
-        onEvents: TextFieldEvents<MessageType>,
-        for event: UIControlEvents,
-        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
-        
-        let dispatcher = MessageDispatcher(mailbox: mailbox) { sender in
-            guard let textField = sender as? UITextField else { return .none }
-            return fromUI(event, for: onEvents, text: textField.text ?? "")
-        }
-        
-        self.register(dispatcher: dispatcher)
-        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
-        return dispatcher.mailbox
-    }
-    
-}
-
-fileprivate func fromUI<MessageType>(
-    _ event: UIControlEvents,
-    for textFieldEvents: TextFieldEvents<MessageType>,
-    text: String ) -> MessageType? {
-    switch event {
-        
-    case UIControlEvents.editingDidBegin:
-        return textFieldEvents.onEditingBegin?(text)
-    case UIControlEvents.editingChanged:
-        return textFieldEvents.onEditingChanged?(text)
-    case UIControlEvents.editingDidEnd:
-        return textFieldEvents.onEditingEnd?(text)
-    default:
-        return .none
-        
-    }
 }

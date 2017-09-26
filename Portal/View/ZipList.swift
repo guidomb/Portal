@@ -33,6 +33,15 @@ public struct ZipList<Element>: Collection, CustomDebugStringConvertible {
     fileprivate let left: [Element]
     public let center: Element
     fileprivate let right: [Element]
+
+    public init?(of collection: [Element], selected index: UInt) {
+        guard index < collection.count else { return nil }
+        
+        let index = Int(index)
+        self.left = index == 0 ? [] : Array(collection[0...index - 1])
+        self.center = collection[index]
+        self.right = index == collection.endIndex - 1 ? [] : Array(collection[(index + 1)...(collection.endIndex - 1)])
+    }
     
     public init(element: Element) {
         self.init(left: [], center: element, right: [])
@@ -44,7 +53,7 @@ public struct ZipList<Element>: Collection, CustomDebugStringConvertible {
         self.right = right
     }
     
-    public init(_ tuple: ([Element], Element, [Element])) {
+    public init(_ tuple: ([Element], Element, [Element])) {         // swiftlint:disable:this large_tuple
         self.init(left: tuple.0, center: tuple.1, right: tuple.2)
     }
     

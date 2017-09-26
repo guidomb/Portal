@@ -27,10 +27,7 @@ internal extension UIView {
     }
     
     internal func register<MessageType>(dispatcher: MessageDispatcher<MessageType>) {
-        let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
-            as? NSMutableArray ?? NSMutableArray()
-        dispatchers.add(dispatcher)
-        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatchers,
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey, dispatcher,
                                  .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
@@ -53,6 +50,20 @@ internal extension UIView {
         
     }
     
+    internal func addChangeDebugAnimation(duration: TimeInterval = 0.5, backgroundColor: UIColor = .red) {
+        let frame = CGRect(origin: .zero, size: self.bounds.size)
+        let view = UIView(frame: frame)
+        view.backgroundColor = backgroundColor
+
+        UIView.animate(
+            withDuration: duration,
+            animations: { view.backgroundColor = .none },
+            completion: { _ in view.removeFromSuperview() }
+        )
+
+        self.addSubview(view)
+    }
+    
     internal func rotate360Degrees(duration: CFTimeInterval = 1.0, completionDelegate: CAAnimationDelegate? = .none) {
         let rotateAnimation = CABasicAnimation(keyPath: "transform.rotation")
         rotateAnimation.fromValue = 0.0
@@ -66,10 +77,32 @@ internal extension UIView {
         layer.add(rotateAnimation, forKey: AnimationKey.rotation360.rawValue)
     }
     
+    internal func addManagedGestureRecognizer(_ gestureRecognizer: UIGestureRecognizer) {
+        if #available(iOS 11.0, *) {
+            gestureRecognizer.name = gestureRecognizerName
+        } else {
+            managedGestureRecognizers.append(gestureRecognizer)
+        }
+    }
+    
+    internal func removeAllManagedGestureRecognizers() {
+        if #available(iOS 11.0, *) {
+            gestureRecognizers?.forEach { gestureRecognizer in
+                if gestureRecognizer.name == gestureRecognizerName {
+                    removeGestureRecognizer(gestureRecognizer)
+                }
+            }
+        } else {
+            managedGestureRecognizers.forEach { removeGestureRecognizer($0) }
+        }
+    }
+    
 }
 
 fileprivate var managedByPortalAssociationKey = 0
-fileprivate var messageDispatcherAssociationKey = 0
+fileprivate var messageDispatcherAssociationKey = 1
+fileprivate var gestureRecognizersAssociationKey = 2
+fileprivate let gestureRecognizerName = "com.guidomb.Portal.GestureRecognizer"
 
 fileprivate enum AnimationKey: String {
     
@@ -78,6 +111,15 @@ fileprivate enum AnimationKey: String {
 }
 
 fileprivate extension UIView {
+    
+    fileprivate var managedGestureRecognizers: [UIGestureRecognizer] {
+        get {
+            return objc_getAssociatedObject(self, &gestureRecognizersAssociationKey) as? [UIGestureRecognizer] ?? []
+        }
+        set {
+            return objc_setAssociatedObject(self, &gestureRecognizersAssociationKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
 
     fileprivate func topBorder(thickness: Float, color: UIColor) {
         let borderView = UIView(frame: CGRect(

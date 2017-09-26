@@ -8,11 +8,12 @@
 
 import Foundation
 
-public struct ToggleProperties<MessageType> {
+public struct ToggleProperties<MessageType>: AutoPropertyDiffable {
     
     public var isOn: Bool
     public var isActive: Bool
     public var isEnabled: Bool
+    // sourcery: skipDiff
     public var onSwitch: (Bool) -> MessageType?
     
     fileprivate init(
@@ -32,8 +33,7 @@ public struct ToggleProperties<MessageType> {
 public extension ToggleProperties {
     
     public func map<NewMessageType>(
-        _ transform: @escaping (MessageType) -> NewMessageType
-        ) -> ToggleProperties<NewMessageType> {
+        _ transform: @escaping (MessageType) -> NewMessageType) -> ToggleProperties<NewMessageType> {
         return ToggleProperties<NewMessageType>(
             isOn: self.isOn,
             isActive: self.isActive,
@@ -66,7 +66,7 @@ public func properties<MessageType>(
     return properties
 }
 
-public struct ToggleStyleSheet {
+public struct ToggleStyleSheet: AutoPropertyDiffable {
     
     public static let defaultStyleSheet = StyleSheet<ToggleStyleSheet>(component: ToggleStyleSheet())
     
@@ -92,4 +92,45 @@ public func toggleStyleSheet(
     var custom = ToggleStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: - Change set
+
+public struct ToggleChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: ToggleProperties<MessageType>,
+        style: StyleSheet<ToggleStyleSheet>,
+        layout: Layout) -> ToggleChangeSet<MessageType> {
+        return ToggleChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            toggleStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [ToggleProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let toggleStyleSheet: [ToggleStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty      &&
+            baseStyleSheet.isEmpty      &&
+            toggleStyleSheet.isEmpty    &&
+            layout.isEmpty
+    }
+    
+    init(
+        properties: [ToggleProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        toggleStyleSheet: [ToggleStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.toggleStyleSheet = toggleStyleSheet
+        self.layout = layout
+    }
+    
 }

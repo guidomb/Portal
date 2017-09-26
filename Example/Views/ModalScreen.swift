@@ -48,7 +48,7 @@ enum ModalScreen {
                             button.textColor = .white
                         }
                     ),
-                    ],
+                ],
                 style: styleSheet() {
                     $0.backgroundColor = .red
                 },

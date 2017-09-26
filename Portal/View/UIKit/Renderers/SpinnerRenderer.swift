@@ -8,35 +8,29 @@
 
 import UIKit
 
-internal struct SpinnerRenderer<MessageType, RouteType: Route>: UIKitRenderer {
-    
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let isActive: Bool
-    let style: StyleSheet<SpinnerStyleSheet>
-    let layout: Layout
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let spinner = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+extension UIActivityIndicatorView {
+
+    func apply<MessageType>(changeSet: SpinnerChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        startAnimating()
+        apply(changeSet: changeSet.baseStyleSheet)
+        apply(changeSet: changeSet.spinnerStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
         
-        spinner.hidesWhenStopped = false
-        if isActive {
-            spinner.startAnimating()
-        }
-        
-        spinner.apply(style: style.base)
-        spinner.apply(style: style.component)
-        layoutEngine.apply(layout: layout, to: spinner)
-        
-        return Render(view: spinner)
+        return Render<MessageType>(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
     }
     
 }
 
-extension UIActivityIndicatorView {
+fileprivate extension UIActivityIndicatorView {
     
-    fileprivate func apply(style: SpinnerStyleSheet) {
-        self.color = style.color.asUIColor
+    fileprivate func apply(changeSet: [SpinnerStyleSheet.Property]) {
+        for property in changeSet {
+            switch property {
+                
+            case .color(let color):
+                self.color = color.asUIColor
+            }
+        }
     }
     
 }

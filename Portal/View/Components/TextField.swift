@@ -8,12 +8,13 @@
 
 import Foundation
 
-public struct TextFieldProperties<MessageType> {
+public struct TextFieldProperties<MessageType>: AutoPropertyDiffable {
     
     public var text: String?
     public var placeholder: String?
     public var isSecureTextEntry: Bool
     public var shouldReturn: Bool
+    // sourcery: skipDiff
     public var onEvents: TextFieldEvents<MessageType> = TextFieldEvents()
 
     fileprivate init(
@@ -84,7 +85,7 @@ public func properties<MessageType>(
 }
 
 public func textFieldEvents<MessageType>(
-    configure: (inout TextFieldEvents<MessageType>) -> Void) -> TextFieldEvents<MessageType> {
+    configure: (inout TextFieldEvents<MessageType>) -> Void = { _ in }) -> TextFieldEvents<MessageType> {
     var events = TextFieldEvents<MessageType>()
     configure(&events)
     return events
@@ -92,7 +93,7 @@ public func textFieldEvents<MessageType>(
 
 // MARK: - Style sheet
 
-public struct TextFieldStyleSheet {
+public struct TextFieldStyleSheet: AutoPropertyDiffable {
     
     static let `default` = StyleSheet<TextFieldStyleSheet>(component: TextFieldStyleSheet())
     
@@ -120,4 +121,45 @@ public func textFieldStyleSheet(
     var component = TextFieldStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - Change set
+
+public struct TextFieldChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: TextFieldProperties<MessageType>,
+        style: StyleSheet<TextFieldStyleSheet>,
+        layout: Layout) -> TextFieldChangeSet<MessageType> {
+        return TextFieldChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            textFieldStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [TextFieldProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let textFieldStyleSheet: [TextFieldStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                textFieldStyleSheet.isEmpty &&
+                layout.isEmpty
+    }
+    
+    init(
+        properties: [TextFieldProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        textFieldStyleSheet: [TextFieldStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.textFieldStyleSheet = textFieldStyleSheet
+        self.layout = layout
+    }
+    
 }

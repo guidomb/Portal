@@ -18,56 +18,23 @@ public final class PortalCarouselView<
     public typealias ActionType = Action<RouteType, MessageType>
     
     public var isSnapToCellEnabled: Bool = false
+    public var onSelectionChange: (ZipListShiftOperation) -> ActionType? = { _ in .none }
     
-    fileprivate let onSelectionChange: (ZipListShiftOperation) -> ActionType?
     fileprivate var lastOffset: CGFloat = 0
     fileprivate var selectedIndex: Int = 0
     
-    public override init(
-        items: [CollectionItemProperties<ActionType>],
-        layoutEngine: LayoutEngine,
-        layout: UICollectionViewLayout,
-        rendererFactory: @escaping CustomComponentRendererFactory) {
-        onSelectionChange = { _ in .none }
-        super.init(
-            items: items,
-            layoutEngine: layoutEngine,
-            layout: layout,
-            rendererFactory: rendererFactory
-        )
-    }
-    
-    public init(
-        items: ZipList<CarouselItemProperties<ActionType>>?,
-        layoutEngine: LayoutEngine, layout: UICollectionViewLayout,
-        rendererFactory: @escaping CustomComponentRendererFactory,
-        onSelectionChange: @escaping (ZipListShiftOperation) -> ActionType?) {
-        
-        if let items = items {
-            let transform = { (item: CarouselItemProperties) -> CollectionItemProperties<ActionType> in
-                return collectionItem(
-                    onTap: item.onTap,
-                    identifier: item.identifier,
-                    renderer: item.renderer)
-            }
-            selectedIndex = Int(items.centerIndex)
-            self.onSelectionChange = onSelectionChange
-            super.init(
-                items: items.map(transform),
-                layoutEngine: layoutEngine,
-                layout: layout,
-                rendererFactory: rendererFactory
-            )
-            scrollToItem(self.selectedIndex, animated: false)
-        } else {
-            self.onSelectionChange = onSelectionChange
-            super.init(items: [], layoutEngine: layoutEngine, layout: layout, rendererFactory: rendererFactory)
-        }
-        
+    public override init(renderer: ComponentRenderer) {
+        super.init(renderer: renderer)
     }
     
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func setItems(items: ZipList<CarouselItemProperties<ActionType>>) {
+        setItems(items: items.map(transform))
+        selectedIndex = Int(items.centerIndex)
+        scrollToItem(self.selectedIndex, animated: false)
     }
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -89,7 +56,7 @@ public final class PortalCarouselView<
         if currentOffset == lastOffset {
             return
         }
-        
+       
         let lastPosition = selectedIndex
         if currentOffset > lastOffset {
             if lastPosition < items.count - 1 {
@@ -125,6 +92,14 @@ fileprivate extension PortalCarouselView {
         } else {
             return .none
         }
+    }
+    
+    fileprivate func transform(item: CarouselItemProperties<ActionType>) -> CollectionItemProperties<ActionType> {
+        return collectionItem(
+            onTap: item.onTap,
+            identifier: item.identifier,
+            renderer: item.renderer
+        )
     }
     
 }

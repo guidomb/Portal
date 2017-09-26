@@ -8,21 +8,24 @@
 
 import UIKit
 
-internal struct ImageViewRenderer<MessageType, RouteType: Route>: UIKitRenderer {
+extension UIImageView {
     
-    typealias ActionType = Action<RouteType, MessageType>
+    func apply<MessageType>(changeSet: ImageViewChangeSet, layoutEngine: LayoutEngine) -> Render<MessageType> {
+        apply(image: changeSet.image)
+        apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+                
+        return Render(view: self, mailbox: getMailbox(), executeAfterLayout: .none)
+    }
     
-    let image: Image
-    let style: StyleSheet<EmptyStyleSheet>
-    let layout: Layout
+}
+
+fileprivate extension UIImageView {
     
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let imageView = UIImageView(image: image.asUIImage)
-        
-        imageView.apply(style: style.base)
-        layoutEngine.apply(layout: layout, to: imageView)
-        
-        return Render(view: imageView)
+    fileprivate func apply(image: PropertyChange<Image?>) {
+        if case .change(let value) = image {
+            self.image = value?.asUIImage
+        }
     }
     
 }

@@ -16,7 +16,9 @@ internal protocol PullToRefreshable {
     
     var mailbox: Mailbox<ActionType> { get }
     
-    func configure(pullToRefresh properties: RefreshProperties<ActionType>, tintColor: Color)
+    func configure(pullToRefresh properties: RefreshProperties<ActionType>)
+    
+    func removePullToRefresh()
     
 }
 
@@ -30,38 +32,28 @@ extension PullToRefreshable where Self : UIScrollView {
 
 extension PullToRefreshable where Self : UIView {
     
-    func configure(pullToRefresh properties: RefreshProperties<ActionType>, tintColor: Color) {
+    func configure(pullToRefresh properties: RefreshProperties<ActionType>) {
+        scrollView.refreshControl?.endRefreshing()
         let refreshControl = UIRefreshControl()
-        refreshControl.tintColor = tintColor.asUIColor
         refreshControl.attributedTitle = properties.title
         scrollView.refreshControl = refreshControl
         
         switch properties.state {
             
         case .searching:
-            scrollView.contentOffset = CGPoint(x:0, y: -refreshControl.frame.size.height)
+            scrollView.contentOffset = CGPoint(x: 0, y: -refreshControl.frame.size.height)
             refreshControl.beginRefreshing()
             
         case .idle(let message):
-            let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-            self.register(dispatcher: dispatcher)
-            _ = refreshControl.dispatch(message: message, for: .valueChanged, with: mailbox)
+            let refreshControlMailbox = refreshControl.on(event: .valueChanged, dispatch: message)
+            refreshControlMailbox.forward(to: mailbox)
         }
+    }
+    
+    func removePullToRefresh() {
+        scrollView.refreshControl = .none
     }
     
 }
 
-extension UIRefreshControl {
-    
-    fileprivate func dispatch<MessageType>(
-        message: MessageType,
-        for event: UIControlEvents,
-        with mailbox: Mailbox<MessageType> = Mailbox()) -> Mailbox<MessageType> {
-        
-        let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
-        self.register(dispatcher: dispatcher)
-        self.addTarget(dispatcher, action: dispatcher.selector, for: event)
-        return dispatcher.mailbox
-    }
-    
-}
+extension UIRefreshControl: MessageProducer { }

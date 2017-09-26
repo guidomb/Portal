@@ -10,7 +10,7 @@ import UIKit
 
 public let defaultFont: Font = {
     let font = UIFont.systemFont(ofSize: UIFont.buttonFontSize)
-    return font
+    return Font(name: font.fontName)
 }()
 
 public extension Font {
@@ -31,14 +31,6 @@ extension Font {
     
     internal func uiFont(withSize size: UInt) -> UIFont? {
         return uiFont(withSize: CGFloat(size))
-    }
-    
-}
-
-extension UIFont: Font {
-    
-    public var name: String {
-        return self.fontName
     }
     
 }

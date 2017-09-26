@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-public class SectionInset {
+public class SectionInset: AutoEquatable {
     public static let zero = SectionInset(top: 0, left: 0, bottom: 0, right: 0)
     
     public var bottom: UInt
@@ -31,42 +31,44 @@ public enum CollectionScrollDirection {
     case vertical
 }
 
-public struct CollectionProperties<MessageType> {
+public struct CollectionProperties<MessageType>: AutoPropertyDiffable {
     
+    // sourcery: skipDiff
     public var items: [CollectionItemProperties<MessageType>]
     public var showsVerticalScrollIndicator: Bool
     public var showsHorizontalScrollIndicator: Bool
+    // sourcery: skipDiff
     public var refresh: RefreshProperties<MessageType>?
     
     // Layout properties
-    public var itemsWidth: UInt
-    public var itemsHeight: UInt
+    public var itemsSize: Size
     public var minimumInteritemSpacing: UInt
     public var minimumLineSpacing: UInt
     public var scrollDirection: CollectionScrollDirection
     public var sectionInset: SectionInset
+    public var paging: Bool
     
     fileprivate init(
         items: [CollectionItemProperties<MessageType>] = [],
         showsVerticalScrollIndicator: Bool = false,
         showsHorizontalScrollIndicator: Bool = false,
+        itemsSize: Size,
         refresh: RefreshProperties<MessageType>? = .none,
-        itemsWidth: UInt,
-        itemsHeight: UInt,
         minimumInteritemSpacing: UInt = 0,
         minimumLineSpacing: UInt = 0,
         scrollDirection: CollectionScrollDirection = .vertical,
-        sectionInset: SectionInset = .zero) {
+        sectionInset: SectionInset = .zero,
+        paging: Bool = false) {
         self.items = items
         self.showsVerticalScrollIndicator = showsVerticalScrollIndicator
         self.showsHorizontalScrollIndicator = showsHorizontalScrollIndicator
+        self.itemsSize = itemsSize
         self.refresh = refresh
-        self.itemsWidth = itemsWidth
-        self.itemsHeight = itemsHeight
         self.minimumLineSpacing = minimumLineSpacing
         self.minimumInteritemSpacing = minimumInteritemSpacing
         self.sectionInset = sectionInset
         self.scrollDirection = scrollDirection
+        self.paging = paging
     }
     
     public func map<NewMessageType>(
@@ -75,9 +77,8 @@ public struct CollectionProperties<MessageType> {
             items: self.items.map { $0.map(transform) },
             showsVerticalScrollIndicator: self.showsVerticalScrollIndicator,
             showsHorizontalScrollIndicator: self.showsHorizontalScrollIndicator,
+            itemsSize: self.itemsSize,
             refresh: self.refresh.map { $0.map(transform) },
-            itemsWidth: self.itemsWidth,
-            itemsHeight: self.itemsHeight,
             minimumInteritemSpacing: self.minimumInteritemSpacing,
             minimumLineSpacing: self.minimumLineSpacing,
             scrollDirection: self.scrollDirection,
@@ -136,14 +137,16 @@ public func properties<MessageType>(
     itemsWidth: UInt,
     itemsHeight: UInt,
     configure: (inout CollectionProperties<MessageType>) -> Void) -> CollectionProperties<MessageType> {
-    var properties = CollectionProperties<MessageType>(itemsWidth: itemsWidth, itemsHeight: itemsHeight)
+    var properties = CollectionProperties<MessageType>(
+        itemsSize: Size(width: itemsWidth, height: itemsHeight)
+    )
     configure(&properties)
     return properties
 }
 
 // MARK: - Style sheet
 
-public struct CollectionStyleSheet {
+public struct CollectionStyleSheet: AutoPropertyDiffable {
     
     public static let `default` = StyleSheet<CollectionStyleSheet>(component: CollectionStyleSheet())
     
@@ -156,9 +159,51 @@ public struct CollectionStyleSheet {
 }
 
 public func collectionStyleSheet(
-    configure: (inout BaseStyleSheet, inout CollectionStyleSheet) -> Void = { _ in }) -> StyleSheet<CollectionStyleSheet> {
+    configure: (inout BaseStyleSheet, inout CollectionStyleSheet) -> Void = { _ in })
+    -> StyleSheet<CollectionStyleSheet> {
     var base = BaseStyleSheet()
     var component = CollectionStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - ChangeSet
+
+public struct CollectionChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        properties: CollectionProperties<MessageType>,
+        style: StyleSheet<CollectionStyleSheet>,
+        layout: Layout) -> CollectionChangeSet<MessageType> {
+        return CollectionChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            collectionStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [CollectionProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let collectionStyleSheet: [CollectionStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty              &&
+                baseStyleSheet.isEmpty          &&
+                collectionStyleSheet.isEmpty    &&
+                layout.isEmpty
+    }
+    
+    init(
+        properties: [CollectionProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        collectionStyleSheet: [CollectionStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.collectionStyleSheet = collectionStyleSheet
+        self.layout = layout
+    }
+    
 }

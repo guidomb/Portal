@@ -25,5 +25,7 @@ output
 .bundle
 
 # Dependency managers
-Carthage/Build
+Carthage/
 .build/
+
+# Project Specific

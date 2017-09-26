@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Size {
+public struct Size: AutoEquatable {
     
     public var width: UInt
     public var height: UInt
@@ -26,4 +26,40 @@ public func imageView<MessageType>(
     style: StyleSheet<EmptyStyleSheet> = EmptyStyleSheet.`default`,
     layout: Layout = layout()) -> Component<MessageType> {
     return .imageView(image, style, layout)
+}
+
+// MARK: - ChangeSet
+
+public struct ImageViewChangeSet {
+    
+    static func fullChangeSet(
+        image: Image,
+        style: StyleSheet<EmptyStyleSheet>,
+        layout: Layout) -> ImageViewChangeSet {
+        return ImageViewChangeSet(
+            image: .change(to: image),
+            baseStyleSheet: style.base.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let image: PropertyChange<Image?>
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        guard case .noChange = image else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                layout.isEmpty
+    }
+    
+    init(
+        image: PropertyChange<Image?> = .noChange,
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.image = image
+        self.baseStyleSheet = baseStyleSheet
+        self.layout = layout
+    }
+    
 }

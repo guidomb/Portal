@@ -26,7 +26,8 @@ enum MainScreen {
     }
     
     static func mainView(date: Date?) -> View {
-        return view(for:  container(
+        return view(for:
+            container(
                 children: [
                     button(
                         text: "Replace content",
@@ -62,6 +63,14 @@ enum MainScreen {
                         onTap: .navigate(to: .landscape),
                         style: buttonStyleSheet { base, button in
                             base.backgroundColor = .green
+                            button.textColor = .white
+                        }
+                    ),
+                    button(
+                        text: "Present examples",
+                        onTap: .navigate(to: .examples),
+                        style: buttonStyleSheet { base, button in
+                            base.backgroundColor = .blue
                             button.textColor = .white
                         }
                     ),

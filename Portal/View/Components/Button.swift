@@ -8,13 +8,14 @@
 
 import Foundation
 
-public struct ButtonProperties<MessageType> {
-    
+public struct ButtonProperties<MessageType>: AutoPropertyDiffable {
+
     public var text: String?
     public var isActive: Bool
     public var icon: Image?
+    // sourcery: skipDiff
     public var onTap: MessageType?
-    
+
     fileprivate init(
         text: String? = .none,
         isActive: Bool = false,
@@ -25,11 +26,11 @@ public struct ButtonProperties<MessageType> {
         self.icon = icon
         self.onTap = onTap
     }
-    
+
 }
 
 public extension ButtonProperties {
-    
+
     public func map<NewMessageType>(_ transform: (MessageType) -> NewMessageType) -> ButtonProperties<NewMessageType> {
         return ButtonProperties<NewMessageType>(
             text: self.text,
@@ -38,7 +39,7 @@ public extension ButtonProperties {
             onTap: self.onTap.map(transform)
         )
     }
-    
+
 }
 
 public func button<MessageType>(
@@ -65,14 +66,14 @@ public func properties<MessageType>(
 
 // MARK: - Style sheet
 
-public struct ButtonStyleSheet {
-    
+public struct ButtonStyleSheet: AutoPropertyDiffable {
+
     public static let defaultStyleSheet = StyleSheet<ButtonStyleSheet>(component: ButtonStyleSheet())
-    
+
     public var textColor: Color
     public var textFont: Font
     public var textSize: UInt
-    
+
     public init(
         textColor: Color = .black,
         textFont: Font = defaultFont,
@@ -81,7 +82,7 @@ public struct ButtonStyleSheet {
         self.textFont = textFont
         self.textSize = textSize
     }
-    
+
 }
 
 public func buttonStyleSheet(
@@ -90,4 +91,45 @@ public func buttonStyleSheet(
     var custom = ButtonStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: - Change set
+
+public struct ButtonChangeSet<MessageType> {
+ 
+    static func fullChangeSet(
+        properties: ButtonProperties<MessageType>,
+        style: StyleSheet<ButtonStyleSheet>,
+        layout: Layout) -> ButtonChangeSet<MessageType> {
+        return ButtonChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            buttonStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [ButtonProperties<MessageType>.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let buttonStyleSheet: [ButtonStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                buttonStyleSheet.isEmpty    &&
+                layout.isEmpty
+    }
+    
+    init(
+        properties: [ButtonProperties<MessageType>.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        buttonStyleSheet: [ButtonStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.buttonStyleSheet = buttonStyleSheet
+        self.layout = layout
+    }
+    
 }

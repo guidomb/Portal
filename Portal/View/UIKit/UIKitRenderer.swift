@@ -8,109 +8,263 @@
 
 import UIKit
 
-public protocol ContainerController: class {
-    
-    var containerView: UIView { get }
-    
-    func attachChildController(_ controller: UIViewController)
-    
-    func registerDisposer(for identifier: String, disposer: @escaping () -> Void)
-    
-}
-
-extension ContainerController where Self: UIViewController {
-    
-    public var containerView: UIView {
-        return self.view
-    }
-    
-    public func attachChildController(_ controller: UIViewController) {
-        guard controller.parent == self else { return }
-        
-        controller.willMove(toParentViewController: self)
-        self.addChildViewController(controller)
-        controller.didMove(toParentViewController: self)
-    }
-    
-}
-
-public struct CustomComponentDescription {
-    
-    public let identifier: String
-    public let information: [String : Any]
-    public let style: StyleSheet<EmptyStyleSheet>
-    public let layout: Layout
-    
-}
-
-public protocol UIKitCustomComponentRenderer {
-    
-    associatedtype MessageType
-    associatedtype RouteType: Route
-    
-    init(container: ContainerController)
-    
-    func renderComponent(
-        _ componentDescription: CustomComponentDescription,
-        inside view: UIView,
-        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void)
-    
-}
-
-public struct VoidCustomComponentRenderer<MessageType, RouteType: Route>: UIKitCustomComponentRenderer {
-    
-    public init(container: ContainerController) {
-        
-    }
-    
-    public func renderComponent(
-        _ componentDescription: CustomComponentDescription,
-        inside view: UIView,
-        dispatcher: @escaping (Action<RouteType, MessageType>) -> Void) {
-    
-    }
-}
-
 public struct UIKitComponentRenderer<
     MessageType,
     RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer
     >: Renderer
-    
+
     where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
-    
+
     public typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
     public typealias ActionType = Action<RouteType, MessageType>
     
-    public var isDebugModeEnabled: Bool = false
-    
-    internal let layoutEngine: LayoutEngine
-    internal let rendererFactory: CustomComponentRendererFactory
-    
-    private let containerView: UIView
+    typealias TableView = PortalTableView<MessageType, RouteType, CustomComponentRendererType>
+    typealias CollectionView = PortalCollectionView<MessageType, RouteType, CustomComponentRendererType>
+    typealias CarouselView = PortalCarouselView<MessageType, RouteType, CustomComponentRendererType>
+
+    public var isDebugModeEnabled = false
+    public var debugConfiguration = RendererDebugConfiguration()
+
+    fileprivate let layoutEngine: LayoutEngine
+    fileprivate let rendererFactory: CustomComponentRendererFactory
     
     public init(
-        containerView: UIView,
         layoutEngine: LayoutEngine = YogaLayoutEngine(),
         rendererFactory: @escaping CustomComponentRendererFactory) {
-        self.containerView = containerView
         self.rendererFactory = rendererFactory
         self.layoutEngine = layoutEngine
     }
+
+    public func render(component: Component<ActionType>, into containerView: UIView) -> Mailbox<ActionType> {
+        apply(changeSet: component.fullChangeSet, to: containerView)
+        return containerView.getMailbox()
+    }
     
-    public func render(component: Component<ActionType>) -> Mailbox<ActionType> {
-        containerView.subviews.forEach { $0.removeFromSuperview() }
-        let renderer = ComponentRenderer(component: component, rendererFactory: rendererFactory)
-        let renderResult = renderer.render(with: layoutEngine, isDebugModeEnabled: isDebugModeEnabled)
-        renderResult.view.managedByPortal = true
-        layoutEngine.layout(view: renderResult.view, inside: containerView)
+    public func apply(changeSet: ComponentChangeSet<ActionType>, to containerView: UIView) {
+        let rootView = getOrCreateRootView(from: containerView)
+        let renderResult = render(changeSet: changeSet, into: rootView)
+        if rootView !== renderResult.view {
+            containerView.addSubview(renderResult.view)
+            renderResult.mailbox?.forward(to: containerView.getMailbox())
+        }
+        layoutEngine.executeLayout(for: containerView)
         renderResult.afterLayout?()
         
-        if isDebugModeEnabled {
+        if isShowViewFrame {
             renderResult.view.safeTraverse { $0.addDebugFrame() }
         }
+    }
+    
+}
+
+extension UIKitComponentRenderer {
+    
+    var isShowViewChangeAnimation: Bool {
+        return isDebugModeEnabled &&  debugConfiguration.showViewChangeAnimation
+    }
+    
+    var isShowViewFrame: Bool {
+        return isDebugModeEnabled &&  debugConfiguration.showViewFrame
+    }
+    
+    // swiftlint:disable cyclomatic_complexity function_body_length
+    fileprivate func render(changeSet: ComponentChangeSet<ActionType>, into view: UIView?) -> Render<ActionType> {
+        // We need to remove any gesture recognizers that could have been added
+        // if the view was wrapped with a touchable component in the previous
+        // render cycle.
+        //
+        // We need to do this here to avoid having gesture recognizers that are
+        // no longer valid in case this view is no longer wrapped
+        // with a touchable component but can be reused to render the current
+        // change set.
+        //
+        // We need to differentiate which are the gesture recognizers managed
+        // by Portal because if we remove all gesture recognizer, things like
+        // scrolling detection on table and collection views won't work.
+        view?.removeAllManagedGestureRecognizers()
+
+        switch changeSet {
         
-        return renderResult.mailbox ?? Mailbox<ActionType>()
+        case .button(let buttonChangeSet):
+            let button = castOrRelease(view: view, to: UIButton.self)
+            return button.apply(changeSet: buttonChangeSet, layoutEngine: layoutEngine)
+            
+        case .label(let labelChangeSet):
+            let label = castOrRelease(view: view, to: UILabel.self)
+            return label.apply(changeSet: labelChangeSet, layoutEngine: layoutEngine)
+            
+        case .mapView(let mapViewChangeSet):
+            let mapView = castOrRelease(view: view, to: PortalMapView.self)
+            return mapView.apply(changeSet: mapViewChangeSet, layoutEngine: layoutEngine)
+            
+        case .imageView(let imageViewChangeSet):
+            let imageView = castOrRelease(view: view, to: UIImageView.self)
+            return imageView.apply(changeSet: imageViewChangeSet, layoutEngine: layoutEngine)
+            
+        case .container(let containerChangeSet):
+            // We need to make sure that view's type is UIView and not
+            // any of it's subclasses because container components
+            // cannot be renderer inside a UIButton for example.
+            if let containerView = view, type(of: containerView) == UIView.self {
+                return apply(changeSet: containerChangeSet, to: containerView)
+            } else {
+                let containerView = UIView()
+                containerView.managedByPortal = true
+                return apply(changeSet: containerChangeSet, to: containerView)
+            }
+            
+        case .table(let tableChangeSet):
+            let table = castOrRelease(view: view, to: TableView.self) { TableView(renderer: self) }
+            return table.apply(changeSet: tableChangeSet, layoutEngine: layoutEngine)
+            
+        case .collection(let collectionChangeSet):
+            let collection = castOrRelease(view: view, to: CollectionView.self) { CollectionView(renderer: self) }
+            return collection.apply(changeSet: collectionChangeSet, layoutEngine: layoutEngine)
+            
+        case .carousel(let carouselChangeSet):
+            let carousel = castOrRelease(view: view, to: CarouselView.self) { CarouselView(renderer: self) }
+            return carousel.apply(changeSet: carouselChangeSet, layoutEngine: layoutEngine)
+            
+        case .touchable(let touchableChangeSet):
+            return apply(changeSet: touchableChangeSet, to: view)
+            
+        case .segmented(let segmentedChangeSet):
+            let segmented = castOrRelease(view: view, to: UISegmentedControl.self)
+            return segmented.apply(changeSet: segmentedChangeSet, layoutEngine: layoutEngine)
+            
+        case .progress(let progressChangeSet):
+            let progress = castOrRelease(view: view, to: UIProgressView.self)
+            return progress.apply(changeSet: progressChangeSet, layoutEngine: layoutEngine)
+            
+        case .textField(let textFieldChangeSet):
+            let textField = castOrRelease(view: view, to: UITextField.self)
+            return textField.apply(changeSet: textFieldChangeSet, layoutEngine: layoutEngine)
+            
+        case .custom(let customComponentChangeSet):
+            return apply(changeSet: customComponentChangeSet, to: view ?? UIView())
+            
+        case .spinner(let spinnerChangeSet):
+            let spinner = castOrRelease(view: view, to: UIActivityIndicatorView.self)
+            return spinner.apply(changeSet: spinnerChangeSet, layoutEngine: layoutEngine)
+            
+        case .textView(let textViewChangeSet):
+            let textView = castOrRelease(view: view, to: UITextView.self)
+            return textView.apply(changeSet: textViewChangeSet, layoutEngine: layoutEngine)
+            
+        case .toggle(let toggleChangeSet):
+            let toggle = castOrRelease(view: view, to: UISwitch.self)
+            return toggle.apply(changeSet: toggleChangeSet, layoutEngine: layoutEngine)
+            
+        }
+    }
+    // swiftlint:enable cyclomatic_complexity function_body_length
+    
+    fileprivate func apply(changeSet: TouchableChangeSet<ActionType>, to view: UIView?) -> Render<ActionType> {
+        let result = render(changeSet: changeSet.child, into: view)
+        
+        switch changeSet.gesture {
+        
+        case .change(to: .tap(let message)):
+            if result.view is UIImageView {
+                result.view.isUserInteractionEnabled = true
+            }
+            
+            let mailbox: Mailbox<ActionType> = result.view.getMailbox()
+            let dispatcher = MessageDispatcher(mailbox: mailbox, message: message)
+            result.view.register(dispatcher: dispatcher)
+            let recognizer = UITapGestureRecognizer(target: dispatcher, action: dispatcher.selector)
+            result.view.addManagedGestureRecognizer(recognizer)
+            
+        case .noChange:
+            break
+            
+        }
+        
+        return result
+    }
+    
+    fileprivate func apply(changeSet: CustomComponentChangeSet, to containerView: UIView) -> Render<ActionType> {
+        containerView.managedByPortal = true
+        layoutEngine.apply(changeSet: changeSet.layout, to: containerView)
+        containerView.apply(changeSet: changeSet.baseStyleSheet)
+        let mailbox: Mailbox<ActionType> = containerView.getMailbox()
+        return Render(view: containerView, mailbox: mailbox) {
+            let renderer = self.rendererFactory()
+            renderer.apply(changeSet: changeSet, inside: containerView, dispatcher: mailbox.dispatch)
+        }
+    }
+    
+    fileprivate func apply(changeSet: ContainerChangeSet<ActionType>, to view: UIView) -> Render<ActionType> {
+        var afterLayoutTasks = [AfterLayoutTask]()
+        afterLayoutTasks.reserveCapacity(changeSet.childrenCount)
+        let reuseSubviews = view.subviews.count == changeSet.childrenCount
+        let subviews: [UIView?]
+        
+        if reuseSubviews {
+            subviews = view.subviews
+        } else {
+            view.subviews.forEach { $0.removeFromSuperview() }
+            subviews = Array(repeating: .none, count: changeSet.childrenCount)
+        }
+        
+        let mailbox: Mailbox<ActionType> = view.getMailbox()
+        for (index, (subview, childChangeSet)) in zip(subviews, changeSet.children).enumerated() {
+            let result = render(changeSet: childChangeSet, into: subview)
+            
+            if !reuseSubviews || result.view !== subview {
+                result.view.managedByPortal = true
+                result.mailbox?.forward(to: mailbox)
+                if reuseSubviews {
+                    view.insertSubview(result.view, at: index)
+                    subview?.removeFromSuperview()
+                } else {
+                    view.addSubview(result.view)
+                }
+            }
+            
+            if isShowViewChangeAnimation && !changeSet.isEmpty {
+                result.view.addChangeDebugAnimation()
+            }
+
+            if let afterLayoutTask = result.afterLayout {
+                afterLayoutTasks.append(afterLayoutTask)
+            }
+        }
+        
+        view.apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: view)
+        
+        return Render(view: view, mailbox: mailbox) {
+            afterLayoutTasks.forEach { $0() }
+        }
+    }
+    
+    fileprivate func castOrRelease<SpecificView: UIView>(
+        view: UIView?,
+        to viewType: SpecificView.Type,
+        viewFactory: (() -> SpecificView)? = .none) -> SpecificView {
+        
+        if view != nil && view is SpecificView {
+            return view as! SpecificView //swiftlint:disable:this force_cast
+        } else {
+            view?.removeFromSuperview()
+            let newView = viewFactory?() ?? SpecificView()
+            return newView
+        }
+    }
+    
+    fileprivate func getOrCreateRootView(from containerView: UIView) -> UIView {
+        let view: UIView
+        if let subview = containerView.subviews.first {
+            view = subview
+        } else {
+            view = UIView()
+            containerView.addSubview(view)
+            let mailbox: Mailbox<ActionType> = view.getMailbox()
+            mailbox.forward(to: containerView.getMailbox())
+        }
+        return view
     }
     
 }
@@ -118,11 +272,11 @@ public struct UIKitComponentRenderer<
 internal typealias AfterLayoutTask = () -> Void
 
 internal struct Render<MessageType> {
-    
+
     let view: UIView
     let mailbox: Mailbox<MessageType>?
     let afterLayout: AfterLayoutTask?
-    
+
     init(view: UIView,
          mailbox: Mailbox<MessageType>? = .none,
          executeAfterLayout afterLayout: AfterLayoutTask? = .none) {
@@ -130,78 +284,5 @@ internal struct Render<MessageType> {
         self.afterLayout = afterLayout
         self.mailbox = mailbox
     }
-    
-}
 
-internal protocol UIKitRenderer {
-    
-    associatedtype MessageType
-    associatedtype RouteType: Route
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<Action<RouteType, MessageType>>
-    
-}
-
-extension UIView {
-    
-    internal func apply(style: BaseStyleSheet) {
-        style.backgroundColor   |> { self.backgroundColor = $0.asUIColor }
-        style.cornerRadius      |> { self.layer.cornerRadius = CGFloat($0) }
-        style.borderColor       |> { self.layer.borderColor = $0.asUIColor.cgColor }
-        style.borderWidth       |> { self.layer.borderWidth = CGFloat($0) }
-        style.alpha             |> { self.alpha = CGFloat($0) }
-        style.contentMode       |> { self.contentMode = $0.toUIViewContentMode }
-        style.clipToBounds      |> { self.clipsToBounds = $0 }
-        style.shadow            |> { shadow in
-            self.layer.shadowColor = shadow.color.asUIColor.cgColor
-            self.layer.shadowOpacity = shadow.opacity
-            self.layer.shadowOffset = shadow.offset.asCGSize
-            self.layer.shadowRadius = CGFloat(shadow.radius)
-            self.layer.shouldRasterize = shadow.shouldRasterize
-        }
-        
-    }
-    
-}
-
-fileprivate extension ContentMode {
-    
-    var toUIViewContentMode: UIViewContentMode {
-        switch self {
-            
-        case .scaleToFill:
-            return UIViewContentMode.scaleToFill
-            
-        case .scaleAspectFill:
-            return UIViewContentMode.scaleAspectFill
-            
-        case .scaleAspectFit:
-            return UIViewContentMode.scaleAspectFit
-            
-        }
-    }
-    
-}
-
-extension SupportedOrientations {
-    
-    var uiInterfaceOrientation: UIInterfaceOrientationMask {
-        switch self {
-        case .all:
-            return .all
-        case .landscape:
-            return .landscape
-        case .portrait:
-            return .portrait
-        }
-    }
-    
-}
-
-extension Offset {
-    
-    internal var asCGSize: CGSize {
-        return CGSize(width: CGFloat(x), height: CGFloat(y))
-    }
-    
 }

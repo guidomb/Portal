@@ -1,0 +1,78 @@
+{% for type in types.implementing.AutoPropertyDiffable %}
+// MARK: - {{ type.name }} AutoPropertyDiffable
+{% if type.accessLevel == "public" %}public {% endif %}extension {{ type.name }} {
+
+    {% if type.accessLevel == "public" %}public {% endif %}enum Property {
+
+        {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if not instanceVariable.annotations.ignoreInChangeSet %}
+        {% if instanceVariable.type.based.AutoPropertyDiffable %}
+        case {{ instanceVariable.name }}([{{ instanceVariable.type.name }}.Property]{% if instanceVariable.isOptional %}?{% endif %})
+        {% else %}
+        case {{ instanceVariable.name }}({{ instanceVariable.typeName }})
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+
+    }
+
+    {% if type.accessLevel == "public" %}public {% endif %}var fullChangeSet: [{{ type.name }}.Property] {
+        return [
+        {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if not instanceVariable.annotations.ignoreInChangeSet %}
+        {% if instanceVariable.type.based.AutoPropertyDiffable %}
+            .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}{% if instanceVariable.isOptional %}?{% endif %}.fullChangeSet),
+        {% else %}
+            .{{ instanceVariable.name }}(self.{{ instanceVariable.name }}),
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+        ]
+    }
+
+    {% if type.accessLevel == "public" %}public {% endif %}func changeSet(for {{ type.name|lowerFirst }}: {{ type.name }}) -> [{{ type.name }}.Property] {
+        var changeSet: [{{ type.name }}.Property] = []
+        {% for instanceVariable in type.instanceVariables|publicGet %}
+        {% if not instanceVariable.annotations.ignoreInChangeSet %}
+        {% if instanceVariable.annotations.skipDiff %}
+          {% if instanceVariable.type.based.AutoPropertyDiffable %}
+        changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}.fullChangeSet))
+          {% else %}
+        changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
+          {% endif %}
+        {% else %}
+          {% if instanceVariable.type.based.AutoPropertyDiffable %}
+            {% if instanceVariable.isOptional %}
+        switch (self.{{ instanceVariable.name }}, {{ type.name|lowerFirst }}.{{ instanceVariable.name }}) {
+        case (.some(let old), .some(let new)):
+            let {{ instanceVariable.name }}ChangeSet = old.changeSet(for: new)
+            if !{{ instanceVariable.name }}ChangeSet.isEmpty {
+                changeSet.append(.{{ instanceVariable.name }}({{ instanceVariable.name }}ChangeSet))
+            }
+        case (.none, .some(let new)):
+            changeSet.append(.{{ instanceVariable.name }}(new.fullChangeSet))
+        case (.some(_), .none):
+            changeSet.append(.{{ instanceVariable.name }}(.none))
+        case (.none, .none):
+            break
+        }
+            {% else %}
+        let {{ instanceVariable.name}}ChangeSet = self.{{ instanceVariable.name }}.changeSet(for: {{ type.name|lowerFirst }}.{{ instanceVariable.name }})
+        if !{{ instanceVariable.name}}ChangeSet.isEmpty {
+            changeSet.append(.{{ instanceVariable.name }}({{ instanceVariable.name}}ChangeSet))
+        }
+            {% endif %}
+          {% else %}
+        if self.{{ instanceVariable.name }} != {{ type.name|lowerFirst }}.{{ instanceVariable.name }} {
+            changeSet.append(.{{ instanceVariable.name }}({{ type.name|lowerFirst }}.{{ instanceVariable.name }}))
+        }
+          {% endif %}
+        {% endif%}
+        {% endif%}
+        {% endfor %}
+        return changeSet
+    }
+
+}
+
+{% endfor %}

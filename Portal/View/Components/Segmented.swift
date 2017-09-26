@@ -63,7 +63,7 @@ public func segment<MessageType>(
 
 // MARK: - Style sheet
 
-public struct SegmentedStyleSheet {
+public struct SegmentedStyleSheet: AutoPropertyDiffable {
     
     public static let `default` = StyleSheet<SegmentedStyleSheet>(component: SegmentedStyleSheet())
     
@@ -91,4 +91,45 @@ public func segmentedStyleSheet(
     var custom = SegmentedStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: - ChangeSet
+
+public struct SegmentedChangeSet<MessageType> {
+    
+    static func fullChangeSet(
+        segments: ZipList<SegmentProperties<MessageType>>,
+        style: StyleSheet<SegmentedStyleSheet>,
+        layout: Layout) -> SegmentedChangeSet<MessageType> {
+        return SegmentedChangeSet(
+            segments: .change(to: segments),
+            baseStyleSheet: style.base.fullChangeSet,
+            segmentedStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let segments: PropertyChange<ZipList<SegmentProperties<MessageType>>>
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let segmentedStyleSheet: [SegmentedStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        guard case .noChange = segments else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                segmentedStyleSheet.isEmpty &&
+                layout.isEmpty
+    }
+    
+    init(
+        segments: PropertyChange<ZipList<SegmentProperties<MessageType>>> = .noChange,
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        segmentedStyleSheet: [SegmentedStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.segments = segments
+        self.baseStyleSheet = baseStyleSheet
+        self.segmentedStyleSheet = segmentedStyleSheet
+        self.layout = layout
+    }
+    
 }

@@ -8,13 +8,18 @@
 
 public struct ProgressCounter {
     
-    public static let initial = ProgressCounter()
+    internal static let initial = ProgressCounter()
     
+    // sourcery: ignoreInChangeSet
     public var partial: UInt
+    // sourcery: ignoreInChangeSet
     public let total: UInt
+    
     public var progress: Float {
         return Float(partial) / Float(total)
     }
+    
+    // sourcery: ignoreInChangeSet
     public var remaining: UInt {
         return total - partial
     }
@@ -46,14 +51,14 @@ public func progress<MessageType>(
 
 // MARK: - Style sheet
 
-public enum ProgressContentType {
+public enum ProgressContentType: AutoEquatable {
     
     case color(Color)
     case image(Image)
     
 }
 
-public struct ProgressStyleSheet {
+public struct ProgressStyleSheet: AutoPropertyDiffable {
     
     public static let defaultStyleSheet = StyleSheet<ProgressStyleSheet>(component: ProgressStyleSheet())
     
@@ -75,4 +80,45 @@ public func progressStyleSheet(
     var custom = ProgressStyleSheet()
     configure(&base, &custom)
     return StyleSheet(component: custom, base: base)
+}
+
+// MARK: Change Set
+
+public struct ProgressChangeSet {
+    
+    static func fullChangeSet(
+        progress: ProgressCounter,
+        style: StyleSheet<ProgressStyleSheet>,
+        layout: Layout) -> ProgressChangeSet {
+        return ProgressChangeSet(
+            progress: .change(to: progress),
+            baseStyleSheet: style.base.fullChangeSet,
+            progressStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let progress: PropertyChange<ProgressCounter>
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let progressStyleSheet: [ProgressStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        guard case .noChange = progress else { return false }
+        return  baseStyleSheet.isEmpty      &&
+                progressStyleSheet.isEmpty  &&
+                layout.isEmpty
+    }
+    
+    init(
+        progress: PropertyChange<ProgressCounter>,
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        progressStyleSheet: [ProgressStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.progress = progress
+        self.baseStyleSheet = baseStyleSheet
+        self.progressStyleSheet = progressStyleSheet
+        self.layout = layout
+    }
+    
 }

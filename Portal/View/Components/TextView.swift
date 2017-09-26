@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum TextType {
+public enum Text: AutoEquatable {
     
     case regular(String)
     case attributed(NSAttributedString)
@@ -16,22 +16,34 @@ public enum TextType {
 }
 
 public func textView<MessageType>(
-    text: String,
+    properties: TextViewProperties = TextViewProperties(),
     style: StyleSheet<TextViewStyleSheet> = TextViewStyleSheet.`default`,
     layout: Layout = layout()) -> Component<MessageType> {
-    return .textView(.regular(text), style, layout)
+    return .textView(properties, style, layout)
 }
 
-public func textView<MessageType>(
-    text: NSAttributedString,
-    style: StyleSheet<TextViewStyleSheet> = TextViewStyleSheet.`default`,
-    layout: Layout = layout()) -> Component<MessageType> {
-    return .textView(.attributed(text), style, layout)
+public struct TextViewProperties: AutoPropertyDiffable {
+    
+    public var text: Text
+    public var isScrollEnabled: Bool
+    
+    fileprivate init(text: Text = .regular(""), isScrollEnabled: Bool = false) {
+        self.text = text
+        self.isScrollEnabled = isScrollEnabled
+    }
+    
+}
+
+public func properties(
+    configure: (inout TextViewProperties) -> Void) -> TextViewProperties {
+    var properties = TextViewProperties()
+    configure(&properties)
+    return properties
 }
 
 // MARK: - Style sheet
 
-public struct TextViewStyleSheet {
+public struct TextViewStyleSheet: AutoPropertyDiffable {
     
     static let `default` = StyleSheet<TextViewStyleSheet>(component: TextViewStyleSheet())
     
@@ -39,6 +51,7 @@ public struct TextViewStyleSheet {
     public var textFont: Font
     public var textSize: UInt
     public var textAligment: TextAligment
+    
     public init(
         textColor: Color = .black,
         textFont: Font = defaultFont,
@@ -59,4 +72,45 @@ public func textViewStyleSheet(
     var component = TextViewStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - Change set
+
+public struct TextViewChangeSet {
+    
+    static func fullChangeSet(
+        properties: TextViewProperties,
+        style: StyleSheet<TextViewStyleSheet>,
+        layout: Layout) -> TextViewChangeSet {
+        return TextViewChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            textViewStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [TextViewProperties.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let textViewStyleSheet: [TextViewStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                textViewStyleSheet.isEmpty  &&
+                layout.isEmpty
+    }
+    
+    init(
+        properties: [TextViewProperties.Property],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        textViewStyleSheet: [TextViewStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.textViewStyleSheet = textViewStyleSheet
+        self.layout = layout
+    }
+    
 }

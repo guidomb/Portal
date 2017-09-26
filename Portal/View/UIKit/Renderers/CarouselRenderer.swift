@@ -8,55 +8,67 @@
 
 import UIKit
 
-internal struct CarouselRenderer<
-    MessageType,
-    RouteType,
-    CustomComponentRendererType: UIKitCustomComponentRenderer
-    >: UIKitRenderer
+extension PortalCarouselView {
     
-    where CustomComponentRendererType.MessageType == MessageType, CustomComponentRendererType.RouteType == RouteType {
-    
-    typealias CustomComponentRendererFactory = () -> CustomComponentRendererType
-    typealias ActionType = Action<RouteType, MessageType>
-    
-    let properties: CarouselProperties<ActionType>
-    let style: StyleSheet<CollectionStyleSheet>
-    let layout: Layout
-    let rendererFactory: CustomComponentRendererFactory
-    
-    func render(with layoutEngine: LayoutEngine, isDebugModeEnabled: Bool) -> Render<ActionType> {
-        let carouselView = PortalCarouselView(
-            items: properties.items,
-            layoutEngine: layoutEngine,
-            layout: createFlowLayout(),
-            rendererFactory: rendererFactory,
-            onSelectionChange: properties.onSelectionChange
-        )
-        
-        carouselView.isDebugModeEnabled = isDebugModeEnabled
-        carouselView.isSnapToCellEnabled = properties.isSnapToCellEnabled
-        carouselView.showsHorizontalScrollIndicator = properties.showsScrollIndicator
-        
-        carouselView.apply(style: style.base)
-        layoutEngine.apply(layout: layout, to: carouselView)
-        
-        return Render(view: carouselView, mailbox: carouselView.mailbox)
+    func apply(changeSet: CarouselChangeSet<ActionType>, layoutEngine: LayoutEngine) -> Render<ActionType> {
+        apply(changeSet: changeSet.properties)
+        apply(changeSet: changeSet.baseStyleSheet)
+        layoutEngine.apply(changeSet: changeSet.layout, to: self)
+
+        return Render<ActionType>(view: self, mailbox: mailbox, executeAfterLayout: .none)
     }
     
-    func createFlowLayout() -> UICollectionViewFlowLayout {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: CGFloat(properties.itemsWidth), height: CGFloat(properties.itemsHeight))
-        layout.minimumInteritemSpacing = CGFloat(properties.minimumInteritemSpacing)
-        layout.minimumLineSpacing = CGFloat(properties.minimumLineSpacing)
-        layout.sectionInset = UIEdgeInsets(
-            top: CGFloat(properties.sectionInset.top),
-            left: CGFloat(properties.sectionInset.left),
-            bottom: CGFloat(properties.sectionInset.bottom),
-            right: CGFloat(properties.sectionInset.right)
-        )
+}
+
+fileprivate extension PortalCarouselView {
+    
+    // swiftlint:disable cyclomatic_complexity
+    fileprivate func apply(changeSet: [CarouselProperties<ActionType>.Property]) {
+        guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return }
+        
+        for property in changeSet {
+            switch property {
+                
+            case .isSnapToCellEnabled(let isSnapToCellEnabled):
+                self.isSnapToCellEnabled = isSnapToCellEnabled
+                
+            case .items(let items):
+                if let items = items {
+                    setItems(items: items)
+                } else {
+                    setItems(items: [])
+                }
+                reloadData()
+                
+            case .itemsSize(let itemsSize):
+                layout.itemSize = CGSize(width: CGFloat(itemsSize.width), height: CGFloat(itemsSize.height))
+            
+            case .minimumInteritemSpacing(let minimumInteritemSpacing):
+                layout.minimumInteritemSpacing = CGFloat(minimumInteritemSpacing)
+                
+            case .minimumLineSpacing(let minimumLineSpacing):
+                layout.minimumLineSpacing = CGFloat(minimumLineSpacing)
+                
+            case .onSelectionChange(let onSelectionChange):
+                self.onSelectionChange = onSelectionChange
+                
+            case .sectionInset(let sectionInset):
+                layout.sectionInset = UIEdgeInsets(
+                    top: CGFloat(sectionInset.top),
+                    left: CGFloat(sectionInset.left),
+                    bottom: CGFloat(sectionInset.bottom),
+                    right: CGFloat(sectionInset.right)
+                )
+                
+            case .showsScrollIndicator(let showsScrollIndicator):
+                self.showsHorizontalScrollIndicator = showsScrollIndicator
+            }
+        }
         
         layout.scrollDirection = .horizontal
-        
-        return layout
+        collectionViewLayout = layout
+        showsVerticalScrollIndicator = false
     }
+    // swiftlint:enable cyclomatic_complexity
+    
 }

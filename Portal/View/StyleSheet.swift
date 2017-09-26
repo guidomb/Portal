@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Color {
+public struct Color: AutoEquatable {
     
     public static var red: Color {
         return Color(hex: 0xFF0000)!
@@ -91,7 +91,7 @@ public enum ContentMode {
     
 }
 
-public struct BaseStyleSheet {
+public struct BaseStyleSheet: AutoPropertyDiffable {
     
     public var backgroundColor: Color
     public var cornerRadius: Float?

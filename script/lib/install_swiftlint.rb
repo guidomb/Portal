@@ -1,12 +1,9 @@
-require 'yaml'
 require 'fileutils'
+require_relative 'read_version'
 
 # Download & install local version of SwiftLint
 def install_swiftlint(swiftlint_version = nil)
-  unless swiftlint_version
-    versions = YAML.load_file(".versions.yml")
-    swiftlint_version = versions["swiftlint"]
-  end
+  swiftlint_version = read_version("swiftlint") if swiftlint_version.nil? || swiftlint_version.empty?
   swiftlint_dir = "bin/swiftlint"
   puts ""
   puts " → Donwloading SwiftLint version '#{swiftlint_version}' ..."

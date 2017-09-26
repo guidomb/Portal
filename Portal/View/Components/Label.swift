@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct LabelProperties {
+public struct LabelProperties: AutoPropertyDiffable {
     
     public let text: String
     public let textAfterLayout: String?
@@ -34,13 +34,15 @@ public func label<MessageType>(
     return .label(properties, style, layout)
 }
 
-public func properties(text: String = "", textAfterLayout: String? = .none) -> LabelProperties {
+public func properties(
+    text: String = "",
+    textAfterLayout: String? = .none) -> LabelProperties {
     return LabelProperties(text: text, textAfterLayout: textAfterLayout)
 }
 
 // MARK: - Style sheet
 
-public struct LabelStyleSheet {
+public struct LabelStyleSheet: AutoPropertyDiffable {
     
     static let `default` = StyleSheet<LabelStyleSheet>(component: LabelStyleSheet())
     
@@ -77,4 +79,45 @@ public func labelStyleSheet(
     var component = LabelStyleSheet()
     configure(&base, &component)
     return StyleSheet(component: component, base: base)
+}
+
+// MARK: - Change set
+
+public struct LabelChangeSet {
+    
+    static func fullChangeSet(
+        properties: LabelProperties,
+        style: StyleSheet<LabelStyleSheet>,
+        layout: Layout) -> LabelChangeSet {
+        return LabelChangeSet(
+            properties: properties.fullChangeSet,
+            baseStyleSheet: style.base.fullChangeSet,
+            labelStyleSheet: style.component.fullChangeSet,
+            layout: layout.fullChangeSet
+        )
+    }
+    
+    let properties: [LabelProperties.Property]
+    let baseStyleSheet: [BaseStyleSheet.Property]
+    let labelStyleSheet: [LabelStyleSheet.Property]
+    let layout: [Layout.Property]
+    
+    var isEmpty: Bool {
+        return  properties.isEmpty          &&
+                baseStyleSheet.isEmpty      &&
+                labelStyleSheet.isEmpty     &&
+                layout.isEmpty
+    }
+    
+    init(
+        properties: [LabelProperties.Property] = [],
+        baseStyleSheet: [BaseStyleSheet.Property] = [],
+        labelStyleSheet: [LabelStyleSheet.Property] = [],
+        layout: [Layout.Property] = []) {
+        self.properties = properties
+        self.baseStyleSheet = baseStyleSheet
+        self.labelStyleSheet = labelStyleSheet
+        self.layout = layout
+    }
+    
 }
