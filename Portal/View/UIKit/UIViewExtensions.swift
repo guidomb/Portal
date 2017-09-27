@@ -83,6 +83,7 @@ internal extension UIView {
         } else {
             managedGestureRecognizers.append(gestureRecognizer)
         }
+        addGestureRecognizer(gestureRecognizer)
     }
     
     internal func removeAllManagedGestureRecognizers() {
@@ -117,7 +118,8 @@ fileprivate extension UIView {
             return objc_getAssociatedObject(self, &gestureRecognizersAssociationKey) as? [UIGestureRecognizer] ?? []
         }
         set {
-            return objc_setAssociatedObject(self, &gestureRecognizersAssociationKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            return objc_setAssociatedObject(self, &gestureRecognizersAssociationKey,
+                                            newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
