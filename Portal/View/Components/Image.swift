@@ -15,11 +15,14 @@ public struct Size: AutoEquatable {
     
 }
 
-public protocol ImageType {
+public enum Image {
     
-    var size: Size { get }
+    case localImage(named: String)
+    case blob(data: Data, size: Size)
     
 }
+
+extension Image: AutoEquatable {}
 
 public func imageView<MessageType>(
     image: Image,

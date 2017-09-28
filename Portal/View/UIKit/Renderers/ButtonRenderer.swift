@@ -35,9 +35,16 @@ fileprivate extension UIButton {
             case .text(let text):
                 self.setTitle(text, for: .normal)
                 
-            case .icon(let icon):
-                let image = icon.map { $0.asUIImage }
-                self.setImage(image, for: .normal)
+            case .icon(let maybeIcon):
+                if let icon = maybeIcon {
+                    self.tag = icon.loadUIImage { loadedImage, hash in
+                        guard self.tag == hash else { return }
+                        self.tag = 0
+                        self.setImage(loadedImage, for: .normal)
+                    }
+                } else {
+                    self.setImage(.none, for: .normal)
+                }
                 
             case .isActive(let isActive):
                 self.isSelected = isActive

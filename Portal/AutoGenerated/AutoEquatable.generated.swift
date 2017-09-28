@@ -124,6 +124,19 @@ public func == (lhs: Border, rhs: Border) -> Bool {
     default: return false
     }
 }
+// MARK: - Image AutoEquatable
+extension Image: Equatable {}
+public func == (lhs: Image, rhs: Image) -> Bool {
+    switch (lhs, rhs) {
+    case (.localImage(let lhs), .localImage(let rhs)):
+        return lhs == rhs
+    case (.blob(let lhs), .blob(let rhs)):
+        if lhs.data != rhs.data { return false }
+        if lhs.size != rhs.size { return false }
+        return true
+    default: return false
+    }
+}
 // MARK: - Margin AutoEquatable
 extension Margin: Equatable {}
 public func == (lhs: Margin, rhs: Margin) -> Bool {

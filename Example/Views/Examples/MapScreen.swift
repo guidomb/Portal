@@ -15,9 +15,9 @@ enum MapScreen {
     
     static func view() -> View {
         let placemarks = [
-            MapPlacemark(coordinates: Coordinates(latitude: 10, longitude: 10), icon: Image.loadImage(named: "placemark")),
-            MapPlacemark(coordinates: Coordinates(latitude: 15, longitude: 15), icon: Image.loadImage(named: "placemark")),
-            MapPlacemark(coordinates: Coordinates(latitude: 20, longitude: 20), icon: Image.loadImage(named: "placemark"))
+            MapPlacemark(coordinates: Coordinates(latitude: 10, longitude: 10), icon: .localImage(named: "placemark")),
+            MapPlacemark(coordinates: Coordinates(latitude: 15, longitude: 15), icon: .localImage(named: "placemark")),
+            MapPlacemark(coordinates: Coordinates(latitude: 20, longitude: 20), icon: .localImage(named: "placemark"))
         ]
         let properties = MapProperties(
             placemarks: placemarks,

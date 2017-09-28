@@ -43,7 +43,11 @@ fileprivate extension UIProgressView {
                     progressTintColor = color.asUIColor
                     
                 case .image(let image):
-                    progressImage = image.asUIImage
+                    self.tag = image.loadUIImage { loadedImage, hash in
+                        guard self.tag == hash else { return }
+                        self.tag = 0
+                        self.progressImage = loadedImage
+                    }
                 }
 
             case .trackStyle(let trackStyle):
@@ -53,7 +57,11 @@ fileprivate extension UIProgressView {
                     trackTintColor = color.asUIColor
                     
                 case .image(let image):
-                    trackImage = image.asUIImage
+                    self.tag = image.loadUIImage { loadedImage, hash in
+                        guard self.tag == hash else { return }
+                        self.tag = 0
+                        self.trackImage = loadedImage
+                    }
                 }
 
             }

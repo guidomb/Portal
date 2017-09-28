@@ -55,7 +55,15 @@ extension PortalMapView: MKMapViewDelegate {
         else { return .none }
         
         let annotationView = dequeueReusableAnnotationView(for: annotation)
-        annotationView.image = placemark.icon?.asUIImage
+        if let icon = placemark.icon {
+            annotationView.tag = icon.loadUIImage { loadedImage, hash in
+                guard annotationView.tag == hash else { return }
+                annotationView.tag = 0
+                annotationView.image = loadedImage
+            }
+        } else {
+            annotationView.image = .none
+        }
         
         return annotationView
     }
