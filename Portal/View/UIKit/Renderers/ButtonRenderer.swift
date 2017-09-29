@@ -37,11 +37,7 @@ fileprivate extension UIButton {
                 
             case .icon(let maybeIcon):
                 if let icon = maybeIcon {
-                    self.tag = icon.loadUIImage { loadedImage, hash in
-                        guard self.tag == hash else { return }
-                        self.tag = 0
-                        self.setImage(loadedImage, for: .normal)
-                    }
+                    self.load(image: icon) { self.setImage($0, for: .normal) }
                 } else {
                     self.setImage(.none, for: .normal)
                 }

@@ -99,10 +99,18 @@ extension UIImage {
 extension UIImageView {
     
     func load(image: Image) {
+        load(image: image) { self.image = $0 }
+    }
+    
+}
+
+extension UIView {
+    
+    func load(image: Image, setter: @escaping (UIImage?) -> Void) {
         self.tag = image.loadUIImage { loadedImage, hash in
             guard self.tag == hash else { return }
             self.tag = 0
-            self.image = loadedImage
+            setter(loadedImage)
         }
     }
     
