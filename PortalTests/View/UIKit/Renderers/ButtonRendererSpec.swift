@@ -25,7 +25,10 @@ class ButtonRendererSpec: QuickSpec {
             var buttonIcon: Image!
             
             beforeEach {
-                buttonIcon = Image.loadImage(named: "search.png", from: Bundle(for: ButtonRendererSpec.self))
+                Image.unregisterAllImageBundles()
+                Image.registerImageBundle(Bundle(for: ButtonRendererSpec.self))
+                
+                buttonIcon = .localImage(named: "search.png")
                 
                 let buttonProperties: ButtonProperties<String> = properties {
                     $0.text = "Hello World"
@@ -64,7 +67,7 @@ class ButtonRendererSpec: QuickSpec {
                 it("applies 'icon' property changes") {
                     let button = UIButton()
                     _ = button.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    expect(button.currentImage).to(equal(buttonIcon.asUIImage))
+                    expect(button.currentImage).toEventually(equal(buttonIcon.asUIImage))
                 }
                 
                 it("applies 'onTap' property changes") { waitUntil { done in

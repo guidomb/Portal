@@ -22,11 +22,19 @@ extension UIImageView {
 
 extension Image {
     
+    public static func registerImageBundle(_ bundle: Bundle) {
+        registeredImageBundles.append(bundle)
+    }
+    
+    public static func unregisterAllImageBundles() {
+        registeredImageBundles = [.main]
+    }
+    
     var asUIImage: UIImage? {
         switch self {
             
         case .localImage(let imageName):
-            return UIImage(named: imageName, in: .main, compatibleWith: .none)
+            return UIImage.loadFromRegisteredImageBundles(imageName: imageName)
             
         case .blob(let imageData, _):
             return UIImage(data: imageData)
@@ -57,8 +65,8 @@ extension Image {
         case .localImage(let imageName):
             let hashValue = imageName.hashValue
             imageProcessingQueue.async {
-                let image = UIImage(named: imageName, in: .main, compatibleWith: .none)
-                DispatchQueue.main.async { onLoad(image, hashValue) }
+                let loadedImage = UIImage.loadFromRegisteredImageBundles(imageName: imageName)
+                DispatchQueue.main.async { onLoad(loadedImage, hashValue) }
             }
             return hashValue
             
@@ -71,6 +79,19 @@ extension Image {
             return hashValue
             
         }
+    }
+    
+}
+
+extension UIImage {
+    
+    static func loadFromRegisteredImageBundles(imageName: String) -> UIImage? {
+        for bundle in registeredImageBundles {
+            if let image = UIImage(named: imageName, in: bundle, compatibleWith: .none) {
+                return image
+            }
+        }
+        return .none
     }
     
 }
@@ -92,6 +113,8 @@ fileprivate let imageProcessingQueue = DispatchQueue(
     qos: .utility,
     attributes: .concurrent
 )
+
+fileprivate var registeredImageBundles = [Bundle.main]
 
 fileprivate extension UIImageView {
     

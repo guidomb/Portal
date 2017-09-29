@@ -22,13 +22,18 @@ class ProgressRenderSpec: QuickSpec {
         describe(".apply(changeSet: ProgressChangeSet) -> Result") {
             
             var changeSet: ProgressChangeSet!
+            var trackStyleImage: Image!
             
             beforeEach {
+                Image.unregisterAllImageBundles()
+                Image.registerImageBundle(Bundle(for: ProgressRenderSpec.self))
+                
+                trackStyleImage = .localImage(named: "search.png")
                 let progressCounter = ProgressCounter(partial: 5, total: 10)!
                 
                 let progressStyle = progressStyleSheet { base, progress in
                     progress.progressStyle = .color(.red)
-                    progress.trackStyle = .image(Image.loadImage(named: "search.png", from: Bundle(for: ButtonRendererSpec.self))!)
+                    progress.trackStyle = .image(trackStyleImage)
                 }
                 
                 changeSet = ProgressChangeSet.fullChangeSet(
@@ -53,7 +58,7 @@ class ProgressRenderSpec: QuickSpec {
                 it("applies 'trackStyle' property changes") {
                     let progress = UIProgressView()
                     let _: Render<String> = progress.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    expect(progress.trackImage).to(equal(Image.loadImage(named: "search.png", from: Bundle(for: ButtonRendererSpec.self))!.asUIImage))
+                    expect(progress.trackImage).toEventually(equal(trackStyleImage.asUIImage))
                 }
                 
                 it("applies 'progressStyle' and 'textSize' property changes") {
