@@ -8,17 +8,10 @@
 
 import Foundation
 
-public struct Size: AutoEquatable {
-    
-    public var width: UInt
-    public var height: UInt
-    
-}
-
 public enum Image {
     
     case localImage(named: String)
-    case blob(data: Data, size: Size)
+    case blob(data: Data)
     
 }
 

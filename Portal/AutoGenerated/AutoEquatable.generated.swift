@@ -131,9 +131,7 @@ public func == (lhs: Image, rhs: Image) -> Bool {
     case (.localImage(let lhs), .localImage(let rhs)):
         return lhs == rhs
     case (.blob(let lhs), .blob(let rhs)):
-        if lhs.data != rhs.data { return false }
-        if lhs.size != rhs.size { return false }
-        return true
+        return lhs == rhs
     default: return false
     }
 }

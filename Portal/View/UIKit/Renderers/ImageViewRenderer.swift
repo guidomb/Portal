@@ -36,7 +36,7 @@ extension Image {
         case .localImage(let imageName):
             return UIImage.loadFromRegisteredImageBundles(imageName: imageName)
             
-        case .blob(let imageData, _):
+        case .blob(let imageData):
             return UIImage(data: imageData)
             
         }
@@ -70,7 +70,7 @@ extension Image {
             }
             return hashValue
             
-        case .blob(let imageData, _):
+        case .blob(let imageData):
             let hashValue = imageData.hashValue
             imageProcessingQueue.async {
                 let image = UIImage(data: imageData)
