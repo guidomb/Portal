@@ -930,6 +930,7 @@ public extension TextViewProperties {
 
         case text(Text)
         case isScrollEnabled(Bool)
+        case isEditable(Bool)
 
     }
 
@@ -937,6 +938,7 @@ public extension TextViewProperties {
         return [
             .text(self.text),
             .isScrollEnabled(self.isScrollEnabled),
+            .isEditable(self.isEditable),
         ]
     }
 
@@ -947,6 +949,9 @@ public extension TextViewProperties {
         }
         if self.isScrollEnabled != textViewProperties.isScrollEnabled {
             changeSet.append(.isScrollEnabled(textViewProperties.isScrollEnabled))
+        }
+        if self.isEditable != textViewProperties.isEditable {
+            changeSet.append(.isEditable(textViewProperties.isEditable))
         }
         return changeSet
     }
