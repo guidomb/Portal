@@ -20,7 +20,7 @@ enum ImageScreen {
             component: container(
                 children: [
                     imageView(
-                        image: Image.loadImage(named: "test")!,
+                        image: .localImage(named: "test"),
                         layout: layout {
                             $0.height = Dimension(value: 50)
                             $0.width = Dimension(value: 50)

@@ -25,7 +25,10 @@ class ImageViewRendererSpec: QuickSpec {
             var image: Image!
             
             beforeEach {
-                image = Image.loadImage(named: "search.png", from: Bundle(for: ImageViewRendererSpec.self))!
+                Image.unregisterAllImageBundles()
+                Image.registerImageBundle(Bundle(for: ImageViewRendererSpec.self))
+                
+                image = .localImage(named: "search.png")
                 changeSet = ImageViewChangeSet.fullChangeSet(image: image, style: styleSheet(), layout: layout())
             }
             
@@ -34,7 +37,7 @@ class ImageViewRendererSpec: QuickSpec {
                 it("applies 'image' changes") {
                     let imageView = UIImageView()
                     let _: Render<String> = imageView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
-                    expect(imageView.image).to(equal(image.asUIImage))
+                    expect(imageView.image).toEventually(equal(image.asUIImage))
                 }
                 
                 context("when there are optional properties set to .none") {

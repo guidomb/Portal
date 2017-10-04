@@ -8,18 +8,14 @@
 
 import Foundation
 
-public struct Size: AutoEquatable {
+public enum Image {
     
-    public var width: UInt
-    public var height: UInt
+    case localImage(named: String)
+    case blob(data: Data)
     
 }
 
-public protocol ImageType {
-    
-    var size: Size { get }
-    
-}
+extension Image: AutoEquatable {}
 
 public func imageView<MessageType>(
     image: Image,
