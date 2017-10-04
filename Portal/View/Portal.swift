@@ -55,3 +55,10 @@ public protocol Renderer {
     func apply(changeSet: ComponentChangeSet<MessageType>, to containerView: UIView)
         
 }
+
+public struct Size: AutoEquatable {
+    
+    public var width: UInt
+    public var height: UInt
+    
+}

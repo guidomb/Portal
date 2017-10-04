@@ -32,7 +32,9 @@ internal struct NavigationBarTitleRenderer<
             return .none
             
         case .image(let image):
-            navigationItem.titleView = UIImageView(image: image.asUIImage)
+            let titleView = UIImageView()
+            titleView.load(image: image)
+            navigationItem.titleView = titleView
             return .none
             
         case .component(let titleComponent):
