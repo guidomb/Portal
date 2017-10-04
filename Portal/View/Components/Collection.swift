@@ -159,7 +159,7 @@ public struct CollectionStyleSheet: AutoPropertyDiffable {
 }
 
 public func collectionStyleSheet(
-    configure: (inout BaseStyleSheet, inout CollectionStyleSheet) -> Void = { _ in })
+    configure: (inout BaseStyleSheet, inout CollectionStyleSheet) -> Void = { _, _ in })
     -> StyleSheet<CollectionStyleSheet> {
     var base = BaseStyleSheet()
     var component = CollectionStyleSheet()

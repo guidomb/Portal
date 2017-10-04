@@ -17,7 +17,7 @@ public struct TextFieldProperties<MessageType>: AutoPropertyDiffable {
     // sourcery: skipDiff
     public var onEvents: TextFieldEvents<MessageType> = TextFieldEvents()
 
-    fileprivate init(
+    public init(
         text: String? = .none,
         placeholder: String? = .none,
         isSecureTextEntry: Bool = false,
@@ -48,7 +48,7 @@ public struct TextFieldEvents<MessageType> {
     public var onEditingChanged: ((String) -> MessageType)?
     public var onEditingEnd: ((String) -> MessageType)?
     
-    fileprivate init(
+    public init(
         onEditingBegin: ((String) -> MessageType)? = .none,
         onEditingChanged: ((String) -> MessageType)? = .none,
         onEditingEnd: ((String) -> MessageType)? = .none
@@ -95,7 +95,7 @@ public func textFieldEvents<MessageType>(
 
 public struct TextFieldStyleSheet: AutoPropertyDiffable {
     
-    static let `default` = StyleSheet<TextFieldStyleSheet>(component: TextFieldStyleSheet())
+    public static let `default` = StyleSheet<TextFieldStyleSheet>(component: TextFieldStyleSheet())
     
     public var textColor: Color
     public var textFont: Font
@@ -115,7 +115,7 @@ public struct TextFieldStyleSheet: AutoPropertyDiffable {
 }
 
 public func textFieldStyleSheet(
-    configure: (inout BaseStyleSheet, inout TextFieldStyleSheet) -> Void = { _ in }
+    configure: (inout BaseStyleSheet, inout TextFieldStyleSheet) -> Void = { _, _ in }
     ) -> StyleSheet<TextFieldStyleSheet> {
     var base = BaseStyleSheet()
     var component = TextFieldStyleSheet()

@@ -21,7 +21,7 @@ final class CustomView: UIView {
         redView.addGestureRecognizer(gestureRecognizer)
     }
     
-    func tapped() {
+    @objc func tapped() {
         onTap?()
     }
     

@@ -56,9 +56,9 @@ fileprivate extension UISegmentedControl {
     }
     
     fileprivate func apply(changeSet: [SegmentedStyleSheet.Property]) {
-        let attributes = titleTextAttributes(for: .normal) as? [String : Any]
-        let font = attributes?[NSFontAttributeName] as? UIFont
-        let color = attributes?[NSForegroundColorAttributeName] as? UIColor
+        let attributes = titleTextAttributes(for: .normal) as? [NSAttributedStringKey : Any]
+        let font = attributes?[.font] as? UIFont
+        let color = attributes?[.foregroundColor] as? UIColor
         
         var fontName: String? = font?.fontName
         var fontSize: CGFloat? = font?.pointSize
@@ -85,11 +85,11 @@ fileprivate extension UISegmentedControl {
     }
     
     fileprivate func setFont(name: String?, size: CGFloat?, color: UIColor?) {
-        var dictionary = [String: Any]()
+        var dictionary = [NSAttributedStringKey: Any]()
         let font = UIFont(name: name ?? UIFont.systemFont(ofSize: 15).fontName,
                           size: size ?? CGFloat(defaultSegmentedFontSize))
-        color |> { dictionary[NSForegroundColorAttributeName] = $0 }
-        font |> { dictionary[NSFontAttributeName] = $0 }
+        color |> { dictionary[.foregroundColor] = $0 }
+        font |> { dictionary[.font] = $0 }
         setTitleTextAttributes(dictionary, for: .normal)
     }
     

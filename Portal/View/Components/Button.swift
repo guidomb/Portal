@@ -16,7 +16,7 @@ public struct ButtonProperties<MessageType>: AutoPropertyDiffable {
     // sourcery: skipDiff
     public var onTap: MessageType?
 
-    fileprivate init(
+    public init(
         text: String? = .none,
         isActive: Bool = false,
         icon: Image? = .none,

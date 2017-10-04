@@ -58,7 +58,7 @@ extension String {
     
     func maximumFontSize(forWidth width: CGFloat, font: UIFont) -> CGFloat {
         let text = self as NSString
-        let minimumBoundingRect = text.size(attributes: [NSFontAttributeName: font])
+        let minimumBoundingRect = text.size(withAttributes: [.font: font])
         return width * font.pointSize / minimumBoundingRect.width
     }
     

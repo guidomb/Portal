@@ -131,7 +131,7 @@ class SegmentedRendererSpec: QuickSpec {
                     _ = segmented.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     let attributes = segmented.titleTextAttributes(for: .normal)!
-                    let color = attributes[NSForegroundColorAttributeName] as! UIColor
+                    let color = attributes[NSAttributedStringKey.foregroundColor] as! UIColor
                     expect(color).to(equal(UIColor.blue))
                 }
                 
@@ -140,7 +140,7 @@ class SegmentedRendererSpec: QuickSpec {
                     _ = segmented.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     
                     let attributes = segmented.titleTextAttributes(for: .normal)!
-                    let font = attributes[NSFontAttributeName] as! UIFont
+                    let font = attributes[NSAttributedStringKey.font] as! UIFont
                     expect(font).to(equal(UIFont(name: "Helvetica", size: 15)))
                 }
                 
