@@ -27,6 +27,7 @@ class TextViewRendererSpec: QuickSpec {
                 let textViewProperties: TextViewProperties = properties {
                     $0.text = .regular("This is a textView!")
                     $0.isScrollEnabled = false
+                    $0.isEditable = true
                 }
                 let textViewStyle = textViewStyleSheet { base, textView in
                     textView.textColor = .red
@@ -43,6 +44,18 @@ class TextViewRendererSpec: QuickSpec {
             
             context("when the change set contains textType changes") {
             
+                it("applies 'isScrollEnabled' property changes") {
+                    let textView = UITextView()
+                    let _: Render<String> = textView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                    expect(textView.isScrollEnabled).to(beFalse())
+                }
+                
+                it("applies 'isEditable' property changes") {
+                    let textView = UITextView()
+                    let _: Render<String> = textView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
+                    expect(textView.isEditable).to(beTrue())
+                }
+                
                 it("applies 'text' property changes") {
                     let textView = UITextView()
                     let _: Render<String> = textView.apply(changeSet: changeSet, layoutEngine: layoutEngine)

@@ -62,6 +62,10 @@ fileprivate extension UITextView {
                 
             case .isScrollEnabled(let isScrollEnabled):
                 self.isScrollEnabled = isScrollEnabled
+                
+            case .isEditable(let isEditable):
+                self.isEditable = isEditable
+                
             }
         }
     }

@@ -26,10 +26,12 @@ public struct TextViewProperties: AutoPropertyDiffable {
     
     public var text: Text
     public var isScrollEnabled: Bool
+    public var isEditable: Bool
     
-    fileprivate init(text: Text = .regular(""), isScrollEnabled: Bool = false) {
+    fileprivate init(text: Text = .regular(""), isScrollEnabled: Bool = false, isEditable: Bool = false) {
         self.text = text
         self.isScrollEnabled = isScrollEnabled
+        self.isEditable = isEditable
     }
     
 }
