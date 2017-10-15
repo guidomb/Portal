@@ -3,6 +3,7 @@ Portal
 
 [![Build Status](https://www.bitrise.io/app/35802d5e71a76792/status.svg?token=Lk2FPQhMq_PaxQDKN47dRA&branch=master)](https://www.bitrise.io/app/35802d5e71a76792)
 [![Swift](https://img.shields.io/badge/swift-3-orange.svg?style=flat)](#)
+[![GitHub release](https://img.shields.io/github/release/guidomb/Portal.svg)]()
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![Platform](https://img.shields.io/badge/platform-iOS-lightgrey.svg?style=flat)](#)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
