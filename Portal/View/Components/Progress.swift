@@ -8,7 +8,7 @@
 
 public struct ProgressCounter {
     
-    internal static let initial = ProgressCounter()
+    public static let initial = ProgressCounter()
     
     // sourcery: ignoreInChangeSet
     public var partial: UInt

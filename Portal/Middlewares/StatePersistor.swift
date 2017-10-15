@@ -41,7 +41,9 @@ public final class StatePersistor<
     
     private let dispatchQueue = DispatchQueue(label: "com.Portal.StatePersistor")
     
-    public init(serializer: StatePersistorSerializerType, shouldPersist: @escaping TransitionFilter = { _ in true }) {
+    public init(
+        serializer: StatePersistorSerializerType,
+        shouldPersist: @escaping TransitionFilter = { _, _, _  in true }) {
         self.serializer = serializer
         self.shouldPersist = shouldPersist
     }

@@ -13,7 +13,7 @@ public struct LabelProperties: AutoPropertyDiffable {
     public let text: String
     public let textAfterLayout: String?
     
-    fileprivate init(text: String, textAfterLayout: String?) {
+    public init(text: String, textAfterLayout: String?) {
         self.text = text
         self.textAfterLayout = textAfterLayout
     }
@@ -44,7 +44,7 @@ public func properties(
 
 public struct LabelStyleSheet: AutoPropertyDiffable {
     
-    static let `default` = StyleSheet<LabelStyleSheet>(component: LabelStyleSheet())
+    public static let `default` = StyleSheet<LabelStyleSheet>(component: LabelStyleSheet())
     
     public var textColor: Color
     public var textFont: Font
@@ -74,7 +74,7 @@ public struct LabelStyleSheet: AutoPropertyDiffable {
 }
 
 public func labelStyleSheet(
-    configure: (inout BaseStyleSheet, inout LabelStyleSheet) -> Void = { _ in }) -> StyleSheet<LabelStyleSheet> {
+    configure: (inout BaseStyleSheet, inout LabelStyleSheet) -> Void = { _, _ in }) -> StyleSheet<LabelStyleSheet> {
     var base = BaseStyleSheet()
     var component = LabelStyleSheet()
     configure(&base, &component)

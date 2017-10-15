@@ -16,9 +16,13 @@ public protocol LayoutEngine {
 
 }
 
-internal struct YogaLayoutEngine: LayoutEngine {
+public struct YogaLayoutEngine: LayoutEngine {
+    
+    public init() {
+        
+    }
 
-    func executeLayout(for view: UIView) {
+    public func executeLayout(for view: UIView) {
         view.yoga.isEnabled = true
         view.yoga.width = view.bounds.size.width
         view.yoga.height = view.bounds.size.height
@@ -26,7 +30,7 @@ internal struct YogaLayoutEngine: LayoutEngine {
     }
 
     // swiftlint:disable cyclomatic_complexity
-    func apply(changeSet: [Layout.Property], to view: UIView) {  
+    public func apply(changeSet: [Layout.Property], to view: UIView) {  
         view.yoga.isEnabled = true
         
         for property in changeSet {

@@ -26,7 +26,7 @@ public struct TableProperties<MessageType>: AutoPropertyDiffable {
     // sourcery: skipDiff
     public var refresh: RefreshProperties<MessageType>?
     
-    fileprivate init(
+    public init(
         items: [TableItemProperties<MessageType>] = [],
         showsVerticalScrollIndicator: Bool = true,
         showsHorizontalScrollIndicator: Bool = true,
@@ -58,7 +58,7 @@ public struct TableItemProperties<MessageType> {
     public let selectionStyle: TableItemSelectionStyle
     public let renderer: Renderer
     
-    fileprivate init(
+    public init(
         height: UInt,
         onTap: MessageType?,
         selectionStyle: TableItemSelectionStyle,
@@ -155,7 +155,7 @@ public struct TableStyleSheet: AutoPropertyDiffable {
 }
 
 public func tableStyleSheet(
-    configure: (inout BaseStyleSheet, inout TableStyleSheet) -> Void = { _ in }) -> StyleSheet<TableStyleSheet> {
+    configure: (inout BaseStyleSheet, inout TableStyleSheet) -> Void = { _, _ in }) -> StyleSheet<TableStyleSheet> {
     var base = BaseStyleSheet()
     var component = TableStyleSheet()
     configure(&base, &component)

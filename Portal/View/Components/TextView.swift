@@ -28,7 +28,7 @@ public struct TextViewProperties: AutoPropertyDiffable {
     public var isScrollEnabled: Bool
     public var isEditable: Bool
     
-    fileprivate init(text: Text = .regular(""), isScrollEnabled: Bool = false, isEditable: Bool = false) {
+    public init(text: Text = .regular(""), isScrollEnabled: Bool = false, isEditable: Bool = false) {
         self.text = text
         self.isScrollEnabled = isScrollEnabled
         self.isEditable = isEditable
@@ -47,7 +47,7 @@ public func properties(
 
 public struct TextViewStyleSheet: AutoPropertyDiffable {
     
-    static let `default` = StyleSheet<TextViewStyleSheet>(component: TextViewStyleSheet())
+    public static let `default` = StyleSheet<TextViewStyleSheet>(component: TextViewStyleSheet())
     
     public var textColor: Color
     public var textFont: Font
@@ -68,7 +68,7 @@ public struct TextViewStyleSheet: AutoPropertyDiffable {
 }
 
 public func textViewStyleSheet(
-    configure: (inout BaseStyleSheet, inout TextViewStyleSheet) -> Void = { _ in }
+    configure: (inout BaseStyleSheet, inout TextViewStyleSheet) -> Void = { _, _ in }
     ) -> StyleSheet<TextViewStyleSheet> {
     var base = BaseStyleSheet()
     var component = TextViewStyleSheet()

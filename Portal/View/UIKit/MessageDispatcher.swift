@@ -23,8 +23,7 @@ internal final class MessageDispatcher<MessageType>: NSObject {
         self.sender2Message = sender2Message
     }
     
-    @objc
-    internal func dispatch(sender: Any) {
+    @objc internal func dispatch(sender: Any) {
         guard let message = sender2Message(sender) else { return }
         mailbox.dispatch(message: message)
     }

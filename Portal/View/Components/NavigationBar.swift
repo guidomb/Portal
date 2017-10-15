@@ -133,7 +133,7 @@ public struct NavigationBarStyleSheet {
 }
 
 public func navigationBarStyleSheet(
-    configure: (inout BaseStyleSheet, inout NavigationBarStyleSheet) -> Void = { _ in }
+    configure: (inout BaseStyleSheet, inout NavigationBarStyleSheet) -> Void = { _, _ in }
     ) -> StyleSheet<NavigationBarStyleSheet> {
     var base = BaseStyleSheet()
     var component = NavigationBarStyleSheet()
