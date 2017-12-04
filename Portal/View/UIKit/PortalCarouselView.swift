@@ -37,11 +37,11 @@ public final class PortalCarouselView<
         scrollToItem(self.selectedIndex, animated: false)
     }
     
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         lastOffset = scrollView.contentOffset.x
     }
     
-    public func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
+    public override func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
         // At this moment we only support the message feature with the snap mode on.
