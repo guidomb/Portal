@@ -71,6 +71,17 @@ public class PortalCollectionView<
         item.onTap |> { mailbox.dispatch(message: $0) }
     }
     
+    //These empty methods are required to be overriten to allow child classes to implement them
+    //It seems to be a bug in swift's dispatching system where half the delegate's methods are in the
+    //parent class and the second half on the child class, the child class methods are never called
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                   withVelocity velocity: CGPoint,
+                                   targetContentOffset: UnsafeMutablePointer<CGPoint>){
+    }
+    
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    }
+    
 }
 
 fileprivate extension PortalCollectionView {
