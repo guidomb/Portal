@@ -52,17 +52,17 @@ public struct TextViewStyleSheet: AutoPropertyDiffable {
     public var textColor: Color
     public var textFont: Font
     public var textSize: UInt
-    public var textAligment: TextAligment
+    public var textAlignment: TextAlignment
     
     public init(
         textColor: Color = .black,
         textFont: Font = defaultFont,
         textSize: UInt = defaultButtonFontSize,
-        textAligment: TextAligment = .natural ) {
+        textAlignment: TextAlignment = .natural ) {
         self.textColor = textColor
         self.textFont = textFont
         self.textSize = textSize
-        self.textAligment = textAligment
+        self.textAlignment = textAlignment
     }
     
 }

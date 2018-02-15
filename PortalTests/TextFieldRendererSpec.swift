@@ -38,7 +38,7 @@ class TextFieldRendererSpec: QuickSpec {
                     textField.textColor = .red
                     textField.textFont = Font(name: "Helvetica")
                     textField.textSize = 12
-                    textField.textAligment = .center
+                    textField.textAlignment = .center
                 }
                 
                 changeSet = TextFieldChangeSet.fullChangeSet(
@@ -210,7 +210,7 @@ class TextFieldRendererSpec: QuickSpec {
                         expect(textField.textColor).to(equal(.red))
                     }
                     
-                    it("applies 'aligment' property changes") {
+                    it("applies 'alignment' property changes") {
                         let textField = UITextField()
                         _ = textField.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(textField.textAlignment).to(equal(NSTextAlignment.center))

@@ -35,9 +35,9 @@ extension Color: UIColorConvertible {
     
 }
 
-extension TextAligment {
+extension TextAlignment {
     
-    var asNSTextAligment: NSTextAlignment {
+    var asNSTextAlignment: NSTextAlignment {
         switch self {
         case .left:
             return .left

@@ -49,7 +49,7 @@ public struct LabelStyleSheet: AutoPropertyDiffable {
     public var textColor: Color
     public var textFont: Font
     public var textSize: UInt
-    public var textAligment: TextAligment
+    public var textAlignment: TextAlignment
     public var adjustToFitWidth: Bool
     public var numberOfLines: UInt
     public var minimumScaleFactor: Float
@@ -58,14 +58,14 @@ public struct LabelStyleSheet: AutoPropertyDiffable {
         textColor: Color = .black,
         textFont: Font = defaultFont,
         textSize: UInt = defaultButtonFontSize,
-        textAligment: TextAligment = .natural,
+        textAlignment: TextAlignment = .natural,
         adjustToFitWidth: Bool = false,
         numberOfLines: UInt = 0,
         minimumScaleFactor: Float = 0) {
         self.textColor = textColor
         self.textFont = textFont
         self.textSize = textSize
-        self.textAligment = textAligment
+        self.textAlignment = textAlignment
         self.adjustToFitWidth = adjustToFitWidth
         self.numberOfLines = numberOfLines
         self.minimumScaleFactor = minimumScaleFactor

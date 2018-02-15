@@ -32,8 +32,8 @@ fileprivate extension UITextView {
             case .textColor(let color):
                 self.textColor = color.asUIColor
                 
-            case .textAligment(let aligment):
-                self.textAlignment = aligment.asNSTextAligment
+            case .textAlignment(let alignment):
+                self.textAlignment = alignment.asNSTextAlignment
                 
             case .textSize(let textSize):
                 let fontName = self.font?.fontName

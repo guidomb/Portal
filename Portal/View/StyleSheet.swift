@@ -124,7 +124,7 @@ public struct BaseStyleSheet: AutoPropertyDiffable {
     
 }
 
-public enum TextAligment {
+public enum TextAlignment {
     
     case left
     case center

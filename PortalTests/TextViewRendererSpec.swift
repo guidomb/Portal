@@ -33,7 +33,7 @@ class TextViewRendererSpec: QuickSpec {
                     textView.textColor = .red
                     textView.textFont = Font(name: "Helvetica")
                     textView.textSize = 12
-                    textView.textAligment = .center
+                    textView.textAlignment = .center
                 }
                 
                 changeSet = TextViewChangeSet.fullChangeSet(
@@ -67,7 +67,7 @@ class TextViewRendererSpec: QuickSpec {
                         textView.textColor = .red
                         textView.textFont = Font(name: "Helvetica")
                         textView.textSize = 12
-                        textView.textAligment = .center
+                        textView.textAlignment = .center
                     }
                     
                     let textViewProperties: TextViewProperties = properties {
@@ -105,7 +105,7 @@ class TextViewRendererSpec: QuickSpec {
                     expect(textView.font).to(equal(UIFont(name: "Helvetica", size: 12)))
                 }
                 
-                it("applies 'textAligment' property changes") {
+                it("applies 'textAlignment' property changes") {
                     let textView = UITextView()
                     let _: Render<String> = textView.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                     expect(textView.textAlignment).to(equal(NSTextAlignment.center))

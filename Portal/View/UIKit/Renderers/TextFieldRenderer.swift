@@ -71,8 +71,8 @@ fileprivate extension UITextField {
         for property in changeSet {
             switch property {
 
-            case .textAligment(let aligment):
-                self.textAlignment = aligment.asNSTextAligment
+            case .textAlignment(let alignment):
+                self.textAlignment = alignment.asNSTextAlignment
 
             case .textColor(let color):
                 self.textColor = color.asUIColor

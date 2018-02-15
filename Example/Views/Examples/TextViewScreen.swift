@@ -29,7 +29,7 @@ enum TextViewScreen {
                         style: textViewStyleSheet { base, textView in
                             base.backgroundColor = .white
                             textView.textColor = .red
-                            textView.textAligment = .center
+                            textView.textAlignment = .center
                             textView.textFont = Font(name: "Helvetica")
                             textView.textSize = 18
                     })

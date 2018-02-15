@@ -445,7 +445,7 @@ public extension LabelStyleSheet {
         case textColor(Color)
         case textFont(Font)
         case textSize(UInt)
-        case textAligment(TextAligment)
+        case textAlignment(TextAlignment)
         case adjustToFitWidth(Bool)
         case numberOfLines(UInt)
         case minimumScaleFactor(Float)
@@ -457,7 +457,7 @@ public extension LabelStyleSheet {
             .textColor(self.textColor),
             .textFont(self.textFont),
             .textSize(self.textSize),
-            .textAligment(self.textAligment),
+            .textAlignment(self.textAlignment),
             .adjustToFitWidth(self.adjustToFitWidth),
             .numberOfLines(self.numberOfLines),
             .minimumScaleFactor(self.minimumScaleFactor),
@@ -475,8 +475,8 @@ public extension LabelStyleSheet {
         if self.textSize != labelStyleSheet.textSize {
             changeSet.append(.textSize(labelStyleSheet.textSize))
         }
-        if self.textAligment != labelStyleSheet.textAligment {
-            changeSet.append(.textAligment(labelStyleSheet.textAligment))
+        if self.textAlignment != labelStyleSheet.textAlignment {
+            changeSet.append(.textAlignment(labelStyleSheet.textAlignment))
         }
         if self.adjustToFitWidth != labelStyleSheet.adjustToFitWidth {
             changeSet.append(.adjustToFitWidth(labelStyleSheet.adjustToFitWidth))
@@ -891,7 +891,7 @@ public extension TextFieldStyleSheet {
         case textColor(Color)
         case textFont(Font)
         case textSize(UInt)
-        case textAligment(TextAligment)
+        case textAlignment(TextAlignment)
 
     }
 
@@ -900,7 +900,7 @@ public extension TextFieldStyleSheet {
             .textColor(self.textColor),
             .textFont(self.textFont),
             .textSize(self.textSize),
-            .textAligment(self.textAligment),
+            .textAlignment(self.textAlignment),
         ]
     }
 
@@ -915,8 +915,8 @@ public extension TextFieldStyleSheet {
         if self.textSize != textFieldStyleSheet.textSize {
             changeSet.append(.textSize(textFieldStyleSheet.textSize))
         }
-        if self.textAligment != textFieldStyleSheet.textAligment {
-            changeSet.append(.textAligment(textFieldStyleSheet.textAligment))
+        if self.textAlignment != textFieldStyleSheet.textAlignment {
+            changeSet.append(.textAlignment(textFieldStyleSheet.textAlignment))
         }
         return changeSet
     }
@@ -966,7 +966,7 @@ public extension TextViewStyleSheet {
         case textColor(Color)
         case textFont(Font)
         case textSize(UInt)
-        case textAligment(TextAligment)
+        case textAlignment(TextAlignment)
 
     }
 
@@ -975,7 +975,7 @@ public extension TextViewStyleSheet {
             .textColor(self.textColor),
             .textFont(self.textFont),
             .textSize(self.textSize),
-            .textAligment(self.textAligment),
+            .textAlignment(self.textAlignment),
         ]
     }
 
@@ -990,8 +990,8 @@ public extension TextViewStyleSheet {
         if self.textSize != textViewStyleSheet.textSize {
             changeSet.append(.textSize(textViewStyleSheet.textSize))
         }
-        if self.textAligment != textViewStyleSheet.textAligment {
-            changeSet.append(.textAligment(textViewStyleSheet.textAligment))
+        if self.textAlignment != textViewStyleSheet.textAlignment {
+            changeSet.append(.textAlignment(textViewStyleSheet.textAlignment))
         }
         return changeSet
     }

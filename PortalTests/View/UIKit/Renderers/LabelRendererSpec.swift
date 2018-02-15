@@ -33,7 +33,7 @@ class LabelRendererSpec: QuickSpec {
                     label.textColor = .red
                     label.textFont = Font(name: "Helvetica")
                     label.textSize = 12
-                    label.textAligment = .center
+                    label.textAlignment = .center
                     label.adjustToFitWidth = true
                     label.numberOfLines = 0
                     label.minimumScaleFactor = 1.0
@@ -69,7 +69,7 @@ class LabelRendererSpec: QuickSpec {
                         expect(label.textColor).to(equal(.red))
                     }
 
-                    it("applies 'aligment' property changes") {
+                    it("applies 'alignment' property changes") {
                         let label = UILabel()
                         let _: Render<String> = label.apply(changeSet: changeSet, layoutEngine: layoutEngine)
                         expect(label.textAlignment).to(equal(NSTextAlignment.center))
