@@ -18,5 +18,7 @@ bundle_install
 # Install dependencies using Carthage
 carthage_bootstrap
 
-# Generate code based on Sourcery templates.
-`script/sourcery`
+puts ""
+puts " → You are ready to rock!!!"
+puts "\tExecute 'open Portal.xcodeproj' and start hacking!"
+puts ""
