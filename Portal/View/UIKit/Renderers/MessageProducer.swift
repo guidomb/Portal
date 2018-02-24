@@ -6,8 +6,8 @@
 //  Copyright © 2017 Guido Marucci Blas. All rights reserved.
 //
 
-fileprivate var messageDispatcherAssociationKey = 0
-fileprivate var mailboxAssociationKey = 1
+private var messageDispatcherAssociationKey = 0
+private var mailboxAssociationKey = 1
 
 protocol MessageForwarder {
     
@@ -15,7 +15,7 @@ protocol MessageForwarder {
     
 }
 
-protocol MessageProducer where Self : UIControl {
+protocol MessageProducer where Self: UIControl {
     
     func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
     

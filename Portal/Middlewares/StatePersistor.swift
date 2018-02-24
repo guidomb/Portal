@@ -192,13 +192,13 @@ extension StatePersistor {
     
 }
 
-fileprivate enum StatePersistorError: Error {
+private enum StatePersistorError: Error {
     
     case unableToOpenFile(URL)
     case writeFailure(data: Data, writtenBytes: Int)
     
 }
 
-fileprivate func / (lhs: URL, rhs: String) -> URL {
+private func / (lhs: URL, rhs: String) -> URL {
     return lhs.appendingPathComponent(rhs)
 }

@@ -116,13 +116,13 @@ extension UIView {
     
 }
 
-fileprivate let imageProcessingQueue = DispatchQueue(
+private let imageProcessingQueue = DispatchQueue(
     label: "com.guidomb.Portal.ImageProcessingQueue",
     qos: .utility,
     attributes: .concurrent
 )
 
-fileprivate var registeredImageBundles = [Bundle.main]
+private var registeredImageBundles = [Bundle.main]
 
 fileprivate extension UIImageView {
     

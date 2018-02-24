@@ -402,7 +402,7 @@ fileprivate extension ApplicationRunner {
     
 }
 
-fileprivate struct NavigationState<RouteType: Route, NavigatorType: Equatable> {
+private struct NavigationState<RouteType: Route, NavigatorType: Equatable> {
     
     private var rootNavigator: NavigatorType
     private var rootRoute: RouteType

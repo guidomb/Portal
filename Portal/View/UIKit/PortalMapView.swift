@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-fileprivate let mapViewAnnotationIdentifier = "PortalMapViewAnnotation"
+private let mapViewAnnotationIdentifier = "PortalMapViewAnnotation"
 
 internal final class PortalMapView: MKMapView {
     

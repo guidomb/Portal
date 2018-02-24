@@ -219,7 +219,7 @@ fileprivate extension PortalNavigationController {
     
 }
 
-fileprivate var messageDispatcherAssociationKey = 0
+private var messageDispatcherAssociationKey = 0
 
 fileprivate extension UIBarButtonItem {
     

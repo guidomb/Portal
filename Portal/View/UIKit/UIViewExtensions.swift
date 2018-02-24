@@ -100,12 +100,12 @@ internal extension UIView {
     
 }
 
-fileprivate var managedByPortalAssociationKey = 0
-fileprivate var messageDispatcherAssociationKey = 1
-fileprivate var gestureRecognizersAssociationKey = 2
-fileprivate let gestureRecognizerName = "com.guidomb.Portal.GestureRecognizer"
+private var managedByPortalAssociationKey = 0
+private var messageDispatcherAssociationKey = 1
+private var gestureRecognizersAssociationKey = 2
+private let gestureRecognizerName = "com.guidomb.Portal.GestureRecognizer"
 
-fileprivate enum AnimationKey: String {
+private enum AnimationKey: String {
     
     case rotation360 = "me.guidomb.PortalView.AnimationKey.360DegreeRotation"
     

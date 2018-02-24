@@ -61,7 +61,7 @@ extension UIView {
     
 }
 
-fileprivate let defaultLayer = CALayer()
+private let defaultLayer = CALayer()
 
 fileprivate extension CALayer {
     

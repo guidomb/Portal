@@ -170,7 +170,7 @@ fileprivate extension UIKitApplicationRenderer {
 
 }
 
-fileprivate enum ComponentRenderingAction<MessageType> {
+private enum ComponentRenderingAction<MessageType> {
     
     case skipRendering
     case executeRendering(() -> Void)
@@ -178,7 +178,7 @@ fileprivate enum ComponentRenderingAction<MessageType> {
     
 }
 
-fileprivate enum ComponentController<
+private enum ComponentController<
     MessageType,
     RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer>
@@ -208,7 +208,7 @@ fileprivate enum ComponentController<
     
 }
 
-fileprivate final class MainThreadUIKitApplicationRenderer<
+private final class MainThreadUIKitApplicationRenderer<
     MessageType,
     RouteType,
     NavigatorType: Equatable,
@@ -387,7 +387,7 @@ extension MainThreadUIKitApplicationRenderer {
     
 }
 
-fileprivate struct WindowManager<
+private struct WindowManager<
     MessageType,
     RouteType,
     CustomComponentRendererType: UIKitCustomComponentRenderer>

@@ -75,8 +75,8 @@ public class PortalCollectionView<
     //It seems to be a bug in swift's dispatching system where half the delegate's methods are in the
     //parent class and the second half on the child class, the child class methods are never called
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
-                                   withVelocity velocity: CGPoint,
-                                   targetContentOffset: UnsafeMutablePointer<CGPoint>){
+                                          withVelocity velocity: CGPoint,
+                                          targetContentOffset: UnsafeMutablePointer<CGPoint>) {
     }
     
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -105,7 +105,7 @@ fileprivate extension PortalCollectionView {
     
 }
 
-fileprivate let isMailboxForwardedTagValue = 10101
+private let isMailboxForwardedTagValue = 10101
 
 fileprivate extension UICollectionViewCell {
     
