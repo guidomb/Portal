@@ -1,6 +1,10 @@
 require_relative 'read_version'
 require_relative 'carthage'
 
+def running_on_ci?
+  return ENV['RUNNING_ON_CI'] != nil && ENV['RUNNING_ON_CI'] != 'false'
+end
+
 def carthage_bootstrap
   puts ""
   puts " → Installing dependencies using Carthage ..."

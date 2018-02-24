@@ -10,7 +10,7 @@ install_sourcery
 
 # Install CI environment dependencies
 # proselint is a dependency needed by danger-prose plugin.
-pip_install "proselint"
+pip_install "proselint" if running_on_ci?
 
 # Install Ruby gems
 bundle_install
