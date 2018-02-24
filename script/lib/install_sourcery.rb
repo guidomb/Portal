@@ -13,8 +13,8 @@ def install_sourcery(sourcery_version = nil)
   FileUtils.mkdir(sourcery_dir)
   `unzip -d #{sourcery_dir} #{filename}`
   FileUtils.rm_rf(filename)
-  sourcert_installed_version = `bin/sourcery/bin/sourcery --version`.strip
-  if sourcery_version == sourcert_installed_version
+  sourcery_installed_version = `bin/sourcery/bin/sourcery --version`.strip
+  if sourcery_version == sourcery_installed_version
     puts " ✔ Sourcery version '#{sourcery_version}' successfully installed"
   else
     puts "Error: Sourcery could not be installed"
