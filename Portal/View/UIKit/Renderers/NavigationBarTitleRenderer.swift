@@ -33,6 +33,7 @@ internal struct NavigationBarTitleRenderer<
             
         case .image(let image):
             let titleView = UIImageView()
+            titleView.translatesAutoresizingMaskIntoConstraints = false
             titleView.load(image: image)
             navigationItem.titleView = titleView
             return .none
