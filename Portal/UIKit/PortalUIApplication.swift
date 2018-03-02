@@ -18,7 +18,7 @@ public enum UIApplicationMessage {
     case didBecomeActive(application: UIApplication)
     case willTerminate(application: UIApplication)
     case remoteNotification(RemoteNotification, application: UIApplication)
-    case handle(transaction: SKPaymentTransaction, queue: SKPaymentQueue)
+    case handlePaymentTransaction(SKPaymentTransaction, queue: SKPaymentQueue)
     
 }
 
