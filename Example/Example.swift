@@ -137,7 +137,6 @@ final class ExampleApplication: Portal.Application {
     }
 
     func update(state: State, message: Message) -> (State, Command?)? {
-        print("---> Message: \(message)")
         switch (state, message) {
 
         case (.uninitialized, .applicationStarted):
