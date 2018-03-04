@@ -25,10 +25,14 @@ protocol MessageProducer where Self: UIControl {
         event: UIControlEvents,
         sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType>
     
+    func stopDispatchingMessages<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
+    
+    func stopDispatchingMessagesForAllEvents<MessageType>() -> [(UIControlEvents, MessageDispatcher<MessageType>)]
+    
     func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents)
     
     func unregisterDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
-    
+        
 }
 
 extension UIView: MessageForwarder {
@@ -80,6 +84,23 @@ extension MessageProducer {
         return mailbox
     }
     
+    func stopDispatchingMessages<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
+        guard let dispatcher = unregisterDispatcher(for: event) as MessageDispatcher<MessageType>? else {
+            fatalError("Dispatcher could not be unregistered, MessageDispatcher's MessageType is incorrect")
+        }
+        self.removeTarget(dispatcher, action: dispatcher.selector, for: event)
+        return dispatcher
+    }
+    
+    func stopDispatchingMessagesForAllEvents<MessageType>() -> [(UIControlEvents, MessageDispatcher<MessageType>)] {
+        let dispatcherByEvent: [UInt : MessageDispatcher<MessageType>] = unregisterAllDispatchers()
+        for (eventRawValue, dispatcher) in dispatcherByEvent {
+            let event = UIControlEvents(rawValue: eventRawValue)
+            self.removeTarget(dispatcher, action: dispatcher.selector, for: event)
+        }
+        return dispatcherByEvent.keys.map { (UIControlEvents(rawValue: $0), dispatcherByEvent[$0]!) }
+    }
+    
     func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
         let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] ?? [:]
@@ -101,6 +122,18 @@ extension MessageProducer {
         objc_setAssociatedObject(self, &messageDispatcherAssociationKey,
                                  dispatchers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return dispatcher
+    }
+    
+}
+
+fileprivate extension MessageProducer {
+    
+    fileprivate func unregisterAllDispatchers<MessageType>() -> [UInt : MessageDispatcher<MessageType>] {
+        guard let dispatcherByEvent = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
+            as? [UInt : MessageDispatcher<MessageType>] else { return [:] }
+        objc_setAssociatedObject(self, &messageDispatcherAssociationKey,
+                                 nil, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        return dispatcherByEvent
     }
     
 }

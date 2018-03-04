@@ -75,8 +75,7 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
         
         cell.selectionStyle = item.onTap.map { _ in item.selectionStyle.asUITableViewCellSelectionStyle } ?? .none
 
-        let componentMailbox = renderer.render(component: cellComponent, into: cell.contentView)
-        componentMailbox.forward(to: cell.getMailbox())
+        _ = renderer.render(component: cellComponent, into: cell.contentView)
         
         // After rendering the cell, the parent view returned by rendering the
         // item component has the actual height calculated after applying layout.
@@ -114,7 +113,7 @@ fileprivate extension PortalTableView {
             return cell
         } else {
             let cell = UITableViewCell(style: .default, reuseIdentifier: identifier)
-            cell.getMailbox().forward(to: mailbox)
+            cell.contentView.getMailbox().forward(to: mailbox)
             return cell
         }
     }

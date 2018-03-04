@@ -62,7 +62,7 @@ fileprivate extension UITextField {
                     return textField.text.flatMap(messageMapper)
                 }
             } else {
-                _ = self.unregisterDispatcher(for: event) as MessageDispatcher<MessageType>?
+                let _: MessageDispatcher<MessageType>? = self.stopDispatchingMessages(for: event)
             }
         }
     }
