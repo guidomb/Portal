@@ -58,3 +58,12 @@ extension Mailbox {
     }
     
 }
+
+extension Mailbox: CustomDebugStringConvertible {
+    
+    public var debugDescription: String {
+        let address = Unmanaged.passUnretained(self).toOpaque()
+        return "<\(type(of: self)): \(address)> - Subscribers \(subscribers.count)"
+    }
+    
+}
