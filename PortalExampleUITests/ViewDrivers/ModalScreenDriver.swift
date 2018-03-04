@@ -52,7 +52,7 @@ final class ModalScreenDriver {
 }
 
 private func matchGroups(in string: String, with regexpString: String) -> [String] {
-    let stringRange = NSMakeRange(0, string.characters.count)
+    let stringRange = NSMakeRange(0, string.count)
     guard   let regexp = try? NSRegularExpression(pattern: regexpString, options: []),
             let result = regexp.firstMatch(in: string, options: [], range: stringRange) else { return [] }
     
