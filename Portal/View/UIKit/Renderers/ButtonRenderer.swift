@@ -49,7 +49,7 @@ fileprivate extension UIButton {
                 if let message = onTap {
                     _ = self.on(event: .touchUpInside, dispatch: message)
                 } else {
-                    _ = self.unregisterDispatcher(for: .touchUpInside) as MessageDispatcher<MessageType>?
+                    let _: MessageDispatcher<MessageType>? = self.stopDispatchingMessages(for: .touchUpInside)
                 }
             }
         }
