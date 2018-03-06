@@ -36,6 +36,7 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
         
         self.dataSource = self
         self.delegate = self
+        self.rowHeight = UITableViewAutomaticDimension
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -45,6 +46,7 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
     internal func setItems(items: [TableItemProperties<ActionType>]) {
         self.items = items
         self.cellHeights = Array(repeating: .none, count: items.count)
+        self.estimatedRowHeight = CGFloat(mostProbableItemHeight())
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -157,6 +159,18 @@ fileprivate extension PortalTableView {
     /// - Returns: the item's cached actual height or its max height.
     fileprivate func itemBaseHeight(at indexPath: IndexPath) -> CGFloat {
         return itemActualHeight(at: indexPath) ?? itemMaxHeight(at: indexPath)
+    }
+    
+    fileprivate func mostProbableItemHeight() -> UInt {
+        let heightsWithOccurrencies = items.reduce(into: [:]) { counters, item in
+            counters[item.height, default: 0] += 1
+        }
+        
+        if let (maxHeight, _) = heightsWithOccurrencies.max(by: { $0.value < $1.value }) {
+            return maxHeight
+        } else {
+            return 0
+        }
     }
     
 }
