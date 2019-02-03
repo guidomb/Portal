@@ -46,7 +46,7 @@ fileprivate extension UISegmentedControl {
         }
         
         let messages = segments.map { $0.onTap }
-        let _: Mailbox<MessageType> = self.on(event: UIControlEvents.valueChanged) { sender in
+        let _: Mailbox<MessageType> = self.on(event: UIControl.Event.valueChanged) { sender in
             guard let segmentedControl = sender as? UISegmentedControl else { return .none }
             let index = segmentedControl.selectedSegmentIndex
             return index < messages.count ? messages[index] : .none
@@ -56,7 +56,7 @@ fileprivate extension UISegmentedControl {
     }
     
     fileprivate func apply(changeSet: [SegmentedStyleSheet.Property]) {
-        let attributes = titleTextAttributes(for: .normal) as? [NSAttributedStringKey : Any]
+        let attributes = titleTextAttributes(for: .normal) as? [NSAttributedString.Key : Any]
         let font = attributes?[.font] as? UIFont
         let color = attributes?[.foregroundColor] as? UIColor
         
@@ -85,7 +85,7 @@ fileprivate extension UISegmentedControl {
     }
     
     fileprivate func setFont(name: String?, size: CGFloat?, color: UIColor?) {
-        var dictionary = [NSAttributedStringKey: Any]()
+        var dictionary = [NSAttributedString.Key: Any]()
         let font = UIFont(name: name ?? UIFont.systemFont(ofSize: 15).fontName,
                           size: size ?? CGFloat(defaultSegmentedFontSize))
         color |> { dictionary[.foregroundColor] = $0 }

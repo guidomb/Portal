@@ -17,21 +17,21 @@ protocol MessageForwarder {
 
 protocol MessageProducer where Self: UIControl {
     
-    func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
+    func getDispatcher<MessageType>(for event: UIControl.Event) -> MessageDispatcher<MessageType>?
     
-    func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType>
+    func on<MessageType>(event: UIControl.Event, dispatch message: MessageType) -> Mailbox<MessageType>
     
     func on<MessageType>(
-        event: UIControlEvents,
+        event: UIControl.Event,
         sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType>
     
-    func stopDispatchingMessages<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
+    func stopDispatchingMessages<MessageType>(for event: UIControl.Event) -> MessageDispatcher<MessageType>?
     
-    func stopDispatchingMessagesForAllEvents<MessageType>() -> [(UIControlEvents, MessageDispatcher<MessageType>)]
+    func stopDispatchingMessagesForAllEvents<MessageType>() -> [(UIControl.Event, MessageDispatcher<MessageType>)]
     
-    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents)
+    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControl.Event)
     
-    func unregisterDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>?
+    func unregisterDispatcher<MessageType>(for event: UIControl.Event) -> MessageDispatcher<MessageType>?
         
 }
 
@@ -55,7 +55,7 @@ extension UIView: MessageForwarder {
 
 extension MessageProducer {
     
-    func on<MessageType>(event: UIControlEvents, dispatch message: MessageType) -> Mailbox<MessageType> {
+    func on<MessageType>(event: UIControl.Event, dispatch message: MessageType) -> Mailbox<MessageType> {
         if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
             self.removeTarget(oldDispatcher, action: oldDispatcher.selector, for: event)
         }
@@ -69,7 +69,7 @@ extension MessageProducer {
     }
     
     func on<MessageType>(
-        event: UIControlEvents,
+        event: UIControl.Event,
         sender2Message: @escaping (Any) -> MessageType?) -> Mailbox<MessageType> {
         
         if let oldDispatcher = getDispatcher(for: event) as MessageDispatcher<MessageType>? {
@@ -84,7 +84,7 @@ extension MessageProducer {
         return mailbox
     }
     
-    func stopDispatchingMessages<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
+    func stopDispatchingMessages<MessageType>(for event: UIControl.Event) -> MessageDispatcher<MessageType>? {
         guard let dispatcher = unregisterDispatcher(for: event) as MessageDispatcher<MessageType>? else {
             fatalError("Dispatcher could not be unregistered, MessageDispatcher's MessageType is incorrect")
         }
@@ -92,22 +92,22 @@ extension MessageProducer {
         return dispatcher
     }
     
-    func stopDispatchingMessagesForAllEvents<MessageType>() -> [(UIControlEvents, MessageDispatcher<MessageType>)] {
+    func stopDispatchingMessagesForAllEvents<MessageType>() -> [(UIControl.Event, MessageDispatcher<MessageType>)] {
         let dispatcherByEvent: [UInt : MessageDispatcher<MessageType>] = unregisterAllDispatchers()
         for (eventRawValue, dispatcher) in dispatcherByEvent {
-            let event = UIControlEvents(rawValue: eventRawValue)
+            let event = UIControl.Event(rawValue: eventRawValue)
             self.removeTarget(dispatcher, action: dispatcher.selector, for: event)
         }
-        return dispatcherByEvent.keys.map { (UIControlEvents(rawValue: $0), dispatcherByEvent[$0]!) }
+        return dispatcherByEvent.keys.map { (UIControl.Event(rawValue: $0), dispatcherByEvent[$0]!) }
     }
     
-    func getDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
+    func getDispatcher<MessageType>(for event: UIControl.Event) -> MessageDispatcher<MessageType>? {
         let dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] ?? [:]
         return dispatchers[event.rawValue]
     }
     
-    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControlEvents) {
+    func register<MessageType>(dispatcher: MessageDispatcher<MessageType>, for event: UIControl.Event) {
         var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] ?? [:]
         dispatchers[event.rawValue] = dispatcher
@@ -115,7 +115,7 @@ extension MessageProducer {
                                  dispatchers, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
     
-    func unregisterDispatcher<MessageType>(for event: UIControlEvents) -> MessageDispatcher<MessageType>? {
+    func unregisterDispatcher<MessageType>(for event: UIControl.Event) -> MessageDispatcher<MessageType>? {
         guard var dispatchers = objc_getAssociatedObject(self, &messageDispatcherAssociationKey)
             as? [UInt : MessageDispatcher<MessageType>] else { return .none }
         let dispatcher = dispatchers.removeValue(forKey: event.rawValue)

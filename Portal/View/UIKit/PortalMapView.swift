@@ -86,7 +86,7 @@ fileprivate extension PortalMapView {
     
     fileprivate func setCenter() {
         if let center = mapCenter {
-            let span = MKCoordinateSpanMake(zoomLevel, zoomLevel)
+            let span = MKCoordinateSpan(latitudeDelta: zoomLevel, longitudeDelta: zoomLevel)
             let region = MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: center.latitude, longitude: center.longitude),
                 span: span

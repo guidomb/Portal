@@ -92,7 +92,7 @@ fileprivate extension UITextField {
 
 extension TextFieldEvents {
 
-    fileprivate func getMessageMappersByEvent() -> [(UIControlEvents, ((String) -> MessageType)?)] {
+    fileprivate func getMessageMappersByEvent() -> [(UIControl.Event, ((String) -> MessageType)?)] {
         return [
             (.editingDidBegin, onEditingBegin),
             (.editingChanged, onEditingChanged),

@@ -26,9 +26,9 @@ extension ContainerController where Self: UIViewController {
     public func attachChildController(_ controller: UIViewController) {
         guard controller.parent == self else { return }
         
-        controller.willMove(toParentViewController: self)
-        self.addChildViewController(controller)
-        controller.didMove(toParentViewController: self)
+        controller.willMove(toParent: self)
+        self.addChild(controller)
+        controller.didMove(toParent: self)
     }
     
 }

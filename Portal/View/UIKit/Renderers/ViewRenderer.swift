@@ -100,17 +100,17 @@ fileprivate extension CALayer {
 
 fileprivate extension ContentMode {
     
-    var toUIViewContentMode: UIViewContentMode {
+    var toUIViewContentMode: UIView.ContentMode {
         switch self {
             
         case .scaleToFill:
-            return UIViewContentMode.scaleToFill
+            return UIView.ContentMode.scaleToFill
             
         case .scaleAspectFill:
-            return UIViewContentMode.scaleAspectFill
+            return UIView.ContentMode.scaleAspectFill
             
         case .scaleAspectFit:
-            return UIViewContentMode.scaleAspectFit
+            return UIView.ContentMode.scaleAspectFit
             
         }
     }

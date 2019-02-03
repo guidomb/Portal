@@ -66,7 +66,7 @@ fileprivate extension PortalTableView {
 
 extension TableItemSelectionStyle {
 
-    internal var asUITableViewCellSelectionStyle: UITableViewCellSelectionStyle {
+    internal var asUITableViewCellSelectionStyle: UITableViewCell.SelectionStyle {
         switch self {
         case .none:
             return .none
