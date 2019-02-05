@@ -36,7 +36,7 @@ where CustomComponentRendererType.MessageType == MessageType, CustomComponentRen
         
         self.dataSource = self
         self.delegate = self
-        self.rowHeight = UITableViewAutomaticDimension
+        self.rowHeight = UITableView.automaticDimension
     }
     
     required public init?(coder aDecoder: NSCoder) {

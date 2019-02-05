@@ -11,7 +11,7 @@ import StoreKit
 
 public enum UIApplicationMessage {
     
-    case didFinishLaunching(application: UIApplication, launchOptions: [UIApplicationLaunchOptionsKey: Any]?)
+    case didFinishLaunching(application: UIApplication, launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
     case willResignActice(application: UIApplication)
     case didEnterBackground(application: UIApplication)
     case willEnterBackground(application: UIApplication)
@@ -185,7 +185,7 @@ public final class PortalUIApplication: UIResponder, UIApplicationDelegate {
     
     public func application(
         _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         let window = UIWindow(frame: UIScreen.main.bounds)
         PortalUIApplication.subscribe(subscriber: PortalUIApplication.binder(window))

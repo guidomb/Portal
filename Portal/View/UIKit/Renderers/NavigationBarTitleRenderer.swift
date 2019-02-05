@@ -59,7 +59,7 @@ extension UINavigationBar {
         self.barTintColor = style.base.backgroundColor.asUIColor
         self.tintColor = style.component.tintColor.asUIColor
         self.isTranslucent = style.component.isTranslucent
-        var titleTextAttributes: [NSAttributedStringKey : Any] = [
+        var titleTextAttributes: [NSAttributedString.Key : Any] = [
             .foregroundColor: style.component.titleTextColor.asUIColor
         ]
         let font = style.component.titleTextFont
