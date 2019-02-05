@@ -137,7 +137,7 @@ public final class TimerSubscriptionManager<MessageType, RouteType: Route>: Subs
             }
         }
         activeTimers[uuid] = ActiveTimer(platformTimer: timer, timer: subscription)
-        RunLoop.main.add(timer, forMode: .commonModes)
+        RunLoop.main.add(timer, forMode: .common)
     }
     
     public func remove(subscription: Timer<MessageType, RouteType>) {
